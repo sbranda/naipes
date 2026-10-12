@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14213D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Naipes 80">
+<title>Naipes: autos argentinos de los 80</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--navy:#14213D;--deep:#0B1428;--cream:#F4EAD2;--gold:#F2B705;--red:#C8352E;--green:#4C956C;
+  --disp:"Bebas Neue",Impact,"Arial Narrow",Haettenschweiler,sans-serif;
+  --txt:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--navy);color:var(--cream);font-family:var(--txt);font-size:18px}
+body{min-height:100vh;min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{max-width:480px;margin:0 auto;padding:14px 14px 28px;display:flex;flex-direction:column;gap:12px}
+h1{margin:0;font-family:var(--disp);font-weight:400;font-size:36px;letter-spacing:.03em;line-height:1.05}
+h2{margin:0;font-family:var(--disp);font-weight:400;font-size:30px;letter-spacing:.04em}
+button{font:inherit;color:inherit;cursor:pointer}
+.sub{color:#F4EAD2B3;letter-spacing:.06em;font-weight:500}
+.btn{border:2px solid var(--cream);background:transparent;border-radius:12px;padding:10px 16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.btn.big{background:var(--gold);color:var(--navy);border-color:var(--gold);font-size:22px;padding:14px 18px;width:100%}
+.btn.sm{padding:6px 12px;font-size:15px}
+.btn:active{transform:translateY(1px)}
+.group{display:flex;flex-direction:column;gap:8px}
+.group>label{font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:14px;color:#F4EAD2B3}
+.opts{display:grid;gap:8px}
+.opt{border:2px solid #F4EAD255;border-radius:12px;background:transparent;padding:10px 12px;text-align:left;line-height:1.2}
+.opt small{display:block;color:#F4EAD2B3;font-weight:500}
+.opt.on{border-color:var(--gold);background:#22325C}
+.note{background:#0B142899;border-radius:12px;padding:10px 12px;font-size:16px;line-height:1.25}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.count{font-weight:600;letter-spacing:.06em;text-align:center}
+.count b{font-family:var(--disp);font-size:26px;font-weight:400}
+.msg{min-height:44px;background:#0B142899;border-radius:12px;padding:8px 12px;font-weight:500;line-height:1.2;display:flex;align-items:center}
+.msg.win{background:#4C956C55}.msg.lose{background:#C8352E55}
+.card{background:var(--cream);color:var(--navy);border:3px solid var(--deep);border-radius:20px;padding:12px;box-shadow:0 6px 0 var(--deep);display:flex;flex-direction:column;gap:8px}
+.chead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.chead small{display:block;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#14213D99}
+.chead b{font-family:var(--disp);font-weight:400;font-size:30px;line-height:1.05;letter-spacing:.02em}
+.num{background:var(--navy);color:var(--cream);border-radius:999px;padding:3px 10px;font-size:14px;font-weight:600;white-space:nowrap}
+.photo{height:150px;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo svg{width:62%;height:auto}
+.stats{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:10px;border:0;border-top:1.5px solid #14213D33;background:transparent;color:inherit;min-height:50px;padding:4px;text-align:left;width:100%;border-radius:0}
+.row:disabled{cursor:default}
+.row .k{flex:none;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--cream);font-family:var(--disp);font-size:18px;display:flex;align-items:center;justify-content:center}
+.row .l{flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1.05}
+.row .l i{display:block;font-style:normal;font-size:11px;letter-spacing:.04em;color:#14213D99;font-weight:500;text-transform:none;margin-top:2px}
+.row .v{font-family:var(--disp);font-size:32px;line-height:1}
+.row .u{font-size:13px;font-weight:600;color:#14213D99;margin-left:4px}
+.row.canpick:active,.row.canpick:hover{background:#F2B70533}
+.row.win{background:#4C956C55}.row.lose{background:#C8352E44}.row.tie{background:#F2B70555}
+.cfoot{font-size:13px;font-style:italic;color:#14213DB3;min-height:16px}
+.card.compact .photo,.card.compact .cfoot{display:none}
+.card.compact .row{min-height:44px}
+.card.compact .chead b{font-size:24px}
+.back{height:64px;border-radius:14px;border:3px solid var(--deep);background:repeating-linear-gradient(45deg,#14213D 0 10px,#1B2B4F 10px 20px);outline:2px solid var(--gold);outline-offset:-9px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);letter-spacing:.2em;color:var(--gold);font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{background:var(--cream);color:var(--navy);border:3px solid var(--deep);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;text-align:left}
+.tile .photo{height:84px}
+.tile b{font-family:var(--disp);font-weight:400;font-size:20px;line-height:1.05}
+.tile small{font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:11px;color:#14213D99}
+.tile .rm{align-self:flex-start;border:1.5px solid var(--navy);background:transparent;border-radius:8px;font-size:12px;padding:2px 8px;font-weight:600}
+.foot{text-align:center;color:#F4EAD299;font-size:14px;margin-top:6px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--cream);color:var(--navy);padding:10px 16px;border-radius:12px;font-weight:600;display:none;max-width:90%;z-index:9}
+.fin{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding:24px 0}
+.fin h1{font-size:52px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status"></div>
+<input type="file" id="file" accept="image/*" hidden>
+<script>
+'use strict';
+// ---------- DOM y constantes (todo arriba) ----------
+const APP = document.getElementById('app');
+const TOAST = document.getElementById('toast');
+const FILE = document.getElementById('file');
+const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref';
+const MAX_RONDAS = 60;
+const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280'};
+const CLARO = {Renault:1,Volkswagen:1};
+
+// ---------- Datos ----------
+// Mazo técnico: [marca, modelo, forma, cilindrada L, potencia CV, años en producción (modelo), año de lanzamiento (modelo), nota, clave de foto]
+const TEC = [
+ ['Renault','12 TS','sedan',1.4,74,24,1970,'','renault-12'],
+ ['Renault','18 Break GTX','wagon',2.0,99,13,1981,'','renault-18'],
+ ['Renault','18 GTL','sedan',1.4,77,13,1981,'','renault-18'],
+ ['Renault','18 GTX','sedan',2.0,103,13,1981,'','renault-18'],
+ ['Renault','18 LX','sedan',2.0,95,13,1981,'','renault-18'],
+ ['Renault','11 TS','hatch',1.4,72,11,1984,'','renault-11'],
+ ['Renault','11 Turbo','hatch',1.4,95,11,1984,'','renault-11'],
+ ['Renault','9 TXE','sedan',1.6,75,9,1987,'','renault-9'],
+ ['Renault','Fuego GTX','coupe',2.0,110,10,1982,'Potencia de la versión europea','renault-fuego'],
+ ['Fiat','147 Spazio TR','hatch',1.3,60,15,1981,'','fiat-147'],
+ ['Fiat','Regata 85','sedan',1.5,82,10,1985,'Potencia de la versión europea','fiat-regata'],
+ ['Ford','Falcon Sprint 3.6','sedan',3.6,166,29,1962,'','ford-falcon'],
+ ['Ford','Falcon 3.6','sedan',3.6,109,29,1962,'','ford-falcon'],
+ ['Ford','Falcon 3.0','sedan',3.0,84,29,1962,'','ford-falcon'],
+ ['Ford','Falcon 2.3','sedan',2.3,90,29,1962,'','ford-falcon'],
+ ['Ford','Falcon Ghia SP','sedan',3.6,140,29,1962,'','ford-falcon'],
+ ['Ford','Taunus L','sedan',2.0,92,9,1974,'','ford-taunus'],
+ ['Ford','Taunus GXL','sedan',2.3,122,9,1974,'','ford-taunus'],
+ ['Ford','Sierra XR4','coupe',2.3,120,9,1984,'','ford-sierra'],
+ ['Volkswagen','Gacel GL','sedan',1.6,73,10,1983,'','vw-gacel'],
+ ['Dodge','1500 (1.8)','sedan',1.8,92,19,1971,'Incluye los años como VW 1500','dodge-1500'],
+ ['Peugeot','504 2.0','sedan',2.0,89,30,1969,'','peugeot-504']
+];
+// Mazo historia: [marca, modelo, tipo, inicio, fin, clave de foto, forma]
+const HIS = [
+ ['Renault','4','Auto',1963,1986,'renault-4','hatch'],
+ ['Renault','6','Auto',1969,1984,'renault-6','hatch'],
+ ['Renault','12','Auto',1970,1994,'renault-12','sedan'],
+ ['Renault','18','Auto',1981,1994,'renault-18','sedan'],
+ ['Renault','Fuego','Auto',1982,1992,'renault-fuego','coupe'],
+ ['Renault','11','Auto',1984,1995,'renault-11','hatch'],
+ ['Renault','9','Auto',1987,1996,'renault-9','sedan'],
+ ['Renault','21','Auto',1989,1996,'renault-21','sedan'],
+ ['Renault','Trafic','Utilitario',1986,2001,'renault-trafic','van'],
+ ['Fiat','600','Auto',1960,1982,'fiat-600','hatch'],
+ ['Fiat','125 Mirafiori','Auto',1975,1982,'fiat-125','sedan'],
+ ['Fiat','128 / Súper Europa','Auto',1971,1990,'fiat-128','sedan'],
+ ['Fiat','133','Auto',1977,1982,'fiat-133','hatch'],
+ ['Fiat','147 / Spazio','Auto',1981,1996,'fiat-147','hatch'],
+ ['Fiat','Regata','Auto',1985,1995,'fiat-regata','sedan'],
+ ['Fiat','Duna','Auto',1987,2000,'fiat-duna','sedan'],
+ ['Fiat','Brio','Auto',1987,1991,'fiat-brio','hatch'],
+ ['Fiat','Uno','Auto',1988,2000,'fiat-uno','hatch'],
+ ['Fiat','147 Fiorino','Utilitario',1989,1997,'fiat-fiorino','van'],
+ ['Peugeot','404','Auto',1962,1980,'peugeot-404','sedan'],
+ ['Peugeot','504','Auto / pickup',1969,1999,'peugeot-504','sedan'],
+ ['Peugeot','505','Auto',1981,1995,'peugeot-505','sedan'],
+ ['Ford','Falcon','Auto',1962,1991,'ford-falcon','sedan'],
+ ['Ford','Fairlane','Auto',1969,1982,'ford-fairlane','sedan'],
+ ['Ford','Taunus','Auto',1974,1983,'ford-taunus','sedan'],
+ ['Ford','Sierra','Auto',1984,1993,'ford-sierra','hatch'],
+ ['Ford','Escort','Auto',1988,2003,'ford-escort','hatch'],
+ ['Ford','F-100','Pickup',1959,1997,'ford-f100','pickup'],
+ ['Ford','Ranchero','Pickup',1971,1987,'ford-ranchero','pickup'],
+ ['Ford','F-150','Pickup',1987,1997,'ford-f150','pickup'],
+ ['Volkswagen','Gacel','Auto',1983,1993,'vw-gacel','sedan'],
+ ['Volkswagen','Carat','Auto',1987,1991,'vw-carat','sedan'],
+ ['Volkswagen','Kombi / Pickup','Utilitario',1981,1990,'vw-kombi','van'],
+ ['Dodge','Polara / GTX','Auto',1968,1980,'dodge-polara','sedan'],
+ ['Dodge','1500 / VW 1500','Auto',1971,1990,'dodge-1500','sedan'],
+ ['IKA','Torino','Auto',1966,1982,'ika-torino','sedan'],
+ ['Citroën','2CV / 3CV','Auto',1960,1990,'citroen-2cv','hatch'],
+ ['Citroën','Ami 8','Auto',1970,1982,'citroen-ami8','hatch'],
+ ['Citroën','Méhari','Utilitario',1971,1986,'citroen-mehari','hatch'],
+ ['IES','Súper América','Auto',1983,1990,'ies-super-america','hatch'],
+ ['Mercedes','L 608 D','Utilitario',1969,1990,'mercedes-l608d','van']
+];
+const MODELOS = HIS.map(h => ({key:h[5], marca:h[0], modelo:h[1], shape:h[6]}));
+const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
+
+function crearMazos(){
+  const tec = {
+    id:'tec', nombre:'Técnico', desc:'22 versiones: cilindrada, potencia, años en producción y año de lanzamiento',
+    stats:[
+      {id:'cil',label:'Cilindrada',unit:'L',dir:1,hint:'mayor gana'},
+      {id:'pot',label:'Potencia',unit:'CV',dir:1,hint:'mayor gana'},
+      {id:'prod',label:'Años en producción',unit:'años',dir:1,hint:'mayor gana'},
+      {id:'lanz',label:'Año de lanzamiento',unit:'',dir:-1,hint:'menor gana (el más antiguo)'}
+    ],
+    cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
+  };
+  const his = {
+    id:'his', nombre:'Historia', desc:'41 modelos: años en producción, años en los 80, lanzamiento y fin',
+    stats:[
+      {id:'prod',label:'Años en producción',unit:'años',dir:1,hint:'mayor gana'},
+      {id:'en80',label:'Años en los 80',unit:'de 10',dir:1,hint:'mayor gana'},
+      {id:'lanz',label:'Año de lanzamiento',unit:'',dir:-1,hint:'menor gana (el más antiguo)'},
+      {id:'fin',label:'Año de fin',unit:'',dir:1,hint:'mayor gana'}
+    ],
+    cards:HIS.map((c,i) => ({
+      id:'h'+i,marca:c[0],modelo:c[1],shape:c[6],nota:c[2]+' · '+c[3]+'–'+c[4],key:c[5],
+      v:{prod:c[4]-c[3],en80:Math.max(0,Math.min(c[4],1989)-Math.max(c[3],1980)+1),lanz:c[3],fin:c[4]}
+    }))
+  };
+  return {tec,his};
+}
+const DECKS = crearMazos();
+const TAMANOS = {corta:{n:6,t:'Corta',d:'6 cartas cada uno'},media:{n:10,t:'Media',d:'10 cartas cada uno'},completa:{n:0,t:'Completa',d:'Todo el mazo repartido'}};
+
+// ---------- Estado ----------
+const S = {screen:'home', pref:{deck:'tec',size:'media'}, game:null, fotos:{}, rec:{g:0,p:0,e:0}, deferred:null, pending:null};
+function cargar(){
+  try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
+  try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
+  try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]) S.pref = p; }catch(e){}
+}
+function guardar(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } }
+function aviso(t){ TOAST.textContent = t; TOAST.style.display = 'block'; clearTimeout(aviso.t); aviso.t = setTimeout(()=>{ TOAST.style.display='none'; },2600); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function mezclar(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+// ---------- Siluetas ----------
+function sil(shape, fg, bg){
+  const w = (cx) => `<circle cx="${cx}" cy="64" r="15" fill="${fg}"/><circle cx="${cx}" cy="64" r="7" fill="${bg}"/>`;
+  const P = {
+    sedan:`<path d="M12 62 L12 52 Q12 46 20 44 L58 38 Q74 16 100 14 L150 14 Q172 16 188 36 L218 42 Q228 46 228 54 L228 62 Z" fill="${fg}"/><path d="M66 38 Q78 22 100 21 L146 21 Q164 23 176 38 Z" fill="${bg}"/>${w(58)}${w(186)}`,
+    hatch:`<path d="M14 62 L14 50 Q14 45 22 43 L70 36 Q84 14 108 12 L176 12 Q196 14 204 30 L216 46 L220 62 Z" fill="${fg}"/><path d="M72 36 Q84 21 108 20 L172 20 Q190 22 198 36 Z" fill="${bg}"/>${w(58)}${w(180)}`,
+    wagon:`<path d="M10 62 L10 50 Q10 45 18 43 L56 37 Q72 15 98 13 L196 13 Q214 13 218 30 L226 50 L226 62 Z" fill="${fg}"/><path d="M60 37 Q74 21 98 20 L196 20 Q208 21 212 36 Z" fill="${bg}"/>${w(56)}${w(184)}`,
+    coupe:`<path d="M10 62 L10 52 Q10 47 18 45 L60 40 Q86 18 118 16 L150 16 Q178 20 196 40 L226 46 Q232 50 232 56 L232 62 Z" fill="${fg}"/><path d="M68 41 Q90 25 118 23 L148 23 Q172 27 188 41 Z" fill="${bg}"/>${w(58)}${w(186)}`,
+    pickup:`<path d="M10 62 L10 50 Q10 45 18 43 L60 38 Q72 20 92 18 L130 18 L134 38 L226 40 L228 62 Z" fill="${fg}"/><path d="M70 38 Q80 25 94 24 L124 24 L126 38 Z" fill="${bg}"/>${w(58)}${w(186)}`,
+    van:`<path d="M10 62 L10 30 Q10 16 24 16 L196 16 Q212 16 218 30 L228 48 L228 62 Z" fill="${fg}"/><path d="M20 24 L74 24 L74 40 L20 40 Z M82 24 L130 24 L130 40 L82 40 Z" fill="${bg}"/>${w(56)}${w(184)}`
+  };
+  return `<svg viewBox="0 0 240 90" role="img" aria-label="Silueta">${P[shape]||P.sedan}</svg>`;
+}
+
+// ---------- Cartas ----------
+function fmt(stat, v){ return stat.id === 'cil' ? v.toFixed(1).replace('.',',') : String(v); }
+function fotoHTML(c){
+  const col = COLOR[c.marca] || '#888', fg = CLARO[c.marca] ? '#14213D' : '#F4EAD2';
+  const f = S.fotos[c.key];
+  return `<div class="photo" style="background:${col}">${f ? `<img src="${f}" alt="${esc(c.marca+' '+c.modelo)}">` : sil(c.shape, fg, col)}</div>`;
+}
+// opts: {n, total, compact, canPick, sel, res}  res: 'win'|'lose'|'tie' resultado para ESTA carta
+function cartaHTML(c, deck, o){
+  o = o || {};
+  const filas = deck.stats.map((s,i) => {
+    const cls = ['row'];
+    if(o.canPick) cls.push('canpick');
+    if(o.sel === s.id && o.res) cls.push(o.res);
+    return `<button class="${cls.join(' ')}" data-act="stat" data-stat="${s.id}" ${o.canPick?'':'disabled'}>
+      <span class="k">${i+1}</span>
+      <span class="l">${s.label}<i>${s.hint}</i></span>
+      <span><span class="v">${fmt(s,c.v[s.id])}</span><span class="u">${s.unit}</span></span></button>`;
+  }).join('');
+  return `<div class="card ${o.compact?'compact':''}">
+    <div class="chead"><div><small>${esc(c.marca)}</small><b>${esc(c.modelo)}</b></div>${o.n?`<span class="num">${o.n}</span>`:''}</div>
+    ${fotoHTML(c)}
+    <div class="stats">${filas}</div>
+    <div class="cfoot">${esc(c.nota||'')}</div></div>`;
+}
+
+// ---------- Juego ----------
+function nuevaPartida(){
+  const deck = DECKS[S.pref.deck], t = TAMANOS[S.pref.size];
+  const mitad = Math.floor(deck.cards.length/2);
+  const n = t.n ? Math.min(t.n, mitad) : mitad;
+  const mazo = mezclar(deck.cards.slice());
+  S.game = {deckId:deck.id, you:mazo.slice(0,n), cpu:mazo.slice(n,2*n), pot:[], turn:Math.random()<.5?'you':'cpu',
+            phase:'pick', sel:null, res:null, shown:null, ronda:1, quien:null, fin:null};
+  S.screen = 'game';
+  render();
+  agendarCPU();
+}
+function percentil(deck, card, stat){
+  let w = 0; deck.cards.forEach(o => { if(stat.dir*(card.v[stat.id]-o.v[stat.id]) >= 0) w++; });
+  return w/deck.cards.length;
+}
+function agendarCPU(){
+  const g = S.game;
+  if(!g || g.phase !== 'pick' || g.turn !== 'cpu' || g.fin) return;
+  clearTimeout(agendarCPU.t);
+  agendarCPU.t = setTimeout(() => {
+    if(S.screen !== 'game' || !S.game || S.game !== g || g.phase !== 'pick') return;
+    const deck = DECKS[g.deckId], c = g.cpu[0];
+    let mejor = null, pm = -1;
+    deck.stats.forEach(s => { const p = percentil(deck,c,s) + Math.random()*0.15; if(p > pm){ pm = p; mejor = s; } });
+    resolver(mejor.id, 'cpu');
+  }, 1100);
+}
+function resolver(statId, quien){
+  const g = S.game; if(!g || g.phase !== 'pick') return;
+  const deck = DECKS[g.deckId], st = deck.stats.find(s => s.id === statId);
+  const a = g.you[0], b = g.cpu[0];
+  const d = st.dir*(a.v[st.id]-b.v[st.id]);
+  g.sel = statId; g.quien = quien; g.phase = 'reveal'; g.shown = {a,b};
+  g.you.shift(); g.cpu.shift();
+  if(d > 0){ g.res = 'you'; g.you.push(a,b,...g.pot); g.pot = []; g.turn = 'you'; }
+  else if(d < 0){ g.res = 'cpu'; g.cpu.push(b,a,...g.pot); g.pot = []; g.turn = 'cpu'; }
+  else { g.res = 'tie'; g.pot.push(a,b); }
+  render();
+}
+function siguiente(){
+  const g = S.game; if(!g || g.phase !== 'reveal') return;
+  g.ronda++;
+  if(!g.you.length || !g.cpu.length || g.ronda > MAX_RONDAS){ terminar(); return; }
+  g.phase = 'pick'; g.sel = null; g.res = null; g.shown = null; g.quien = null;
+  render();
+  agendarCPU();
+}
+function terminar(){
+  const g = S.game;
+  let r;
+  if(!g.you.length) r = 'cpu'; else if(!g.cpu.length) r = 'you';
+  else r = g.you.length > g.cpu.length ? 'you' : g.cpu.length > g.you.length ? 'cpu' : 'tie';
+  g.fin = r;
+  if(r === 'you') S.rec.g++; else if(r === 'cpu') S.rec.p++; else S.rec.e++;
+  guardar(LS_STATS, S.rec);
+  S.screen = 'fin';
+  render();
+}
+
+// ---------- Pantallas ----------
+function iosSinInstalar(){
+  const ua = navigator.userAgent;
+  const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  return ios && !standalone;
+}
+function pantallaInicio(){
+  const mazos = Object.values(DECKS).map(d => `<button class="opt ${S.pref.deck===d.id?'on':''}" data-act="deck" data-v="${d.id}"><b>${d.nombre}</b><small>${d.desc}</small></button>`).join('');
+  const tams = Object.keys(TAMANOS).map(k => `<button class="opt ${S.pref.size===k?'on':''}" data-act="size" data-v="${k}"><b>${TAMANOS[k].t}</b><small>${TAMANOS[k].d}</small></button>`).join('');
+  const inst = S.deferred ? `<button class="btn" data-act="instalar">Instalar la app</button>` : (iosSinInstalar() ? `<div class="note">Para instalarla en iPhone o iPad: tocá Compartir y después "Agregar a pantalla de inicio".</div>` : '');
+  return `<div><h1>Autos argentinos<br>de los 80</h1><div class="sub">Juego de naipes contra la computadora</div></div>
+    <div class="group"><label>Mazo</label><div class="opts">${mazos}</div></div>
+    <div class="group"><label>Tamaño de la partida</label><div class="opts">${tams}</div></div>
+    <button class="btn big" data-act="jugar">Jugar</button>
+    <button class="btn" data-act="fotos">Mis fotos</button>
+    <div class="note">Ganadas <b>${S.rec.g}</b> · Perdidas <b>${S.rec.p}</b> · Empatadas <b>${S.rec.e}</b></div>
+    ${inst}
+    <div class="note">Cómo se juega: se reparten las cartas. Quien tiene el turno elige una característica de su carta; gana quien tenga el mejor valor y se queda con ambas cartas. En empate las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo.</div>
+    <div class="foot">Desarrollado por Seba Branda</div>`;
+}
+function textoMensaje(g, deck){
+  if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
+  const st = deck.stats.find(s => s.id === g.sel);
+  const va = fmt(st,g.shown.a.v[st.id]), vb = fmt(st,g.shown.b.v[st.id]);
+  const quien = g.quien === 'cpu' ? 'La computadora eligió' : 'Elegiste';
+  const base = `${quien} ${st.label}: ${va}${st.unit?' '+st.unit:''} contra ${vb}${st.unit?' '+st.unit:''}.`;
+  if(g.res === 'you') return base + ' Ganaste la ronda.';
+  if(g.res === 'cpu') return base + ' Perdiste la ronda.';
+  return base + ' Empate: las cartas van al pozo.';
+}
+function pantallaJuego(){
+  const g = S.game, deck = DECKS[g.deckId];
+  const reveal = g.phase === 'reveal';
+  const mia = reveal ? g.shown.a : g.you[0];
+  const resMia = g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie';
+  const resCpu = g.res === 'cpu' ? 'win' : g.res === 'you' ? 'lose' : 'tie';
+  const clsMsg = reveal ? (g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : '') : '';
+  const oponente = reveal
+    ? cartaHTML(g.shown.b, deck, {compact:true, sel:g.sel, res:resCpu, n:'Compu'})
+    : `<div class="back">NAIPES 80</div>`;
+  const pozo = g.pot.length ? ` · Pozo <b>${g.pot.length}</b>` : '';
+  return `<div class="bar"><button class="btn sm" data-act="salir">Salir</button>
+      <div class="count">Vos <b>${g.you.length + (reveal ? 0 : 0)}</b> · Compu <b>${g.cpu.length}</b>${pozo}</div>
+      <div class="sub">R${g.ronda}</div></div>
+    <div class="msg ${clsMsg}">${esc(textoMensaje(g,deck))}</div>
+    ${oponente}
+    ${cartaHTML(mia, deck, {canPick:!reveal && g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
+    ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}`;
+}
+function pantallaFin(){
+  const g = S.game;
+  const t = g.fin === 'you' ? 'Ganaste' : g.fin === 'cpu' ? 'Perdiste' : 'Empate';
+  const s = g.fin === 'tie' ? 'Quedaron igualados.' : `Terminaste con ${g.you.length} cartas contra ${g.cpu.length}.`;
+  return `<div class="fin"><h1>${t}</h1><div class="sub">${s}</div>
+    <button class="btn big" data-act="jugar">Revancha</button>
+    <button class="btn" data-act="home">Inicio</button></div>`;
+}
+function pantallaFotos(){
+  const cant = Object.keys(S.fotos).length;
+  const tiles = MODELOS.map(m => {
+    const tiene = !!S.fotos[m.key];
+    return `<div class="tile"><button class="tile" style="border:0;padding:0;background:transparent;box-shadow:none;gap:6px" data-act="foto" data-key="${m.key}">
+        ${fotoHTML({key:m.key,marca:m.marca,modelo:m.modelo,shape:m.shape})}
+        <small>${esc(m.marca)}</small><b>${esc(m.modelo)}</b></button>
+      ${tiene ? `<button class="rm" data-act="quitar" data-key="${m.key}">Quitar foto</button>` : ''}</div>`;
+  }).join('');
+  return `<div class="bar"><button class="btn sm" data-act="home">Volver</button><h2>Mis fotos</h2><div class="sub">${cant}/${MODELOS.length}</div></div>
+    <div class="note">Tocá un modelo para elegir una foto de tu galería o sacarla con la cámara. Quedan guardadas en este dispositivo y se ven en todas las cartas de ese modelo.</div>
+    <div class="grid">${tiles}</div>`;
+}
+function render(){
+  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : pantallaInicio();
+  if(S.screen === 'game' || S.screen === 'fin') window.scrollTo(0,0);
+}
+
+// ---------- Fotos ----------
+function leerFoto(file){
+  return new Promise((ok, mal) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 640/Math.max(img.width,img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);
+      ok(c.toDataURL('image/jpeg',0.72));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('imagen')); };
+    img.src = url;
+  });
+}
+FILE.addEventListener('change', async () => {
+  const f = FILE.files && FILE.files[0], key = S.pending;
+  FILE.value = '';
+  if(!f || !key) return;
+  try{
+    const data = await leerFoto(f);
+    const previa = S.fotos[key];
+    S.fotos[key] = data;
+    if(!guardar(LS_FOTOS, S.fotos)){
+      if(previa) S.fotos[key] = previa; else delete S.fotos[key];
+      aviso('No hay espacio para guardar la foto. Probá quitando alguna.');
+    } else aviso('Foto guardada');
+  }catch(e){ aviso('No se pudo leer esa imagen'); }
+  render();
+});
+
+// ---------- Eventos (delegación) ----------
+APP.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const a = b.dataset.act;
+  if(a === 'deck'){ S.pref.deck = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
+  else if(a === 'size'){ S.pref.size = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
+  else if(a === 'jugar') nuevaPartida();
+  else if(a === 'stat'){ if(S.game && S.game.phase === 'pick' && S.game.turn === 'you') resolver(b.dataset.stat,'you'); }
+  else if(a === 'next') siguiente();
+  else if(a === 'salir'){ if(confirm('¿Salir de la partida?')){ clearTimeout(agendarCPU.t); S.game = null; S.screen = 'home'; render(); } }
+  else if(a === 'home'){ clearTimeout(agendarCPU.t); S.screen = 'home'; render(); }
+  else if(a === 'fotos'){ S.screen = 'fotos'; render(); }
+  else if(a === 'foto'){ S.pending = b.dataset.key; FILE.click(); }
+  else if(a === 'quitar'){ delete S.fotos[b.dataset.key]; guardar(LS_FOTOS,S.fotos); render(); }
+  else if(a === 'instalar' && S.deferred){ S.deferred.prompt(); S.deferred.userChoice.finally(() => { S.deferred = null; render(); }); }
+});
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.deferred = e; if(S.screen === 'home') render(); });
+window.addEventListener('appinstalled', () => { S.deferred = null; if(S.screen === 'home') render(); });
+
+// ---------- Arranque ----------
+cargar();
+render();
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+</script>
+</body>
+</html>
