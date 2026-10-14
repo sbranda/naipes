@@ -193,6 +193,8 @@ const HIS = [
 ];
 const MODELOS = HIS.map(h => ({key:h[5], marca:h[0], modelo:h[1], shape:h[6]}));
 const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
+function vkeyDe(marca, ver){ return 'v-' + (marca + ' ' + ver).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+const VERSIONES = TEC.map(c => ({key:vkeyDe(c[0],c[1]), marca:c[0], modelo:c[1], shape:c[2]}));
 
 function crearMazos(){
   const tec = {
@@ -203,7 +205,7 @@ function crearMazos(){
       {id:'prod',label:'Años en producción',unit:'años',dir:1,hint:'mayor gana'},
       {id:'lanz',label:'Año de lanzamiento',unit:'',dir:-1,hint:'menor gana (el más antiguo)'}
     ],
-    cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
+    cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],vkey:vkeyDe(c[0],c[1]),v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
   };
   const his = {
     id:'his', nombre:'Historia', desc:'21 modelos lanzados desde 1980: años en producción, años en los 80, lanzamiento y fin',
@@ -253,7 +255,7 @@ function sil(shape, fg, bg){
 function fmt(stat, v){ return stat.id === 'cil' ? v.toFixed(1).replace('.',',') : String(v); }
 function fotoHTML(c){
   const col = COLOR[c.marca] || '#888', fg = CLARO[c.marca] ? '#14213D' : '#F4EAD2';
-  const f = S.fotos[c.key];
+  const f = (c.vkey && S.fotos[c.vkey]) || S.fotos[c.key];
   return `<div class="photo" style="background:${col}">${f ? `<img src="${f}" alt="${esc(c.marca+' '+c.modelo)}">` : sil(c.shape, fg, col)}</div>`;
 }
 // opts: {n, total, compact, canPick, sel, res}  res: 'win'|'lose'|'tie' resultado para ESTA carta
@@ -393,18 +395,22 @@ function pantallaFin(){
     <button class="btn big" data-act="jugar">Revancha</button>
     <button class="btn" data-act="home">Inicio</button></div>`;
 }
+function tileFoto(m){
+  const tiene = !!S.fotos[m.key];
+  return `<div class="tile"><button class="tile" style="border:0;padding:0;background:transparent;box-shadow:none;gap:6px" data-act="foto" data-key="${m.key}">
+      ${fotoHTML({key:m.key,marca:m.marca,modelo:m.modelo,shape:m.shape})}
+      <small>${esc(m.marca)}</small><b>${esc(m.modelo)}</b></button>
+    ${tiene ? `<button class="rm" data-act="quitar" data-key="${m.key}">Quitar foto</button>` : ''}</div>`;
+}
 function pantallaFotos(){
   const cant = Object.keys(S.fotos).length;
-  const tiles = MODELOS.map(m => {
-    const tiene = !!S.fotos[m.key];
-    return `<div class="tile"><button class="tile" style="border:0;padding:0;background:transparent;box-shadow:none;gap:6px" data-act="foto" data-key="${m.key}">
-        ${fotoHTML({key:m.key,marca:m.marca,modelo:m.modelo,shape:m.shape})}
-        <small>${esc(m.marca)}</small><b>${esc(m.modelo)}</b></button>
-      ${tiene ? `<button class="rm" data-act="quitar" data-key="${m.key}">Quitar foto</button>` : ''}</div>`;
-  }).join('');
-  return `<div class="bar"><button class="btn sm" data-act="home">Volver</button><h2>Mis fotos</h2><div class="sub">${cant}/${MODELOS.length}</div></div>
-    <div class="note">Tocá un modelo para elegir una foto de tu galería o sacarla con la cámara. Quedan guardadas en este dispositivo y se ven en todas las cartas de ese modelo.</div>
-    <div class="grid">${tiles}</div>`;
+  const total = MODELOS.length + VERSIONES.length;
+  return `<div class="bar"><button class="btn sm" data-act="home">Volver</button><h2>Mis fotos</h2><div class="sub">${cant}/${total}</div></div>
+    <div class="note">Tocá un hueco para elegir una foto de tu galería o sacarla con la cámara. Quedan guardadas en este dispositivo. Cada versión del mazo Técnico tiene su propia foto; si una versión no tiene, usa la del modelo.</div>
+    <h2>Versiones (mazo Técnico)</h2>
+    <div class="grid">${VERSIONES.map(tileFoto).join('')}</div>
+    <h2>Modelos (mazo Historia)</h2>
+    <div class="grid">${MODELOS.map(tileFoto).join('')}</div>`;
 }
 function render(){
   APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : pantallaInicio();
@@ -416,12 +422,12 @@ function leerFoto(file){
   return new Promise((ok, mal) => {
     const img = new Image(), url = URL.createObjectURL(file);
     img.onload = () => {
-      const k = Math.min(1, 640/Math.max(img.width,img.height));
+      const k = Math.min(1, 480/Math.max(img.width,img.height));
       const c = document.createElement('canvas');
       c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
       c.getContext('2d').drawImage(img,0,0,c.width,c.height);
       URL.revokeObjectURL(url);
-      ok(c.toDataURL('image/jpeg',0.72));
+      ok(c.toDataURL('image/jpeg',0.62));
     };
     img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('imagen')); };
     img.src = url;
