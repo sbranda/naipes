@@ -57,6 +57,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .row .u{font-size:13px;font-weight:600;color:#14213D99;margin-left:4px}
 .row.canpick:active,.row.canpick:hover{background:#F2B70533}
 .row.win{background:#4C956C55}.row.lose{background:#C8352E44}.row.tie{background:#F2B70555}
+.ficha{border-top:1.5px solid #14213D33;padding-top:6px}
+.ficha summary{cursor:pointer;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:14px;padding:4px 0}
+.ficha dl{margin:4px 0 0;display:flex;flex-direction:column;gap:6px}
+.ficha dt{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#14213D99}
+.ficha dd{margin:0;font-size:15px;line-height:1.25}
 .cfoot{font-size:13px;font-style:italic;color:#14213DB3;min-height:16px}
 .card.compact .photo,.card.compact .cfoot{display:none}
 .card.compact .row{min-height:44px}
@@ -193,8 +198,299 @@ const HIS = [
 ];
 const MODELOS = HIS.map(h => ({key:h[5], marca:h[0], modelo:h[1], shape:h[6]}));
 const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
-function vkeyDe(marca, ver){ return 'v-' + (marca + ' ' + ver).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
-const VERSIONES = TEC.map(c => ({key:vkeyDe(c[0],c[1]), marca:c[0], modelo:c[1], shape:c[2]}));
+const FICHAS = {
+ "renault-18": [
+  [
+   "Motores",
+   "1.4 L (77 CV) · 1.6 L (80 CV DIN) · 2.0 L (99–103 CV) · 2.1 L diésel (64 CV DIN)"
+  ],
+  [
+   "Medidas",
+   "4390 × 1690 × 1400 mm · entre ejes 2440 mm"
+  ],
+  [
+   "Peso",
+   "940 kg (versión base)"
+  ],
+  [
+   "Vel. máx.",
+   "185 km/h (18 Turbo europeo)"
+  ],
+  [
+   "Break GTX argentina",
+   "4514 × 1686 × 1445 mm · 1105 kg · 163 km/h · 0–100 km/h en 14,3 s"
+  ]
+ ],
+ "renault-fuego": [
+  [
+   "Motores",
+   "1.4 L (64 PS) · 1.6 L (73–96 PS) · 2.0 L (110 PS) · 2.2 L (116 PS, Argentina 1987)"
+  ],
+  [
+   "Medidas",
+   "4358 × 1692 × 1315 mm · entre ejes 2443 mm"
+  ],
+  [
+   "Peso",
+   "1080 kg (GTX europeo)"
+  ],
+  [
+   "Vel. máx.",
+   "180 km/h (turbodiésel, 1982) · 190 km/h (GTX europeo)"
+  ]
+ ],
+ "renault-11": [
+  [
+   "Motores",
+   "1.1 L (48 PS) · 1.4 L (60–72 PS; Turbo 95 CV en Argentina) · 1.7 L (82–95 PS)"
+  ],
+  [
+   "Vel. máx.",
+   "175 km/h (Turbo)"
+  ],
+  [
+   "Medidas y peso",
+   "Sin dato en las fuentes"
+  ]
+ ],
+ "renault-9": [
+  [
+   "Motores",
+   "1.1 L (48 PS) · 1.4 L (60–72 PS) · 1.6 L (75 CV, TXE argentino) · 1.7 L (82–95 PS)"
+  ],
+  [
+   "TXE argentino",
+   "4063 × 1650 × 1425 mm · entre ejes 2483 mm · 974 kg · 155 km/h · 0–100 km/h en 15 s · 11 l/100 km"
+  ]
+ ],
+ "renault-21": [
+  [
+   "Motores (Argentina)",
+   "1.8 L (92–95 CV) · 2.0 L (105–110 CV) · 2.2 L (110–120 CV) · 2.1 L diésel (72 CV)"
+  ],
+  [
+   "Medidas",
+   "Sedán 4462 × 1715 × 1415 mm, entre ejes 2600 mm · Rural 4644 mm de largo, entre ejes 2750 mm"
+  ],
+  [
+   "Peso",
+   "1190 kg"
+  ],
+  [
+   "Vel. máx.",
+   "160 a 230 km/h según versión (europeas)"
+  ],
+  [
+   "0–100 km/h",
+   "7,4 a 16,0 s según versión (europeas)"
+  ]
+ ],
+ "renault-trafic": [
+  [
+   "Motores",
+   "1.4 L · 1.6 L · 1.7 L · 2.1 L diésel · 2.2 L"
+  ],
+  [
+   "Potencia, medidas y peso",
+   "Sin dato en las fuentes"
+  ]
+ ],
+ "fiat-147": [
+  [
+   "Motores",
+   "0.9 L (48 PS) · 1.05 L (52 PS) · 1.3 L (60 PS) · Sorpasso 1.3 L (90 PS) · 1.3 L diésel (45 PS, Brasil)"
+  ],
+  [
+   "Spazio TR 1.3",
+   "60 CV · 96 Nm · 3742 × 1545 × 1405 mm · 142 km/h · 0–100 km/h en 16,3 s"
+  ],
+  [
+   "Vel. máx. Sorpasso",
+   "163 km/h"
+  ]
+ ],
+ "fiat-regata": [
+  [
+   "Motores",
+   "1.3 L (65–68) · 1.5 L (82) · 1.6 L (100 hp) · 1.7 L diésel (60 hp) · 1.9 L turbodiésel (80 hp)"
+  ],
+  [
+   "Medidas",
+   "4260 × 1650 × 1412 mm · entre ejes 2446 mm"
+  ],
+  [
+   "Peso",
+   "890–1035 kg"
+  ],
+  [
+   "Prestaciones",
+   "182 km/h y 0–100 km/h en 9,8 s (2000 Twincam)"
+  ],
+  [
+   "Nota",
+   "Datos de las versiones europeas"
+  ]
+ ],
+ "fiat-duna": [
+  [
+   "Motores",
+   "1.1 L · 1.3 L · 1.5 L (82 PS) · 1.6 L · 1.7 L diésel"
+  ],
+  [
+   "Largo",
+   "4035 mm (sedán) · 4045 mm (Weekend)"
+  ]
+ ],
+ "fiat-uno": [
+  [
+   "Motores (Argentina)",
+   "1.0 L (52 PS) · 1.3 L · 1.5 L · 1.6 L (87 PS) · 1.3 L diésel (45 PS) · 1.7 L diésel (58 PS)"
+  ],
+  [
+   "Turbo i.e. (Europa)",
+   "1.3 L · 105 PS · 204–205 km/h"
+  ],
+  [
+   "Vel. máx. 1.0",
+   "140–145 km/h"
+  ]
+ ],
+ "fiat-brio": [
+  [
+   "Motor",
+   "1.1 L (potencia sin dato)"
+  ],
+  [
+   "Nota",
+   "Edición especial argentina (1987-1989) con carrocería brasileña anterior al rediseño"
+  ]
+ ],
+ "fiat-fiorino": [
+  [
+   "Motores",
+   "1.05 L (50 hp) · 1.3 L (57–61 hp) · 1.3 L diésel (45 hp) · 1.5 L (67 hp)"
+  ],
+  [
+   "Carga útil",
+   "420 kg (versión de 1980)"
+  ]
+ ],
+ "peugeot-505": [
+  [
+   "Motores",
+   "2.0 L (96–113 CV) · 2.2 L (117–130 CV; Turbo 150–160 CV) · 2.8 L V6 (170 CV) · diésel 2.3 L (70 CV) y 2.5 L (76–110 CV)"
+  ],
+  [
+   "Medidas",
+   "Sedán 4579 × 1737 × 1424–1446 mm · entre ejes 2743 mm"
+  ],
+  [
+   "Peso",
+   "1210–1410 kg"
+  ],
+  [
+   "Vel. máx.",
+   "141 a 210 km/h según motor"
+  ],
+  [
+   "0–100 km/h",
+   "8,4 a 10,0 s (turbos y V6)"
+  ]
+ ],
+ "ford-sierra": [
+  [
+   "Motores",
+   "1.3 L (60 PS) · 1.6 L (75 PS) · 1.8 L (90 PS) · 2.0 L (105–115 PS) · 2.3 L (XR4 argentino, 120 CV) · 2.8 L V6 (150 PS) · diésel 2.3 L (67 PS)"
+  ],
+  [
+   "Medidas",
+   "4531 × 1727 × 1367 mm · entre ejes 2609 mm"
+  ],
+  [
+   "Vel. máx.",
+   "XR4 argentino ~190 km/h · RS Cosworth 241 km/h"
+  ],
+  [
+   "0–100 km/h",
+   "XR4 argentino 10,3 s"
+  ]
+ ],
+ "ford-escort": [
+  [
+   "Motores",
+   "RS 1600i 1.6 L (115 PS) · RS Turbo 1.6 L (132 PS) · XR3 brasileño 1.6 L (83 CV, alcohol)"
+  ],
+  [
+   "Largo (rural)",
+   "4033 mm (Mk3) · 4080 mm (Mk4)"
+  ]
+ ],
+ "ford-f150": [
+  [
+   "Producción",
+   "Argentina 1988-1992 (General Pacheco)"
+  ],
+  [
+   "Motores (EE.UU.)",
+   "4.9 L (145–150 hp) · 5.0 L V8 (185 hp) · 5.8 L V8 (210 hp) · 7.5 L V8 (230 hp) · diésel 7.3 L (180 hp). No consta cuáles usó la versión argentina"
+  ],
+  [
+   "Medidas",
+   "Largo 4930–6238 mm según cabina y caja · ancho 2007 mm"
+  ]
+ ],
+ "vw-gacel": [
+  [
+   "Motores",
+   "1.6 L (73 CV en 1983; 83 CV hacia 1989) · 1.6 L diésel"
+  ],
+  [
+   "Largo",
+   "4150 mm (Voyage)"
+  ]
+ ],
+ "vw-gol": [
+  [
+   "Motores",
+   "1.0 L (50 hp) · 1.3 L · 1.6 L · 1.8 L (GTS 94 hp) · 2.0 L (GTI 121 PS)"
+  ],
+  [
+   "Largo",
+   "4150 mm (sedán y rural) · 4060 mm (pickup)"
+  ],
+  [
+   "Vel. máx.",
+   "185 km/h (GTI)"
+  ]
+ ],
+ "vw-carat": [
+  [
+   "Motores",
+   "1.8 L y 2.0 L (potencia sin dato)"
+  ],
+  [
+   "Medidas y peso",
+   "Sin dato en las fuentes"
+  ]
+ ],
+ "vw-kombi": [
+  [
+   "Motor diésel",
+   "1.6 L refrigerado por agua · 50 hp (1981-1985)"
+  ],
+  [
+   "Entre ejes",
+   "2400 mm"
+  ]
+ ],
+ "ies-super-america": [
+  [
+   "Datos",
+   "No encontré datos técnicos"
+  ]
+ ]
+};
+
 
 function crearMazos(){
   const tec = {
@@ -205,7 +501,7 @@ function crearMazos(){
       {id:'prod',label:'Años en producción',unit:'años',dir:1,hint:'mayor gana'},
       {id:'lanz',label:'Año de lanzamiento',unit:'',dir:-1,hint:'menor gana (el más antiguo)'}
     ],
-    cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],vkey:vkeyDe(c[0],c[1]),v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
+    cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
   };
   const his = {
     id:'his', nombre:'Historia', desc:'21 modelos lanzados desde 1980: años en producción, años en los 80, lanzamiento y fin',
@@ -255,8 +551,13 @@ function sil(shape, fg, bg){
 function fmt(stat, v){ return stat.id === 'cil' ? v.toFixed(1).replace('.',',') : String(v); }
 function fotoHTML(c){
   const col = COLOR[c.marca] || '#888', fg = CLARO[c.marca] ? '#14213D' : '#F4EAD2';
-  const f = (c.vkey && S.fotos[c.vkey]) || S.fotos[c.key];
+  const f = S.fotos[c.key];
   return `<div class="photo" style="background:${col}">${f ? `<img src="${f}" alt="${esc(c.marca+' '+c.modelo)}">` : sil(c.shape, fg, col)}</div>`;
+}
+function fichaHTML(c, deck){
+  const f = deck.id === 'his' && FICHAS[c.key];
+  if(!f) return '';
+  return `<details class="ficha"><summary>Ficha técnica</summary><dl>${f.map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl></details>`;
 }
 // opts: {n, total, compact, canPick, sel, res}  res: 'win'|'lose'|'tie' resultado para ESTA carta
 function cartaHTML(c, deck, o){
@@ -274,6 +575,7 @@ function cartaHTML(c, deck, o){
     <div class="chead"><div><small>${esc(c.marca)}</small><b>${esc(c.modelo)}</b></div>${o.n?`<span class="num">${o.n}</span>`:''}</div>
     ${fotoHTML(c)}
     <div class="stats">${filas}</div>
+    ${o.compact ? '' : fichaHTML(c, deck)}
     <div class="cfoot">${esc(c.nota||'')}</div></div>`;
 }
 
@@ -403,13 +705,9 @@ function tileFoto(m){
     ${tiene ? `<button class="rm" data-act="quitar" data-key="${m.key}">Quitar foto</button>` : ''}</div>`;
 }
 function pantallaFotos(){
-  const cant = Object.keys(S.fotos).length;
-  const total = MODELOS.length + VERSIONES.length;
-  return `<div class="bar"><button class="btn sm" data-act="home">Volver</button><h2>Mis fotos</h2><div class="sub">${cant}/${total}</div></div>
-    <div class="note">Tocá un hueco para elegir una foto de tu galería o sacarla con la cámara. Quedan guardadas en este dispositivo. Cada versión del mazo Técnico tiene su propia foto; si una versión no tiene, usa la del modelo.</div>
-    <h2>Versiones (mazo Técnico)</h2>
-    <div class="grid">${VERSIONES.map(tileFoto).join('')}</div>
-    <h2>Modelos (mazo Historia)</h2>
+  const cant = MODELOS.filter(m => S.fotos[m.key]).length;
+  return `<div class="bar"><button class="btn sm" data-act="home">Volver</button><h2>Mis fotos</h2><div class="sub">${cant}/${MODELOS.length}</div></div>
+    <div class="note">Tocá un modelo para elegir una foto de tu galería o sacarla con la cámara. Quedan guardadas en este dispositivo y se ven en todas las cartas de ese modelo, en los dos mazos.</div>
     <div class="grid">${MODELOS.map(tileFoto).join('')}</div>`;
 }
 function render(){
@@ -422,12 +720,12 @@ function leerFoto(file){
   return new Promise((ok, mal) => {
     const img = new Image(), url = URL.createObjectURL(file);
     img.onload = () => {
-      const k = Math.min(1, 480/Math.max(img.width,img.height));
+      const k = Math.min(1, 640/Math.max(img.width,img.height));
       const c = document.createElement('canvas');
       c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
       c.getContext('2d').drawImage(img,0,0,c.width,c.height);
       URL.revokeObjectURL(url);
-      ok(c.toDataURL('image/jpeg',0.62));
+      ok(c.toDataURL('image/jpeg',0.72));
     };
     img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('imagen')); };
     img.src = url;
