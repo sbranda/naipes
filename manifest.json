@@ -1,0 +1,17 @@
+{
+  "name": "Naipes: autos argentinos de los 80",
+  "short_name": "Naipes 80",
+  "description": "Juego de naipes con autos argentinos de los años 80, contra la computadora.",
+  "lang": "es-AR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14213D",
+  "theme_color": "#14213D",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
