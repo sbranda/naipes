@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#14213D">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Naipes 80">
-<title>Naipes: autos argentinos de los 80</title>
+<meta name="apple-mobile-web-app-title" content="Naipes 60-90">
+<title>Naipes: autos argentinos de los 60 a los 90</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -170,7 +170,149 @@ const TEC = [
  ['Volkswagen','Gol GTS','hatch',1.8,94,14,1980,'Versión brasileña, potencia en hp','vw-gol'],
  ['Volkswagen','Gol GTI','hatch',2.0,121,14,1980,'Versión brasileña (1989), potencia en PS','vw-gol'],
  ['Volkswagen','Gol 1000','hatch',1.0,50,14,1980,'Versión brasileña (1991), potencia en hp','vw-gol'],
- ['Volkswagen','Kombi Diésel','van',1.6,50,9,1981,'Diésel refrigerado por agua (1981-1985), potencia en hp','vw-kombi']
+ ['Volkswagen','Kombi Diésel','van',1.6,50,9,1981,'Diésel refrigerado por agua (1981-1985), potencia en hp','vw-kombi'],
+ ['Renault','Trafic 2.1 Diésel','van',2.1,65,15,1986,'Valor aproximado','renault-trafic',0,1],
+ ['Fiat','Brio','hatch',1.1,50,4,1987,'Valor aproximado','fiat-brio',0,1],
+ ['Fiat','147 Fiorino 1.3','van',1.3,57,8,1989,'Potencia en hp, 57–61','fiat-fiorino',0,0],
+ ['Fiat','147 Fiorino 1.5','van',1.5,67,8,1989,'Potencia en hp','fiat-fiorino',0,0],
+ ['Fiat','147 Fiorino Diésel','van',1.3,45,8,1989,'Potencia en hp','fiat-fiorino',0,0],
+ ['Ford','F-150 4.9','pickup',4.9,145,10,1987,'Potencia de la versión de EE.UU. · Valor aproximado','ford-f150',0,1],
+ ['Volkswagen','Carat 1.8','sedan',1.8,90,4,1987,'Valor aproximado','vw-carat',0,1],
+ ['IES','Súper América','hatch',1.4,60,7,1983,'Valor aproximado','ies-super-america',1,1],
+ ['Auto Union','1000','sedan',0.98,44,10,1960,'Potencia en bhp','au-1000',0,0],
+ ['Auto Union','1000 S','sedan',0.98,50,10,1960,'','au-1000',0,0],
+ ['Auto Union','Fissore Coupé','coupe',0.98,50,7,1963,'Valor aproximado','au-fissore',0,1],
+ ['Auto Union','Schnellaster Combi','van',0.98,40,9,1960,'Valor aproximado','au-schnellaster',1,1],
+ ['Borgward','Isabella','sedan',1.5,60,2,1961,'Valor aproximado','borgward-isabella',1,1],
+ ['CIDASA','Riley 1500','sedan',1.5,60,1,1966,'Valor aproximado','cidasa-riley1500',1,1],
+ ['CIDASA','Morris 1650','sedan',1.6,68,1,1966,'Valor aproximado','cidasa-morris1650',1,1],
+ ['CIDASA','MG 1650','sedan',1.6,80,1,1966,'Valor aproximado','cidasa-mg1650',1,1],
+ ['Chrysler','Valiant','sedan',3.7,145,7,1961,'Valor aproximado','chrysler-valiant',1,1],
+ ['Dodge','Polara','sedan',3.7,145,12,1968,'Valor aproximado','dodge-polara',1,1],
+ ['Citroën','2CV / 3CV','hatch',0.6,29,30,1960,'Valor aproximado','citroen-2cv',0,1],
+ ['Fiat','600 (633 cc)','hatch',0.63,28,22,1960,'','fiat-600',0,0],
+ ['Fiat','600 (767 cc)','hatch',0.77,32,22,1960,'Potencia SAE, 1962','fiat-600',0,0],
+ ['Fiat','600 R','hatch',0.77,36,22,1960,'Potencia SAE, 1970','fiat-600',0,0],
+ ['Fiat','600 S','hatch',0.84,32,22,1960,'Potencia DIN, 1977','fiat-600',0,0],
+ ['Fiat','1100 (103 D)','sedan',1.1,48,3,1960,'Potencia SAE','fiat-1100',0,0],
+ ['Fiat','1500','sedan',1.5,72,8,1963,'Valor aproximado','fiat-1500',0,1],
+ ['Fiat','1500 Coupé','coupe',1.5,75,5,1965,'Valor aproximado','fiat-1500-coupe',0,1],
+ ['Ford','Falcon 3.0 Futura','sedan',3.0,116,29,1962,'','ford-falcon',0,0],
+ ['Ford','Falcon 3.6','sedan',3.6,132,29,1962,'','ford-falcon',0,0],
+ ['Ford','Falcon 3.6 SP','sedan',3.6,166,29,1962,'Potencia bhp','ford-falcon',0,0],
+ ['Ford','Falcon 2.3 Pinto','sedan',2.3,90,29,1962,'Potencia en PS, desde 1983','ford-falcon',0,0],
+ ['Ford','Falcon Diésel','sedan',2.4,70,29,1962,'','ford-falcon',0,0],
+ ['Ford','Fairlane 3.6','sedan',3.6,132,13,1969,'','ford-fairlane',0,0],
+ ['Ford','Fairlane V8 500/LTD','sedan',4.8,185,13,1969,'','ford-fairlane',0,0],
+ ['Chevrolet','400 (194)','sedan',3.1,106,12,1962,'','chevrolet-400',0,0],
+ ['Chevrolet','400 (230)','sedan',3.8,127,12,1962,'','chevrolet-400',0,0],
+ ['Chevrolet','400 Súper (230)','sedan',3.8,137,12,1962,'','chevrolet-400',0,0],
+ ['Chevrolet','400 (250)','sedan',4.1,155,12,1962,'','chevrolet-400',0,0],
+ ['Chevrolet','Chevy','sedan',3.1,106,9,1969,'Valor aproximado','chevrolet-chevy',1,1],
+ ['Chevrolet','C-10','pickup',3.8,130,18,1960,'Valor aproximado','chevrolet-c10',1,1],
+ ['IKA','Jeep Gladiator','pickup',3.8,155,4,1963,'Valor aproximado','ika-gladiator',0,1],
+ ['IKA','Kaiser Bergantín','sedan',1.9,85,2,1960,'Valor aproximado','ika-bergantin',1,1],
+ ['IKA','Rambler Classic','sedan',3.8,155,9,1962,'Valor aproximado','ika-classic',0,1],
+ ['IKA','Rambler Ambassador','sedan',3.8,155,7,1965,'Valor aproximado','ika-ambassador',1,1],
+ ['IKA','Torino Tornado Special','sedan',3.0,120,16,1966,'','ika-torino',0,0],
+ ['IKA','Torino 380','sedan',3.8,155,16,1966,'','ika-torino',0,0],
+ ['IKA','Torino TS','sedan',3.8,160,16,1966,'','ika-torino',0,0],
+ ['IKA','Torino 380W','sedan',3.8,176,16,1966,'','ika-torino',0,0],
+ ['IKA','Torino GS200','sedan',3.8,185,16,1966,'','ika-torino',0,0],
+ ['IKA','Torino TSX','sedan',3.8,200,16,1966,'','ika-torino',0,0],
+ ['IKA','Torino 241 (competición)','sedan',3.95,248,16,1966,'','ika-torino',0,0],
+ ['Peugeot','403 (1290 cc)','sedan',1.3,54,13,1960,'','peugeot-403',0,0],
+ ['Peugeot','403 (1468 cc)','sedan',1.5,65,13,1960,'','peugeot-403',0,0],
+ ['Peugeot','404','sedan',1.6,72,18,1962,'Valor aproximado','peugeot-404',0,1],
+ ['Peugeot','504 1.8','sedan',1.8,82,30,1969,'Potencia en PS','peugeot-504',0,0],
+ ['Peugeot','504 1.8 inyección','sedan',1.8,97,30,1969,'Potencia en PS','peugeot-504',0,0],
+ ['Peugeot','504 2.0','sedan',2.0,93,30,1969,'Potencia en PS','peugeot-504',0,0],
+ ['Peugeot','504 Diésel','sedan',2.1,65,30,1969,'Potencia en PS','peugeot-504',0,0],
+ ['Peugeot','504 V6','sedan',2.7,136,30,1969,'Potencia en PS','peugeot-504',0,0],
+ ['Renault','Dauphine','sedan',0.85,27,10,1960,'','renault-dauphine',0,0],
+ ['Renault','Dauphine Gordini','sedan',0.85,36,10,1960,'','renault-dauphine',0,0],
+ ['Renault','4 (747 cc)','wagon',0.75,32,23,1963,'Original, 26,5 o 32 hp','renault-4',0,0],
+ ['Renault','4 Super','wagon',0.85,30,23,1963,'Valor aproximado','renault-4',0,1],
+ ['Renault','6 (1118 cc)','hatch',1.1,51,17,1969,'Potencia en PS','renault-6',0,0],
+ ['Renault','6 (1397 cc)','hatch',1.4,60,17,1969,'Potencia SAE','renault-6',0,0],
+ ['Simca','Ariane','sedan',1.3,57,2,1965,'Valor aproximado','simca-ariane',1,1],
+ ['Siam Di Tella','Magnette','sedan',1.5,68,3,1963,'Valor aproximado','siam-magnette',1,1],
+ ['Studebaker','Champ','pickup',2.8,90,3,1962,'Valor aproximado','studebaker-champ',1,1],
+ ['IAME','Rastrojero Frontal','van',2.0,55,10,1969,'Valor aproximado','iame-frontal',1,1],
+ ['De Carlo','700 (BMW 700)','coupe',0.7,30,5,1960,'Valor aproximado','decarlo-700',1,1],
+ ['Heinkel','Kabine','hatch',0.2,10,4,1961,'Valor aproximado','heinkel-kabine',1,1],
+ ['Citroën','Ami 8','wagon',0.6,32,12,1970,'','citroen-ami8',0,0],
+ ['Citroën','Méhari','hatch',0.6,29,15,1971,'Valor aproximado','citroen-mehari',0,1],
+ ['Dodge','1500','sedan',1.5,72,19,1971,'','dodge-1500',0,0],
+ ['Dodge','1500 1.8','sedan',1.8,92,19,1971,'','dodge-1500',0,0],
+ ['Fiat','1600 Coupé','coupe',1.6,80,3,1970,'Valor aproximado','fiat-1600-coupe',1,1],
+ ['Fiat','128 1.1','sedan',1.1,55,19,1971,'Potencia en PS','fiat-128',0,0],
+ ['Fiat','128 1.3','sedan',1.3,60,19,1971,'Potencia en PS','fiat-128',0,0],
+ ['Fiat','125','sedan',1.6,90,7,1975,'Potencia en PS','fiat-125',0,0],
+ ['Fiat','125 S','sedan',1.6,100,7,1975,'Potencia en PS','fiat-125',0,0],
+ ['Fiat','133','hatch',0.9,40,5,1977,'Potencia en PS','fiat-133',0,0],
+ ['Ford','Ranchero','pickup',3.0,105,16,1971,'Valor aproximado','ford-ranchero',1,1],
+ ['Ford','Taunus L','sedan',2.0,92,9,1974,'Potencia SAE','ford-taunus',0,0],
+ ['Ford','Taunus GXL','sedan',2.3,122,9,1974,'Potencia SAE','ford-taunus',0,0],
+ ['Ford','Taunus Coupé SP5','sedan',2.3,132,9,1974,'Potencia SAE','ford-taunus',0,0],
+ ['IAME','Rastrojero Conosur','sedan',1.5,55,5,1974,'Valor aproximado','iame-conosur',1,1],
+ ['Mercedes','220 D Pickup','pickup',2.2,60,4,1972,'Valor aproximado','mercedes-220d',1,1],
+ ['Opel','K 180','sedan',1.8,90,4,1974,'Valor aproximado','opel-k180',1,1],
+ ['Renault','12 TS','sedan',1.4,74,24,1970,'','renault-12',0,0],
+ ['Renault','12 Alpine','sedan',1.4,110,24,1970,'Potencia en PS','renault-12',0,0],
+ ['Renault','12 Gordini (Francia)','sedan',1.6,113,24,1970,'Potencia en PS','renault-12',0,0],
+ ['Chevrolet','D-20 Diésel','pickup',4.0,88,4,1993,'Potencia en hp','chevrolet-d20',0,0],
+ ['Chevrolet','D-20 Turbo','pickup',4.0,123,4,1993,'Potencia en hp, 1991','chevrolet-d20',0,0],
+ ['Chevrolet','D-20 Turbo Plus','pickup',4.0,147,4,1993,'Potencia en hp, 1995','chevrolet-d20',0,0],
+ ['Chevrolet','Silverado','pickup',4.1,138,3,1997,'Valor aproximado','chevrolet-silverado',1,1],
+ ['Chevrolet','Corsa 1.6','hatch',1.6,92,19,1997,'Valor aproximado','chevrolet-corsa',0,1],
+ ['Fiat','Palio 1.6 16v Sporting','hatch',1.6,120,4,1996,'Potencia en hp','fiat-palio',0,0],
+ ['Fiat','Palio 1.8','hatch',1.8,112,4,1996,'Potencia en hp','fiat-palio',0,0],
+ ['Fiat','Siena','sedan',1.6,92,4,1996,'Valor aproximado','fiat-siena',1,1],
+ ['Ford','Orion Ghia Si 1.8','sedan',1.8,130,3,1994,'Potencia en bhp, versión europea','ford-orion',0,0],
+ ['Ford','Focus 1.4','hatch',1.4,74,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
+ ['Ford','Focus 1.6','hatch',1.6,100,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
+ ['Ford','Focus 1.8','hatch',1.8,113,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
+ ['Ford','Focus 2.0','hatch',2.0,127,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
+ ['Ford','Focus 2.0 Duratec HE','hatch',2.0,146,20,1999,'Potencia en bhp, Brasil','ford-focus',0,0],
+ ['Peugeot','405 1.4','sedan',1.4,70,7,1992,'Potencia en hp','peugeot-405',0,0],
+ ['Peugeot','405 1.6','sedan',1.6,92,7,1992,'Potencia en hp','peugeot-405',0,0],
+ ['Peugeot','405 1.9','sedan',1.9,110,7,1992,'Potencia en hp','peugeot-405',0,0],
+ ['Peugeot','405 Mi16','sedan',1.9,160,7,1992,'Potencia en hp','peugeot-405',0,0],
+ ['Peugeot','405 Diésel','sedan',1.9,70,7,1992,'Potencia en hp','peugeot-405',0,0],
+ ['Peugeot','306 S16','hatch',2.0,155,7,1996,'Potencia en bhp','peugeot-306',0,0],
+ ['Peugeot','306 GTI-6','hatch',2.0,167,7,1996,'Potencia en bhp','peugeot-306',0,0],
+ ['Peugeot','206 1.1','hatch',1.1,60,17,1999,'Potencia en PS','peugeot-206',0,0],
+ ['Peugeot','206 1.4','hatch',1.4,75,17,1999,'Potencia en PS','peugeot-206',0,0],
+ ['Peugeot','206 1.6','hatch',1.6,110,17,1999,'Potencia en PS','peugeot-206',0,0],
+ ['Peugeot','206 2.0','hatch',2.0,137,17,1999,'Potencia en PS','peugeot-206',0,0],
+ ['Peugeot','206 GTi','hatch',2.0,177,17,1999,'Potencia en PS','peugeot-206',0,0],
+ ['Peugeot','206 Diésel','hatch',1.9,70,17,1999,'Potencia en PS','peugeot-206',0,0],
+ ['Renault','19 1.6','hatch',1.6,75,9,1992,'Potencia en PS','renault-19',0,0],
+ ['Renault','19 16S','hatch',1.8,137,9,1992,'Potencia en PS','renault-19',0,0],
+ ['Renault','19 Diésel','hatch',1.9,90,9,1992,'Potencia en PS','renault-19',0,0],
+ ['Renault','Mégane 1.4','hatch',1.4,70,12,1997,'Potencia en hp','renault-megane',0,0],
+ ['Renault','Mégane 1.6 16v','hatch',1.6,110,12,1997,'Potencia en hp','renault-megane',0,0],
+ ['Renault','Mégane 1.8','hatch',1.8,120,12,1997,'Potencia en hp','renault-megane',0,0],
+ ['Renault','Mégane 2.0','hatch',2.0,150,12,1997,'Potencia en hp','renault-megane',0,0],
+ ['Renault','Mégane Diésel','hatch',1.9,105,12,1997,'Potencia en hp','renault-megane',0,0],
+ ['Renault','Clio 1.2','sedan',1.2,60,20,1996,'Potencia en PS','renault-clio',0,0],
+ ['Renault','Clio 1.4','sedan',1.4,75,20,1996,'Potencia en PS','renault-clio',0,0],
+ ['Renault','Clio 1.6','sedan',1.6,110,20,1996,'Potencia en PS','renault-clio',0,0],
+ ['Renault','Clio RS','sedan',2.0,172,20,1996,'Potencia en PS','renault-clio',0,0],
+ ['Renault','Clio dCi','sedan',1.5,64,20,1996,'Potencia en PS','renault-clio',0,0],
+ ['Seat','Inca 1.4','van',1.4,60,3,1999,'Potencia en PS','seat-inca',0,0],
+ ['Seat','Inca 1.6','van',1.6,75,3,1999,'Potencia en PS','seat-inca',0,0],
+ ['Seat','Inca TDI','van',1.9,90,3,1999,'Potencia en PS','seat-inca',0,0],
+ ['Volkswagen','Senda 1.6','sedan',1.6,83,6,1990,'','vw-senda',0,0],
+ ['Volkswagen','Senda Diésel','sedan',1.6,54,6,1990,'','vw-senda',0,0],
+ ['Volkswagen','Pointer AP 2000','hatch',2.0,99,3,1994,'Valor aproximado','vw-pointer',0,1],
+ ['Volkswagen','Polo 1.0','sedan',1.0,50,12,1996,'Potencia en PS','vw-polo',0,0],
+ ['Volkswagen','Polo 1.6','sedan',1.6,75,12,1996,'Potencia en PS','vw-polo',0,0],
+ ['Volkswagen','Polo 1.6 16v','sedan',1.6,101,12,1996,'Potencia en PS','vw-polo',0,0],
+ ['Volkswagen','Polo 1.8','sedan',1.8,90,12,1996,'Potencia en PS','vw-polo',0,0],
+ ['Volkswagen','Polo Diésel','sedan',1.9,110,12,1996,'Potencia en PS','vw-polo',0,0],
+ ['Volkswagen','Caddy','van',1.6,75,12,1996,'Valor aproximado','vw-caddy',1,1]
 ];
 // Mazo historia: [marca, modelo, tipo, inicio, fin, clave de foto, forma]
 const HIS = [
@@ -1352,14 +1494,14 @@ const FICHAS = {
 const CILPOT = {'renault-18':[2.0,103,0,0],'renault-fuego':[2.0,110,0,0],'renault-11':[1.4,72,0,0],'renault-9':[1.6,75,0,0],'renault-21':[2.0,110,0,0],'renault-trafic':[2.1,65,0,1],'fiat-147':[1.3,60,0,0],'fiat-regata':[1.5,82,0,0],'fiat-duna':[1.5,82,0,0],'fiat-brio':[1.1,50,0,1],'fiat-uno':[1.6,87,0,0],'fiat-fiorino':[1.3,57,0,0],'peugeot-505':[2.2,117,0,0],'ford-sierra':[2.3,120,0,0],'ford-escort':[1.6,115,0,0],'ford-f150':[4.9,145,0,1],'vw-gacel':[1.6,83,0,0],'vw-gol':[1.8,94,0,0],'vw-carat':[1.8,90,0,1],'vw-kombi':[1.6,50,0,0],'ies-super-america':[1.4,60,1,1],'citroen-ami8':[0.6,32,0,0],'citroen-mehari':[0.6,29,0,1],'dodge-1500':[1.5,72,0,0],'fiat-1600-coupe':[1.6,80,0,1],'fiat-128':[1.3,60,0,0],'fiat-125':[1.6,90,0,0],'fiat-133':[0.9,40,0,0],'ford-ranchero':[3.0,105,1,1],'ford-taunus':[2.3,122,0,0],'iame-conosur':[1.5,55,1,1],'mercedes-220d':[2.2,60,0,1],'opel-k180':[1.8,90,1,1],'renault-12':[1.4,74,0,0],'chevrolet-d20':[4.0,88,0,0],'chevrolet-silverado':[4.1,138,1,1],'chevrolet-corsa':[1.6,92,0,1],'fiat-palio':[1.6,120,0,0],'fiat-siena':[1.6,92,1,1],'ford-orion':[1.8,130,0,0],'ford-focus':[2.0,146,0,0],'peugeot-405':[1.9,110,0,0],'peugeot-306':[2.0,155,0,0],'peugeot-206':[1.6,110,0,0],'renault-19':[1.8,137,0,0],'renault-megane':[2.0,115,0,0],'renault-clio':[1.6,90,0,0],'seat-inca':[1.6,75,0,0],'vw-senda':[1.6,83,0,0],'vw-pointer':[2.0,99,0,1],'vw-polo':[1.6,75,0,0],'vw-caddy':[1.6,75,1,1],'au-1000':[0.98,44,0,0],'au-fissore':[0.98,50,0,1],'au-schnellaster':[0.98,40,1,1],'borgward-isabella':[1.5,60,1,1],'cidasa-riley1500':[1.5,60,1,1],'cidasa-morris1650':[1.6,68,1,1],'cidasa-mg1650':[1.6,80,1,1],'chrysler-valiant':[3.7,145,1,1],'dodge-polara':[3.7,145,1,1],'citroen-2cv':[0.6,29,0,1],'fiat-600':[0.77,32,0,0],'fiat-1100':[1.1,48,0,0],'fiat-1500':[1.5,72,0,1],'fiat-1500-coupe':[1.5,75,0,1],'ford-falcon':[3.6,132,0,0],'ford-fairlane':[3.6,132,0,0],'chevrolet-400':[3.8,137,0,0],'chevrolet-chevy':[3.1,106,1,1],'chevrolet-c10':[3.8,130,1,1],'ika-gladiator':[3.8,155,0,1],'ika-bergantin':[1.9,85,1,1],'ika-classic':[3.8,155,0,1],'ika-ambassador':[3.8,155,1,1],'ika-torino':[3.8,155,0,0],'peugeot-403':[1.5,65,0,0],'peugeot-404':[1.6,72,0,1],'peugeot-504':[1.8,82,0,0],'renault-dauphine':[0.845,27,0,0],'renault-4':[0.845,30,0,1],'renault-6':[1.1,51,0,0],'simca-ariane':[1.3,57,1,1],'siam-magnette':[1.5,68,1,1],'studebaker-champ':[2.8,90,1,1],'iame-frontal':[2.0,55,1,1],'decarlo-700':[0.7,30,1,1],'heinkel-kabine':[0.2,10,1,1]};
 function crearMazos(){
   const tec = {
-    id:'tec', nombre:'Técnico', desc:'74 versiones lanzadas desde 1980, de cualquier origen: cilindrada, potencia, años en producción y año de lanzamiento',
+    id:'tec', nombre:'Técnico', desc:'216 versiones lanzadas de 1960 a 1999, de cualquier origen: cilindrada, potencia, años en producción y año de lanzamiento',
     stats:[
       {id:'cil',label:'Cilindrada',unit:'L',dir:1,hint:'mayor gana'},
       {id:'pot',label:'Potencia',unit:'CV',dir:1,hint:'mayor gana'},
       {id:'prod',label:'Años en producción',unit:'años',dir:1,hint:'mayor gana'},
       {id:'lanz',label:'Año de lanzamiento',unit:'',dir:-1,hint:'menor gana (el más antiguo)'}
     ],
-    cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
+    cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],est:{cil:!!c[9],pot:!!c[10]},v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
   };
   const his = {
     id:'his', nombre:'Historia', desc:'88 modelos lanzados de 1960 a 1999: cilindrada, potencia (de una versión representativa), años en producción, lanzamiento y fin',
@@ -1510,7 +1652,7 @@ function pantallaInicio(){
   const mazos = Object.values(DECKS).map(d => `<button class="opt ${S.pref.deck===d.id?'on':''}" data-act="deck" data-v="${d.id}"><b>${d.nombre}</b><small>${d.desc}</small></button>`).join('');
   const tams = Object.keys(TAMANOS).map(k => `<button class="opt ${S.pref.size===k?'on':''}" data-act="size" data-v="${k}"><b>${TAMANOS[k].t}</b><small>${TAMANOS[k].d}</small></button>`).join('');
   const inst = S.deferred ? `<button class="btn" data-act="instalar">Instalar la app</button>` : (iosSinInstalar() ? `<div class="note">Para instalarla en iPhone o iPad: tocá Compartir y después "Agregar a pantalla de inicio".</div>` : '');
-  return `<div><h1>Autos argentinos<br>de los 80</h1><div class="sub">Juego de naipes contra la computadora</div></div>
+  return `<div><h1>Autos argentinos<br>de los 60 a los 90</h1><div class="sub">Juego de naipes contra la computadora</div></div>
     <div class="group"><label>Mazo</label><div class="opts">${mazos}</div></div>
     <div class="group"><label>Tamaño de la partida</label><div class="opts">${tams}</div></div>
     <button class="btn big" data-act="jugar">Jugar</button>
@@ -1539,7 +1681,7 @@ function pantallaJuego(){
   const clsMsg = reveal ? (g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : '') : '';
   const oponente = reveal
     ? cartaHTML(g.shown.b, deck, {compact:true, sel:g.sel, res:resCpu, n:'Compu'})
-    : `<div class="back">NAIPES 80</div>`;
+    : `<div class="back">NAIPES 60-90</div>`;
   const pozo = g.pot.length ? ` · Pozo <b>${g.pot.length}</b>` : '';
   return `<div class="bar"><button class="btn sm" data-act="salir">Salir</button>
       <div class="count">Vos <b>${g.you.length + (reveal ? 0 : 0)}</b> · Compu <b>${g.cpu.length}</b>${pozo}</div>
