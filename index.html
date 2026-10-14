@@ -138,7 +138,34 @@ const TEC = [
  ['Peugeot','505 Turbo','sedan',2.2,160,14,1981,'Versión europea (1984), potencia en PS','peugeot-505'],
  ['Peugeot','505 V6','sedan',2.8,170,14,1981,'Versión europea (1986), potencia en PS','peugeot-505'],
  ['Peugeot','505 Diésel','sedan',2.3,70,14,1981,'Diésel europeo, potencia en PS','peugeot-505'],
- ['Peugeot','505 GTD Turbo','sedan',2.5,110,14,1981,'Turbodiésel europeo, potencia en PS','peugeot-505']
+ ['Peugeot','505 GTD Turbo','sedan',2.5,110,14,1981,'Turbodiésel europeo, potencia en PS','peugeot-505'],
+ ['Fiat','Uno 1.0','hatch',1.0,52,12,1988,'Argentina, potencia en PS','fiat-uno'],
+ ['Fiat','Uno SCV 1.6','hatch',1.6,87,12,1988,'Argentina, potencia en PS','fiat-uno'],
+ ['Fiat','Uno 1.3 Diésel','hatch',1.3,45,12,1988,'Argentina, potencia en PS','fiat-uno'],
+ ['Fiat','Uno Turbo i.e.','hatch',1.3,105,12,1988,'Versión europea, potencia en PS (1985-1990)','fiat-uno'],
+ ['Fiat','Uno 1.5R','hatch',1.5,85,12,1988,'Versión brasileña (1987-1989), potencia en PS','fiat-uno'],
+ ['Fiat','Duna SCV 1.5','sedan',1.5,82,13,1987,'Potencia en PS','fiat-duna'],
+ ['Renault','21 1.8','sedan',1.8,92,7,1989,'Argentina, carburador, potencia en CV','renault-21'],
+ ['Renault','21 1.8 inyección','sedan',1.8,95,7,1989,'Argentina, potencia en CV','renault-21'],
+ ['Renault','21 2.0','sedan',2.0,110,7,1989,'Argentina, sin catalizador, potencia en CV','renault-21'],
+ ['Renault','21 2.2','sedan',2.2,120,7,1989,'Argentina, sin catalizador, potencia en CV','renault-21'],
+ ['Renault','21 Diésel','sedan',2.1,72,7,1989,'Argentina, potencia en CV','renault-21'],
+ ['Renault','21 TS 1.7','sedan',1.7,90,7,1989,'Versión europea, potencia en PS','renault-21'],
+ ['Renault','21 TXi','sedan',2.0,136,7,1989,'Versión europea, potencia en PS','renault-21'],
+ ['Renault','21 Turbo Quadra','sedan',2.0,175,7,1989,'Versión europea, potencia en PS','renault-21'],
+ ['Ford','Escort RS 1600i','hatch',1.6,115,15,1988,'Versión europea, potencia en PS','ford-escort'],
+ ['Ford','Escort RS Turbo','hatch',1.6,132,15,1988,'Versión europea, potencia en PS','ford-escort'],
+ ['Ford','Escort XR3 (Brasil)','hatch',1.6,83,15,1988,'Versión brasileña a alcohol, potencia en CV','ford-escort'],
+ ['Fiat','147 C','hatch',0.9,48,15,1981,'Argentina (1982), potencia en PS','fiat-147'],
+ ['Fiat','147 CL','hatch',1.0,52,15,1981,'Argentina (1982), motor de 1,05 L, potencia en PS','fiat-147'],
+ ['Fiat','147 Sorpasso','hatch',1.3,90,15,1981,'Argentina (1982-1984), doble carburador, potencia en PS','fiat-147'],
+ ['Fiat','147 TR (Brasil)','hatch',1.3,72,15,1981,'Versión brasileña, potencia en PS','fiat-147'],
+ ['Fiat','147 Diésel','hatch',1.3,45,15,1981,'Versión brasileña (1982), potencia en PS','fiat-147'],
+ ['Fiat','Uno 1.7 Diésel','hatch',1.7,58,12,1988,'Argentina (1992), potencia en PS','fiat-uno'],
+ ['Volkswagen','Gol GTS','hatch',1.8,94,14,1980,'Versión brasileña, potencia en hp','vw-gol'],
+ ['Volkswagen','Gol GTI','hatch',2.0,121,14,1980,'Versión brasileña (1989), potencia en PS','vw-gol'],
+ ['Volkswagen','Gol 1000','hatch',1.0,50,14,1980,'Versión brasileña (1991), potencia en hp','vw-gol'],
+ ['Volkswagen','Kombi Diésel','van',1.6,50,9,1981,'Diésel refrigerado por agua (1981-1985), potencia en hp','vw-kombi']
 ];
 // Mazo historia: [marca, modelo, tipo, inicio, fin, clave de foto, forma]
 const HIS = [
@@ -159,6 +186,7 @@ const HIS = [
  ['Ford','Escort','Auto',1988,2003,'ford-escort','hatch'],
  ['Ford','F-150','Pickup',1987,1997,'ford-f150','pickup'],
  ['Volkswagen','Gacel','Auto',1983,1993,'vw-gacel','sedan'],
+ ['Volkswagen','Gol','Auto',1980,1994,'vw-gol','hatch'],
  ['Volkswagen','Carat','Auto',1987,1991,'vw-carat','sedan'],
  ['Volkswagen','Kombi / Pickup','Utilitario',1981,1990,'vw-kombi','van'],
  ['IES','Súper América','Auto',1983,1990,'ies-super-america','hatch']
@@ -168,7 +196,7 @@ const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
 
 function crearMazos(){
   const tec = {
-    id:'tec', nombre:'Técnico', desc:'47 versiones lanzadas desde 1980, de cualquier origen: cilindrada, potencia, años en producción y año de lanzamiento',
+    id:'tec', nombre:'Técnico', desc:'74 versiones lanzadas desde 1980, de cualquier origen: cilindrada, potencia, años en producción y año de lanzamiento',
     stats:[
       {id:'cil',label:'Cilindrada',unit:'L',dir:1,hint:'mayor gana'},
       {id:'pot',label:'Potencia',unit:'CV',dir:1,hint:'mayor gana'},
@@ -178,7 +206,7 @@ function crearMazos(){
     cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
   };
   const his = {
-    id:'his', nombre:'Historia', desc:'20 modelos lanzados desde 1980: años en producción, años en los 80, lanzamiento y fin',
+    id:'his', nombre:'Historia', desc:'21 modelos lanzados desde 1980: años en producción, años en los 80, lanzamiento y fin',
     stats:[
       {id:'prod',label:'Años en producción',unit:'años',dir:1,hint:'mayor gana'},
       {id:'en80',label:'Años en los 80',unit:'de 10',dir:1,hint:'mayor gana'},
