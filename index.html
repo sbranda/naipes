@@ -91,7 +91,7 @@ const TOAST = document.getElementById('toast');
 const FILE = document.getElementById('file');
 const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref';
 const MAX_RONDAS = 60;
-const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280',Chevrolet:'#D97B29',IAME:'#6A4C93',Opel:'#E4572E',Seat:'#2A9D8F'};
+const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280',"Auto Union":'#8E8E93',Borgward:'#B08968',CIDASA:'#4D908E',Chrysler:'#577590',Simca:'#43AA8B',"Siam Di Tella":'#C1121F',Studebaker:'#9C6644',"De Carlo":'#7B2CBF',Heinkel:'#F9844A',Chevrolet:'#D97B29',IAME:'#6A4C93',Opel:'#E4572E',Seat:'#2A9D8F'};
 const CLARO = {Renault:1,Volkswagen:1};
 
 // ---------- Datos ----------
@@ -225,7 +225,43 @@ const HIS = [
  ['Volkswagen','Senda','Auto',1990,1996,'vw-senda','sedan'],
  ['Volkswagen','Pointer','Auto',1994,1997,'vw-pointer','hatch'],
  ['Volkswagen','Polo','Auto',1996,2008,'vw-polo','sedan'],
- ['Volkswagen','Caddy','Utilitario',1996,2008,'vw-caddy','van']
+ ['Volkswagen','Caddy','Utilitario',1996,2008,'vw-caddy','van'],
+ ['Auto Union','1000 (sedán y cupé)','Auto',1960,1970,'au-1000','sedan'],
+ ['Auto Union','Fissore Coupé','Auto',1963,1970,'au-fissore','coupe'],
+ ['Auto Union','Schnellaster Combi / Pickup','Utilitario',1960,1969,'au-schnellaster','van'],
+ ['Borgward','Isabella','Auto',1961,1963,'borgward-isabella','sedan'],
+ ['CIDASA','Riley 1500','Auto',1966,1967,'cidasa-riley1500','sedan'],
+ ['CIDASA','Morris 1650','Auto',1966,1967,'cidasa-morris1650','sedan'],
+ ['CIDASA','MG 1650','Auto',1966,1967,'cidasa-mg1650','sedan'],
+ ['Chrysler','Valiant','Auto',1961,1968,'chrysler-valiant','sedan'],
+ ['Dodge','Polara / Coronado','Auto',1968,1980,'dodge-polara','sedan'],
+ ['Citroën','2CV / 3CV','Auto',1960,1990,'citroen-2cv','hatch'],
+ ['Fiat','600','Auto',1960,1982,'fiat-600','hatch'],
+ ['Fiat','1100','Auto',1960,1963,'fiat-1100','sedan'],
+ ['Fiat','1500','Auto',1963,1971,'fiat-1500','sedan'],
+ ['Fiat','1500 Coupé','Auto',1965,1970,'fiat-1500-coupe','coupe'],
+ ['Ford','Falcon','Auto',1962,1991,'ford-falcon','sedan'],
+ ['Ford','Fairlane','Auto',1969,1982,'ford-fairlane','sedan'],
+ ['Chevrolet','400','Auto',1962,1974,'chevrolet-400','sedan'],
+ ['Chevrolet','Chevy','Auto',1969,1978,'chevrolet-chevy','sedan'],
+ ['Chevrolet','C-10','Pickup',1960,1978,'chevrolet-c10','pickup'],
+ ['IKA','Jeep Gladiator','Pickup',1963,1967,'ika-gladiator','pickup'],
+ ['IKA','Kaiser Bergantín','Auto',1960,1962,'ika-bergantin','sedan'],
+ ['IKA','Rambler Classic','Auto',1962,1971,'ika-classic','sedan'],
+ ['IKA','Rambler Ambassador','Auto',1965,1972,'ika-ambassador','sedan'],
+ ['IKA','Torino','Auto',1966,1982,'ika-torino','sedan'],
+ ['Peugeot','403','Auto',1960,1973,'peugeot-403','sedan'],
+ ['Peugeot','404','Auto',1962,1980,'peugeot-404','sedan'],
+ ['Peugeot','504','Auto',1969,1999,'peugeot-504','sedan'],
+ ['Renault','Dauphine / Gordini','Auto',1960,1970,'renault-dauphine','sedan'],
+ ['Renault','4','Auto',1963,1986,'renault-4','wagon'],
+ ['Renault','6','Auto',1969,1986,'renault-6','hatch'],
+ ['Simca','Ariane','Auto',1965,1967,'simca-ariane','sedan'],
+ ['Siam Di Tella','Magnette','Auto',1963,1966,'siam-magnette','sedan'],
+ ['Studebaker','Champ','Pickup',1962,1965,'studebaker-champ','pickup'],
+ ['IAME','Rastrojero Frontal','Utilitario',1969,1979,'iame-frontal','van'],
+ ['De Carlo','700 (BMW 700)','Auto',1960,1965,'decarlo-700','coupe'],
+ ['Heinkel','Kabine','Auto',1961,1965,'heinkel-kabine','hatch']
 ];
 const MODELOS = HIS.map(h => ({key:h[5], marca:h[0], modelo:h[1], shape:h[6]}));
 const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
@@ -921,11 +957,399 @@ const FICHAS = {
    "Datos",
    "Furgón derivado del SEAT Inca, sobre la plataforma del Polo Classic. Sin datos técnicos propios en las fuentes"
   ]
+ ],
+ "au-1000": [
+  [
+   "Motor",
+   "981 cc, tres cilindros de dos tiempos · 44 bhp (1000 S: 50 HP)"
+  ],
+  [
+   "Argentina",
+   "Tabla de modelos: 1960-1970. Otra página dice que el modelo anterior (DKW F94) se fabricó en Santa Fe hasta fines de 1969"
+  ]
+ ],
+ "au-fissore": [
+  [
+   "Datos",
+   "Coupé carrozado por Fissore. Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "au-schnellaster": [
+  [
+   "Datos",
+   "Combi, pickup y minibús. Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "borgward-isabella": [
+  [
+   "Datos",
+   "Sedán y coupé. Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "cidasa-riley1500": [
+  [
+   "Datos",
+   "CIDASA fabricó también la pickup Riley y la Morris 1650 Traveller. Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "cidasa-morris1650": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "cidasa-mg1650": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "chrysler-valiant": [
+  [
+   "Datos",
+   "Valiant I a IV. Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "dodge-polara": [
+  [
+   "Datos",
+   "Polara, Coronado y GTX (1968-1980). Sin datos técnicos propios en las fuentes"
+  ]
+ ],
+ "citroen-2cv": [
+  [
+   "Motor",
+   "Bicilíndrico plano refrigerado por aire (602 cc en la versión posterior)"
+  ],
+  [
+   "Argentina",
+   "Tabla de modelos: 1960-1990 (2CV/3CV). Furgoneta apodada \"Citroneta\""
+  ]
+ ],
+ "fiat-600": [
+  [
+   "Motores",
+   "Argentina: 633 cc (28 hp) · 767 cc (32 hp SAE en 1962; 36 hp en la 600 R de 1970) · 843 cc (32 hp DIN, 600 S de 1977)"
+  ],
+  [
+   "Medidas",
+   "3215 × 1380 × 1405 mm · entre ejes 2000 mm"
+  ],
+  [
+   "Peso",
+   "585 kg"
+  ],
+  [
+   "Vel. máx.",
+   "95 km/h (633 cc) · 110 km/h (767 cc) · hasta 120 km/h (600 S)"
+  ],
+  [
+   "Argentina",
+   "Fiat 600 R, 1960-1982: 304 016 unidades. Puertas \"suicida\" hasta la 600 E (abril de 1965). La 600 S (1977) fue reemplazada por el 147"
+  ]
+ ],
+ "fiat-1100": [
+  [
+   "Motor",
+   "1089 cc · 103 D: 43 PS CUNA (48 PS SAE)"
+  ],
+  [
+   "Vel. máx.",
+   "125 km/h (103 D)"
+  ],
+  [
+   "Argentina",
+   "103 D Export, 1960-1963: 23 152 unidades. Fiat Someca Concord, Ferreyra (Córdoba). Apodado \"millecento\""
+  ]
+ ],
+ "fiat-1500": [
+  [
+   "Motor",
+   "4 cilindros, 1481 cc (potencia argentina sin dato; el 1500 C europeo tenía 75 CV DIN)"
+  ],
+  [
+   "Medidas",
+   "Entre ejes 2505 mm y largo 4265 mm (1500 C europeo de batalla larga)"
+  ],
+  [
+   "Argentina",
+   "Fiat Concord desde 1963: berlina, berlina largo, familiar, pickup Multicarga. 123 059 unidades entre todos los modelos 1500"
+  ]
+ ],
+ "fiat-1500-coupe": [
+  [
+   "Datos",
+   "Coupé Vignale: el texto lo ubica en 1966-1974 y la cita en 1966-1970. Tabla de modelos: 1965-1970. Sin datos técnicos propios"
+  ]
+ ],
+ "ford-falcon": [
+  [
+   "Motores",
+   "3,0 L (187): 116 hp · 3,6 L (221): 132 hp, 166 bhp (SP), 109 PS (Ghia) · 2,3 L Pinto (1983): 90 PS · diésel 2,4 L: 70 hp"
+  ],
+  [
+   "Medidas",
+   "Largo 4597–4732 mm · ancho 1781–1793 mm · alto 1402 mm · entre ejes 2781 mm"
+  ],
+  [
+   "Peso",
+   "1230–1406 kg"
+  ],
+  [
+   "Argentina",
+   "1962-1991"
+  ]
+ ],
+ "ford-fairlane": [
+  [
+   "Motores",
+   "6 cilindros 3,6 L (221 pulg³): 132 CV · V8 4,8 L (292 pulg³, versiones 500 y LTD): 185 CV"
+  ],
+  [
+   "Medidas",
+   "Largo 5,1 m · ancho 1,9 m"
+  ],
+  [
+   "Argentina",
+   "Presentado en 1968, producción en serie desde 1969 hasta 1982 (29 602 unidades)"
+  ]
+ ],
+ "chevrolet-400": [
+  [
+   "Motores",
+   "3,1 L (194): 106 hp · 3,8 L (230): 127–137 hp · 4,1 L (250): 155 hp · diésel Indenor 4 cilindros (sin cilindrada ni potencia)"
+  ],
+  [
+   "Argentina",
+   "Ensamblaje desde 1962 (primera unidad el 21 de marzo) hasta 1974: unas 93 000 unidades"
+  ]
+ ],
+ "chevrolet-chevy": [
+  [
+   "Datos",
+   "Se presentó en 1969. Sin datos técnicos propios en las fuentes: se usó la cilindrada y potencia del motor 194 del Chevrolet 400"
+  ]
+ ],
+ "chevrolet-c10": [
+  [
+   "Datos",
+   "Pickup. Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "ika-gladiator": [
+  [
+   "Motor",
+   "Tornado I6 de 3,77 L, desarrollado para el Jeep Gladiator y el Wagoneer de 1963"
+  ],
+  [
+   "Argentina",
+   "Tabla de modelos: 1963-1967"
+  ]
+ ],
+ "ika-bergantin": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "ika-classic": [
+  [
+   "Motor",
+   "Tornado Interceptor I6 OHC de 3,77 L (230 pulg³); potencia sin dato"
+  ],
+  [
+   "Argentina",
+   "IKA, Córdoba. Sedán Classic y familiar Cross Country. Taxi desde junio de 1966, con tren de rodaje reforzado. Otra tabla da 1962-1967, la página del modelo 1962-1971"
+  ]
+ ],
+ "ika-ambassador": [
+  [
+   "Datos",
+   "IKA, Córdoba, 1965-1972. Los motores de la página son los de EE.UU.: I6 3,8 L, V8 4,7 L y 5,4 L (250–270 HP)"
+  ],
+  [
+   "Entre ejes",
+   "2950 mm (116 pulg., versión estadounidense)"
+  ]
+ ],
+ "ika-torino": [
+  [
+   "Motores",
+   "Tornado Special 3,0 L (120 hp) · Interceptor 3,8 L (152–185 hp) · 233 TSX/ZX (200 hp) · Interceptor 241 de competición, 3,95 L (248 hp)"
+  ],
+  [
+   "Medidas",
+   "Largo 4724 mm · ancho 1798 mm · alto 1410 mm · entre ejes 2723 mm"
+  ],
+  [
+   "Peso",
+   "1060–1471 kg"
+  ],
+  [
+   "Vel. máx.",
+   "203 km/h (GS200), el primer auto argentino de más de 200 km/h"
+  ],
+  [
+   "Argentina",
+   "IKA (1966-1975), después Renault Argentina. Fin en 1981 o 1982 según la fuente"
+  ]
+ ],
+ "peugeot-403": [
+  [
+   "Motores",
+   "1290 cc (54 hp) · 1468 cc (58 hp, 65 hp desde 1958) · diésel 1816 cc"
+  ],
+  [
+   "Medidas",
+   "Sedán 4470 × 1670 × 1510 mm · entre ejes 2660 mm"
+  ],
+  [
+   "Argentina",
+   "Hecho en Argentina (90 % de partes locales). Tabla de modelos: 1960-1973"
+  ]
+ ],
+ "peugeot-404": [
+  [
+   "Motores",
+   "1468 cc · 1616 cc · diésel 1816 y 1948 cc"
+  ],
+  [
+   "Medidas",
+   "Sedán 4442 × 1612 × 1450 mm · entre ejes 2650 mm"
+  ],
+  [
+   "Peso",
+   "1060–1250 kg"
+  ],
+  [
+   "Vel. máx.",
+   "135–167 km/h"
+  ],
+  [
+   "Argentina",
+   "Safrar, después Sevel, en El Palomar: 162 583 unidades. Tabla de modelos: 1962-1980"
+  ]
+ ],
+ "peugeot-504": [
+  [
+   "Motores",
+   "1,8 L: 82 PS (carburador), 97 PS (inyección) · 2,0 L: 93–104 PS · diésel 2,1 L (65 PS) y 2,3 L (70 PS) · V6 2,7 L (136 PS)"
+  ],
+  [
+   "Medidas",
+   "Sedán 4486 × 1690 × 1460 mm · entre ejes 2740 mm"
+  ],
+  [
+   "Peso",
+   "1200–1300 kg"
+  ],
+  [
+   "Argentina",
+   "1969-1999. Familiar solo en 1980 y 1981; pickup de 1983 a 1997"
+  ]
+ ],
+ "renault-dauphine": [
+  [
+   "Motor",
+   "845 cc · 27 hp (Gordini: 36 hp)"
+  ],
+  [
+   "Medidas",
+   "3937 × 1524 × 1441 mm · entre ejes 2267 mm"
+  ],
+  [
+   "Peso",
+   "650 kg"
+  ],
+  [
+   "Vel. máx.",
+   "112 km/h (Gordini: 130 km/h)"
+  ],
+  [
+   "Argentina",
+   "IKA, Santa Isabel: Dauphine 1960-1966, Gordini 1962-1970, Renault 850 1967-1970. 97 209 unidades"
+  ]
+ ],
+ "renault-4": [
+  [
+   "Motores",
+   "747 cc (26,5–32 hp) · 845 cc desde 1963 en la Super"
+  ],
+  [
+   "Medidas",
+   "3663 × 1485 × 1470 mm · entre ejes 2440 mm"
+  ],
+  [
+   "Peso",
+   "600–750 kg"
+  ],
+  [
+   "Vel. máx.",
+   "Más de 104 km/h"
+  ],
+  [
+   "Argentina",
+   "IKA, Santa Isabel. La furgoneta se apodó \"Renoleta\". Tabla de modelos: 1963-1986"
+  ]
+ ],
+ "renault-6": [
+  [
+   "Motores",
+   "Argentina: 1118 cc (51 PS, 1969-1978) · 1397 cc (60 PS SAE)"
+  ],
+  [
+   "Medidas",
+   "3860 × 1540 × 1500 mm · entre ejes 2400–2450 mm"
+  ],
+  [
+   "Peso",
+   "750 kg"
+  ],
+  [
+   "Argentina",
+   "IKA-Renault hasta 1986: 80 869 unidades. Renombrado 6 GTL con el rediseño de 1978. Una tabla da 1969-1984"
+  ]
+ ],
+ "simca-ariane": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "siam-magnette": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "studebaker-champ": [
+  [
+   "Datos",
+   "Pickup. Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "iame-frontal": [
+  [
+   "Datos",
+   "Furgón Rastrojero Frontal (y Frontalito F71/SM81). Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "decarlo-700": [
+  [
+   "Datos",
+   "Versión argentina del BMW 700 (Glamour y SL). Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "heinkel-kabine": [
+  [
+   "Datos",
+   "Microcoche. Sin datos técnicos en las fuentes"
+  ]
  ]
 };
 
 
-const CILPOT = {'renault-18':[2.0,103,0,0],'renault-fuego':[2.0,110,0,0],'renault-11':[1.4,72,0,0],'renault-9':[1.6,75,0,0],'renault-21':[2.0,110,0,0],'renault-trafic':[2.1,65,0,1],'fiat-147':[1.3,60,0,0],'fiat-regata':[1.5,82,0,0],'fiat-duna':[1.5,82,0,0],'fiat-brio':[1.1,50,0,1],'fiat-uno':[1.6,87,0,0],'fiat-fiorino':[1.3,57,0,0],'peugeot-505':[2.2,117,0,0],'ford-sierra':[2.3,120,0,0],'ford-escort':[1.6,115,0,0],'ford-f150':[4.9,145,0,1],'vw-gacel':[1.6,83,0,0],'vw-gol':[1.8,94,0,0],'vw-carat':[1.8,90,0,1],'vw-kombi':[1.6,50,0,0],'ies-super-america':[1.4,60,1,1],'citroen-ami8':[0.6,32,0,0],'citroen-mehari':[0.6,29,0,1],'dodge-1500':[1.5,72,0,0],'fiat-1600-coupe':[1.6,80,0,1],'fiat-128':[1.3,60,0,0],'fiat-125':[1.6,90,0,0],'fiat-133':[0.9,40,0,0],'ford-ranchero':[3.0,105,1,1],'ford-taunus':[2.3,122,0,0],'iame-conosur':[1.5,55,1,1],'mercedes-220d':[2.2,60,0,1],'opel-k180':[1.8,90,1,1],'renault-12':[1.4,74,0,0],'chevrolet-d20':[4.0,88,0,0],'chevrolet-silverado':[4.1,138,1,1],'chevrolet-corsa':[1.6,92,0,1],'fiat-palio':[1.6,120,0,0],'fiat-siena':[1.6,92,1,1],'ford-orion':[1.8,130,0,0],'ford-focus':[2.0,146,0,0],'peugeot-405':[1.9,110,0,0],'peugeot-306':[2.0,155,0,0],'peugeot-206':[1.6,110,0,0],'renault-19':[1.8,137,0,0],'renault-megane':[2.0,115,0,0],'renault-clio':[1.6,90,0,0],'seat-inca':[1.6,75,0,0],'vw-senda':[1.6,83,0,0],'vw-pointer':[2.0,99,0,1],'vw-polo':[1.6,75,0,0],'vw-caddy':[1.6,75,1,1]};
+const CILPOT = {'renault-18':[2.0,103,0,0],'renault-fuego':[2.0,110,0,0],'renault-11':[1.4,72,0,0],'renault-9':[1.6,75,0,0],'renault-21':[2.0,110,0,0],'renault-trafic':[2.1,65,0,1],'fiat-147':[1.3,60,0,0],'fiat-regata':[1.5,82,0,0],'fiat-duna':[1.5,82,0,0],'fiat-brio':[1.1,50,0,1],'fiat-uno':[1.6,87,0,0],'fiat-fiorino':[1.3,57,0,0],'peugeot-505':[2.2,117,0,0],'ford-sierra':[2.3,120,0,0],'ford-escort':[1.6,115,0,0],'ford-f150':[4.9,145,0,1],'vw-gacel':[1.6,83,0,0],'vw-gol':[1.8,94,0,0],'vw-carat':[1.8,90,0,1],'vw-kombi':[1.6,50,0,0],'ies-super-america':[1.4,60,1,1],'citroen-ami8':[0.6,32,0,0],'citroen-mehari':[0.6,29,0,1],'dodge-1500':[1.5,72,0,0],'fiat-1600-coupe':[1.6,80,0,1],'fiat-128':[1.3,60,0,0],'fiat-125':[1.6,90,0,0],'fiat-133':[0.9,40,0,0],'ford-ranchero':[3.0,105,1,1],'ford-taunus':[2.3,122,0,0],'iame-conosur':[1.5,55,1,1],'mercedes-220d':[2.2,60,0,1],'opel-k180':[1.8,90,1,1],'renault-12':[1.4,74,0,0],'chevrolet-d20':[4.0,88,0,0],'chevrolet-silverado':[4.1,138,1,1],'chevrolet-corsa':[1.6,92,0,1],'fiat-palio':[1.6,120,0,0],'fiat-siena':[1.6,92,1,1],'ford-orion':[1.8,130,0,0],'ford-focus':[2.0,146,0,0],'peugeot-405':[1.9,110,0,0],'peugeot-306':[2.0,155,0,0],'peugeot-206':[1.6,110,0,0],'renault-19':[1.8,137,0,0],'renault-megane':[2.0,115,0,0],'renault-clio':[1.6,90,0,0],'seat-inca':[1.6,75,0,0],'vw-senda':[1.6,83,0,0],'vw-pointer':[2.0,99,0,1],'vw-polo':[1.6,75,0,0],'vw-caddy':[1.6,75,1,1],'au-1000':[0.98,44,0,0],'au-fissore':[0.98,50,0,1],'au-schnellaster':[0.98,40,1,1],'borgward-isabella':[1.5,60,1,1],'cidasa-riley1500':[1.5,60,1,1],'cidasa-morris1650':[1.6,68,1,1],'cidasa-mg1650':[1.6,80,1,1],'chrysler-valiant':[3.7,145,1,1],'dodge-polara':[3.7,145,1,1],'citroen-2cv':[0.6,29,0,1],'fiat-600':[0.77,32,0,0],'fiat-1100':[1.1,48,0,0],'fiat-1500':[1.5,72,0,1],'fiat-1500-coupe':[1.5,75,0,1],'ford-falcon':[3.6,132,0,0],'ford-fairlane':[3.6,132,0,0],'chevrolet-400':[3.8,137,0,0],'chevrolet-chevy':[3.1,106,1,1],'chevrolet-c10':[3.8,130,1,1],'ika-gladiator':[3.8,155,0,1],'ika-bergantin':[1.9,85,1,1],'ika-classic':[3.8,155,0,1],'ika-ambassador':[3.8,155,1,1],'ika-torino':[3.8,155,0,0],'peugeot-403':[1.5,65,0,0],'peugeot-404':[1.6,72,0,1],'peugeot-504':[1.8,82,0,0],'renault-dauphine':[0.845,27,0,0],'renault-4':[0.845,30,0,1],'renault-6':[1.1,51,0,0],'simca-ariane':[1.3,57,1,1],'siam-magnette':[1.5,68,1,1],'studebaker-champ':[2.8,90,1,1],'iame-frontal':[2.0,55,1,1],'decarlo-700':[0.7,30,1,1],'heinkel-kabine':[0.2,10,1,1]};
 function crearMazos(){
   const tec = {
     id:'tec', nombre:'Técnico', desc:'74 versiones lanzadas desde 1980, de cualquier origen: cilindrada, potencia, años en producción y año de lanzamiento',
@@ -938,7 +1362,7 @@ function crearMazos(){
     cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
   };
   const his = {
-    id:'his', nombre:'Historia', desc:'52 modelos lanzados de 1970 a 1999: cilindrada, potencia (de una versión representativa), años en producción, lanzamiento y fin',
+    id:'his', nombre:'Historia', desc:'88 modelos lanzados de 1960 a 1999: cilindrada, potencia (de una versión representativa), años en producción, lanzamiento y fin',
     stats:[
       {id:'cil',label:'Cilindrada',unit:'L',dir:1,hint:'mayor gana'},
       {id:'pot',label:'Potencia',unit:'CV',dir:1,hint:'mayor gana'},
