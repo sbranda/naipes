@@ -91,7 +91,7 @@ const TOAST = document.getElementById('toast');
 const FILE = document.getElementById('file');
 const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref';
 const MAX_RONDAS = 60;
-const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280'};
+const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280',Chevrolet:'#D97B29',IAME:'#6A4C93',Opel:'#E4572E',Seat:'#2A9D8F'};
 const CLARO = {Renault:1,Volkswagen:1};
 
 // ---------- Datos ----------
@@ -194,7 +194,38 @@ const HIS = [
  ['Volkswagen','Gol','Auto',1980,1994,'vw-gol','hatch'],
  ['Volkswagen','Carat','Auto',1987,1991,'vw-carat','sedan'],
  ['Volkswagen','Kombi / Pickup','Utilitario',1981,1990,'vw-kombi','van'],
- ['IES','Súper América','Auto',1983,1990,'ies-super-america','hatch']
+ ['IES','Súper América','Auto',1983,1990,'ies-super-america','hatch'],
+ ['Citroën','Ami 8','Auto',1970,1982,'citroen-ami8','wagon'],
+ ['Citroën','Méhari','Utilitario',1971,1986,'citroen-mehari','hatch'],
+ ['Dodge','1500 / VW 1500','Auto',1971,1990,'dodge-1500','sedan'],
+ ['Fiat','1600 Coupé','Auto',1970,1973,'fiat-1600-coupe','coupe'],
+ ['Fiat','128 / Súper Europa','Auto',1971,1990,'fiat-128','sedan'],
+ ['Fiat','125 Mirafiori','Auto',1975,1982,'fiat-125','sedan'],
+ ['Fiat','133','Auto',1977,1982,'fiat-133','hatch'],
+ ['Ford','Ranchero','Pickup',1971,1987,'ford-ranchero','pickup'],
+ ['Ford','Taunus','Auto',1974,1983,'ford-taunus','sedan'],
+ ['IAME','Rastrojero Conosur','Auto',1974,1979,'iame-conosur','sedan'],
+ ['Mercedes','220 D Pickup','Pickup',1972,1976,'mercedes-220d','pickup'],
+ ['Opel','K 180','Auto',1974,1978,'opel-k180','sedan'],
+ ['Renault','12','Auto',1970,1994,'renault-12','sedan'],
+ ['Chevrolet','D-20','Pickup',1993,1997,'chevrolet-d20','pickup'],
+ ['Chevrolet','Silverado','Pickup',1997,2000,'chevrolet-silverado','pickup'],
+ ['Chevrolet','Corsa','Auto',1997,2016,'chevrolet-corsa','hatch'],
+ ['Fiat','Palio','Auto',1996,2000,'fiat-palio','hatch'],
+ ['Fiat','Siena','Auto',1996,2000,'fiat-siena','sedan'],
+ ['Ford','Orion','Auto',1994,1997,'ford-orion','sedan'],
+ ['Ford','Focus','Auto',1999,2019,'ford-focus','hatch'],
+ ['Peugeot','405','Auto',1992,1999,'peugeot-405','sedan'],
+ ['Peugeot','306','Auto',1996,2003,'peugeot-306','hatch'],
+ ['Peugeot','206','Auto',1999,2016,'peugeot-206','hatch'],
+ ['Renault','19','Auto',1992,2001,'renault-19','hatch'],
+ ['Renault','Mégane','Auto',1997,2009,'renault-megane','hatch'],
+ ['Renault','Clio','Auto',1996,2016,'renault-clio','sedan'],
+ ['Seat','Inca','Utilitario',1999,2002,'seat-inca','van'],
+ ['Volkswagen','Senda','Auto',1990,1996,'vw-senda','sedan'],
+ ['Volkswagen','Pointer','Auto',1994,1997,'vw-pointer','hatch'],
+ ['Volkswagen','Polo','Auto',1996,2008,'vw-polo','sedan'],
+ ['Volkswagen','Caddy','Utilitario',1996,2008,'vw-caddy','van']
 ];
 const MODELOS = HIS.map(h => ({key:h[5], marca:h[0], modelo:h[1], shape:h[6]}));
 const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
@@ -488,10 +519,413 @@ const FICHAS = {
    "Datos",
    "No encontré datos técnicos"
   ]
+ ],
+ "citroen-ami8": [
+  [
+   "Motor",
+   "602 cc bicilíndrico plano refrigerado por aire · 32 hp"
+  ],
+  [
+   "Medidas",
+   "Largo 3990 mm (Break) · ancho 1524 mm · alto 1448 mm · entre ejes 2400 mm"
+  ],
+  [
+   "Vel. máx.",
+   "122 km/h"
+  ],
+  [
+   "Argentina",
+   "Solo se hizo la Break (Club y Elysée). Una fuente dice que se fabricó en Buenos Aires hasta 1978"
+  ]
+ ],
+ "citroen-mehari": [
+  [
+   "Motor",
+   "602 cc bicilíndrico plano refrigerado por aire (potencia sin dato)"
+  ],
+  [
+   "Medidas",
+   "3520 × 1530 × 1640 mm · entre ejes 2400 mm"
+  ],
+  [
+   "Peso",
+   "535–570 kg"
+  ],
+  [
+   "Argentina",
+   "Citroën Argentina lo fabricó de 1971 a 1980 (3997 unidades). IES lo revivió en 1984 como Safari o Gringa"
+  ]
+ ],
+ "dodge-1500": [
+  [
+   "Motores",
+   "1.5 L (72 HP) · 1.8 L (92 HP) · GT-90 (90 HP, 1973) · GT-100 (120 HP, 1977)"
+  ],
+  [
+   "Medidas",
+   "4090 × 1590 × 1360 mm · entre ejes 2490 mm"
+  ],
+  [
+   "Nota",
+   "Se llamó VW 1500 desde 1982"
+  ]
+ ],
+ "fiat-1600-coupe": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "fiat-128": [
+  [
+   "Motores",
+   "1.1 L (55 PS) · 1.3 L (60 PS)"
+  ],
+  [
+   "Medidas",
+   "3850 × 1590 × 1340 mm · entre ejes 2445 mm (sedán europeo)"
+  ],
+  [
+   "Peso",
+   "750–770 kg"
+  ],
+  [
+   "Vel. máx.",
+   "137 km/h (prueba de 1970)"
+  ],
+  [
+   "Argentina",
+   "Sevel lo fabricó de 1971 a 1990; la Rural fue exclusiva de Argentina; desde 1983 se vendió como Súper Europa"
+  ]
+ ],
+ "fiat-125": [
+  [
+   "Motores",
+   "1.6 L DOHC (90 PS) · 125 S (100 PS)"
+  ],
+  [
+   "Medidas",
+   "4232 × 1625 × 1420 mm · entre ejes 2505 mm"
+  ],
+  [
+   "Peso",
+   "1055 kg"
+  ],
+  [
+   "Argentina",
+   "Una fuente la ubica de 1972 a 1982: sedán, Familiar, pickup Multicarga y 125 Sport coupé"
+  ]
+ ],
+ "fiat-133": [
+  [
+   "Motor",
+   "Fiat 133B argentino: 903 cc · 40 PS"
+  ],
+  [
+   "Argentina",
+   "Fiat lo fabricó de 1977 a 1980 y Sevel de 1981 a 1982 (15 821 unidades). IAVA hizo la versión deportiva 133 T (1979-1980)"
+  ]
+ ],
+ "ford-ranchero": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "ford-taunus": [
+  [
+   "Motores",
+   "L 2.0 L (92 CV) · GXL 2.3 L (122 CV) · Coupé SP5 (132 CV). Potencia SAE"
+  ],
+  [
+   "Nota",
+   "Una fuente lo extiende hasta 1984, cuando lo reemplazó el Sierra"
+  ]
+ ],
+ "iame-conosur": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "mercedes-220d": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "opel-k180": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "renault-12": [
+  [
+   "Motores",
+   "Argentina: 1.4 L (desde 1977) · Alpine 1.4 L (110 PS, 1978-1980) · 1.6 L desde 1992. Francia: Gordini 1.6 L (113 PS)"
+  ],
+  [
+   "12 TS argentino",
+   "1.4 L · 74 CV · 125 Nm · 4375 × 1635 × 1435 mm · entre ejes 2441 mm · 922 kg · 150 km/h · 0–100 km/h en 15,3 s · 10 km/l"
+  ]
+ ],
+ "chevrolet-d20": [
+  [
+   "Motores",
+   "Diésel Maxion 4.0 L: 88 hp, turbo 123 hp (1991) y Turbo Plus 147 hp (1995) · nafta o alcohol 4.1 L"
+  ],
+  [
+   "Medidas",
+   "Largo 4820 mm (cabina simple) · ancho 2000 mm · alto 1880 mm"
+  ],
+  [
+   "Peso",
+   "2040–2290 kg"
+  ],
+  [
+   "Argentina",
+   "Algunas se ensamblaron en Santa Isabel, Córdoba, desde kits; la mayoría vino de Brasil"
+  ]
+ ],
+ "chevrolet-silverado": [
+  [
+   "Datos",
+   "Sin datos técnicos en las fuentes"
+  ]
+ ],
+ "chevrolet-corsa": [
+  [
+   "Motores",
+   "Familia 1: 1.2 L · 1.4 L · 1.6 L · turbodiésel 1.5 L (no consta cuáles se vendieron en Argentina)"
+  ],
+  [
+   "Entre ejes",
+   "2480 mm (pickup)"
+  ],
+  [
+   "Argentina",
+   "Producción local desde septiembre de 1997, la primera de un Chevrolet de pasajeros desde 1978; \"Corsa Classic\" desde 2002"
+  ]
+ ],
+ "fiat-palio": [
+  [
+   "Motores",
+   "1.0 L · 1.2 L Fire · 1.6 L 16v Sporting (120 hp) · 1.8 L (112–115 hp)"
+  ],
+  [
+   "Medidas",
+   "3740 × 1614 × 1445 mm · entre ejes 2360 mm (versión 2001-2004)"
+  ],
+  [
+   "Argentina",
+   "Producción desde fines de 1996"
+  ]
+ ],
+ "fiat-siena": [
+  [
+   "Datos",
+   "Comparte plataforma con el Palio. Sin datos técnicos propios en las fuentes"
+  ]
+ ],
+ "ford-orion": [
+  [
+   "Motores",
+   "1.3 L · 1.6 L · 1.8 L Zetec (130 bhp en el Ghia Si) · 1.8 L diésel"
+  ],
+  [
+   "Vel. máx.",
+   "203 km/h (Ghia Si)"
+  ],
+  [
+   "Nota",
+   "Ford retiró el nombre Orion en septiembre de 1993. Datos de la versión europea"
+  ]
+ ],
+ "ford-focus": [
+  [
+   "Motores",
+   "Europa: 1.4 L (74 bhp) · 1.6 L (100 bhp) · 1.8 L (113 bhp) · 2.0 L (127 bhp) · diésel 1.8 L. Argentina: 1.6 L Rocam flex, 2.0 L Duratec HE (146 bhp en Brasil) y diésel 1.8 L"
+  ],
+  [
+   "Medidas",
+   "Hatchback 4270 mm · ancho 1699 mm · alto 1430 mm · entre ejes 2616 mm"
+  ],
+  [
+   "Argentina",
+   "General Pacheco, 2000-2008"
+  ]
+ ],
+ "peugeot-405": [
+  [
+   "Motores",
+   "1.4 L (70 hp) · 1.6 L (92 hp) · 1.9 L (110–125 hp) · Mi16 (160 hp) · diésel 1.9 L (70 hp)"
+  ],
+  [
+   "Medidas",
+   "Sedán 4408 × 1716 × 1390–1450 mm · entre ejes 2669 mm"
+  ],
+  [
+   "Peso",
+   "1020–1430 kg"
+  ],
+  [
+   "Vel. máx.",
+   "220 km/h (Mi16)"
+  ],
+  [
+   "Argentina",
+   "Villa Bosch, 1992-1999 (más de 500 000 vendidos)"
+  ]
+ ],
+ "peugeot-306": [
+  [
+   "Motores",
+   "1.1 a 1.6 L (TU) · 1.8 y 2.0 L (XU) · S16 (155 bhp) · GTI-6 (167 bhp) · diésel 1.9 L"
+  ],
+  [
+   "Medidas",
+   "Hatchback 4030 mm · sedán 4267 mm · rural 4338 mm · ancho 1680 mm · entre ejes 2580 mm"
+  ],
+  [
+   "Argentina",
+   "Sevel, 1996-2002 (solo el sedán)"
+  ]
+ ],
+ "peugeot-206": [
+  [
+   "Motores",
+   "1.1 L (60 PS) · 1.4 L (75 PS) · 1.6 L (90–110 PS) · 2.0 L (137 PS) · diésel 1.9 L (70 PS)"
+  ],
+  [
+   "Medidas",
+   "Hatchback 3835 × 1652 × 1428 mm · entre ejes 2442 mm"
+  ],
+  [
+   "Peso",
+   "950–1145 kg"
+  ],
+  [
+   "Vel. máx.",
+   "Hasta 217 km/h (GTi 177 PS)"
+  ],
+  [
+   "Argentina",
+   "Villa Bosch, de julio de 1999 a diciembre de 2016; versiones XR, XRD, XS, XT y XTD"
+  ]
+ ],
+ "renault-19": [
+  [
+   "Motores",
+   "1.2–1.4 L (55–80 PS) · 1.6 L (75–78 PS, solo Sudamérica) · 1.7–1.8 L (73–109 PS) · 1.8 16S (137–140 PS) · diésel 1.9 L (64–90 PS)"
+  ],
+  [
+   "Medidas",
+   "Hatchback 4156 mm · ancho 1694 mm · alto 1412 mm · entre ejes 2540 mm"
+  ],
+  [
+   "Peso",
+   "886–1175 kg"
+  ],
+  [
+   "Vel. máx.",
+   "Hasta 215 km/h (16S)"
+  ],
+  [
+   "Argentina",
+   "Santa Isabel, 1993-2000. Auto del Año en Argentina en 1993"
+  ]
+ ],
+ "renault-megane": [
+  [
+   "Motores",
+   "1.4 L (70–98 hp) · 1.6 L (90–110 hp) · 1.8 L (120 hp) · 2.0 L (115–150 hp) · diésel 1.9 L (65–105 hp)"
+  ],
+  [
+   "Medidas",
+   "Hatchback 4129–4164 mm · sedán 4400–4436 mm"
+  ],
+  [
+   "Vel. máx.",
+   "Hasta 215 km/h"
+  ],
+  [
+   "Argentina",
+   "Santa Isabel, sedán y rural. El 1.6 16v de 110 hp se hizo en Argentina y Colombia"
+  ]
+ ],
+ "renault-clio": [
+  [
+   "Motores",
+   "Clio II: 1.2 L (60–75 PS) · 1.4 L (75–100 PS) · 1.6 L (90–110 PS) · 2.0 RS (172–182 PS) · diésel 1.5 dCi (64–100 PS)"
+  ],
+  [
+   "Argentina",
+   "Córdoba: el sedán se llamó Clio (en el resto de Sudamérica, Symbol). Clio Mío desde octubre de 2012"
+  ]
+ ],
+ "seat-inca": [
+  [
+   "Motores",
+   "1.4 L (60 PS) · 1.6 L (75 PS) · diésel 1.9 L (64 PS) y 1.9 TDI (90 PS)"
+  ],
+  [
+   "Medidas",
+   "4207 × 1695 × 1846 mm"
+  ],
+  [
+   "Vel. máx.",
+   "142 km/h (1.4) · 155 km/h (1.6)"
+  ],
+  [
+   "Argentina",
+   "Ensamblado en Pacheco"
+  ]
+ ],
+ "vw-senda": [
+  [
+   "Motores",
+   "1.6 L AP (83 CV) · diésel 1.6 L (54 CV)"
+  ],
+  [
+   "Nota",
+   "Nombre del Gacel sedán desde el facelift de 1991"
+  ]
+ ],
+ "vw-pointer": [
+  [
+   "Motores",
+   "AP 1800 (CLI, GLI) y AP 2000 (GLI, GTI), sin potencia en las fuentes"
+  ],
+  [
+   "Argentina",
+   "Autolatina lo vendió de 1994 a 1996. Basado en la plataforma del Ford Escort Mk V"
+  ]
+ ],
+ "vw-polo": [
+  [
+   "Motores",
+   "1.0 L (50 PS) · 1.4 L (60 PS) · 1.6 L (75 PS; 101 PS 16v) · 1.8 L (90 PS) · diésel 1.7 L SDI (60 PS) y 1.9 L (60–110 PS)"
+  ],
+  [
+   "Medidas",
+   "Sedán 4138 mm · ancho 1640 mm · entre ejes 2444 mm"
+  ],
+  [
+   "Argentina",
+   "Polo Classic: Argentina fue el único país donde siguió después de 2001; todos los facelift se hicieron acá"
+  ]
+ ],
+ "vw-caddy": [
+  [
+   "Datos",
+   "Furgón derivado del SEAT Inca, sobre la plataforma del Polo Classic. Sin datos técnicos propios en las fuentes"
+  ]
  ]
 };
 
 
+const CILPOT = {'renault-18':[2.0,103,0,0],'renault-fuego':[2.0,110,0,0],'renault-11':[1.4,72,0,0],'renault-9':[1.6,75,0,0],'renault-21':[2.0,110,0,0],'renault-trafic':[2.1,65,0,1],'fiat-147':[1.3,60,0,0],'fiat-regata':[1.5,82,0,0],'fiat-duna':[1.5,82,0,0],'fiat-brio':[1.1,50,0,1],'fiat-uno':[1.6,87,0,0],'fiat-fiorino':[1.3,57,0,0],'peugeot-505':[2.2,117,0,0],'ford-sierra':[2.3,120,0,0],'ford-escort':[1.6,115,0,0],'ford-f150':[4.9,145,0,1],'vw-gacel':[1.6,83,0,0],'vw-gol':[1.8,94,0,0],'vw-carat':[1.8,90,0,1],'vw-kombi':[1.6,50,0,0],'ies-super-america':[1.4,60,1,1],'citroen-ami8':[0.6,32,0,0],'citroen-mehari':[0.6,29,0,1],'dodge-1500':[1.5,72,0,0],'fiat-1600-coupe':[1.6,80,0,1],'fiat-128':[1.3,60,0,0],'fiat-125':[1.6,90,0,0],'fiat-133':[0.9,40,0,0],'ford-ranchero':[3.0,105,1,1],'ford-taunus':[2.3,122,0,0],'iame-conosur':[1.5,55,1,1],'mercedes-220d':[2.2,60,0,1],'opel-k180':[1.8,90,1,1],'renault-12':[1.4,74,0,0],'chevrolet-d20':[4.0,88,0,0],'chevrolet-silverado':[4.1,138,1,1],'chevrolet-corsa':[1.6,92,0,1],'fiat-palio':[1.6,120,0,0],'fiat-siena':[1.6,92,1,1],'ford-orion':[1.8,130,0,0],'ford-focus':[2.0,146,0,0],'peugeot-405':[1.9,110,0,0],'peugeot-306':[2.0,155,0,0],'peugeot-206':[1.6,110,0,0],'renault-19':[1.8,137,0,0],'renault-megane':[2.0,115,0,0],'renault-clio':[1.6,90,0,0],'seat-inca':[1.6,75,0,0],'vw-senda':[1.6,83,0,0],'vw-pointer':[2.0,99,0,1],'vw-polo':[1.6,75,0,0],'vw-caddy':[1.6,75,1,1]};
 function crearMazos(){
   const tec = {
     id:'tec', nombre:'Técnico', desc:'74 versiones lanzadas desde 1980, de cualquier origen: cilindrada, potencia, años en producción y año de lanzamiento',
@@ -504,16 +938,18 @@ function crearMazos(){
     cards:TEC.map((c,i) => ({id:'t'+i,marca:c[0],modelo:c[1],shape:c[2],nota:c[7],key:c[8],v:{cil:c[3],pot:c[4],prod:c[5],lanz:c[6]}}))
   };
   const his = {
-    id:'his', nombre:'Historia', desc:'21 modelos lanzados desde 1980: años en producción, años en los 80, lanzamiento y fin',
+    id:'his', nombre:'Historia', desc:'52 modelos lanzados de 1970 a 1999: cilindrada, potencia (de una versión representativa), años en producción, lanzamiento y fin',
     stats:[
+      {id:'cil',label:'Cilindrada',unit:'L',dir:1,hint:'mayor gana'},
+      {id:'pot',label:'Potencia',unit:'CV',dir:1,hint:'mayor gana'},
       {id:'prod',label:'Años en producción',unit:'años',dir:1,hint:'mayor gana'},
-      {id:'en80',label:'Años en los 80',unit:'de 10',dir:1,hint:'mayor gana'},
       {id:'lanz',label:'Año de lanzamiento',unit:'',dir:-1,hint:'menor gana (el más antiguo)'},
       {id:'fin',label:'Año de fin',unit:'',dir:1,hint:'mayor gana'}
     ],
     cards:HIS.map((c,i) => ({
       id:'h'+i,marca:c[0],modelo:c[1],shape:c[6],nota:c[2]+' · '+c[3]+'–'+c[4],key:c[5],
-      v:{prod:c[4]-c[3],en80:Math.max(0,Math.min(c[4],1989)-Math.max(c[3],1980)+1),lanz:c[3],fin:c[4]}
+      est:{cil:!!CILPOT[c[5]][2],pot:!!CILPOT[c[5]][3]},
+      v:{cil:CILPOT[c[5]][0],pot:CILPOT[c[5]][1],prod:c[4]-c[3],lanz:c[3],fin:c[4]}
     }))
   };
   return {tec,his};
@@ -548,7 +984,7 @@ function sil(shape, fg, bg){
 }
 
 // ---------- Cartas ----------
-function fmt(stat, v){ return stat.id === 'cil' ? v.toFixed(1).replace('.',',') : String(v); }
+function fmt(stat, v, c){ const t = stat.id === 'cil' ? v.toFixed(1).replace('.',',') : String(v); return (c && c.est && c.est[stat.id] ? '≈' : '') + t; }
 function fotoHTML(c){
   const col = COLOR[c.marca] || '#888', fg = CLARO[c.marca] ? '#14213D' : '#F4EAD2';
   const f = S.fotos[c.key];
@@ -569,7 +1005,7 @@ function cartaHTML(c, deck, o){
     return `<button class="${cls.join(' ')}" data-act="stat" data-stat="${s.id}" ${o.canPick?'':'disabled'}>
       <span class="k">${i+1}</span>
       <span class="l">${s.label}<i>${s.hint}</i></span>
-      <span><span class="v">${fmt(s,c.v[s.id])}</span><span class="u">${s.unit}</span></span></button>`;
+      <span><span class="v">${fmt(s,c.v[s.id],c)}</span><span class="u">${s.unit}</span></span></button>`;
   }).join('');
   return `<div class="card ${o.compact?'compact':''}">
     <div class="chead"><div><small>${esc(c.marca)}</small><b>${esc(c.modelo)}</b></div>${o.n?`<span class="num">${o.n}</span>`:''}</div>
@@ -663,7 +1099,7 @@ function pantallaInicio(){
 function textoMensaje(g, deck){
   if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
   const st = deck.stats.find(s => s.id === g.sel);
-  const va = fmt(st,g.shown.a.v[st.id]), vb = fmt(st,g.shown.b.v[st.id]);
+  const va = fmt(st,g.shown.a.v[st.id],g.shown.a), vb = fmt(st,g.shown.b.v[st.id],g.shown.b);
   const quien = g.quien === 'cpu' ? 'La computadora eligió' : 'Elegiste';
   const base = `${quien} ${st.label}: ${va}${st.unit?' '+st.unit:''} contra ${vb}${st.unit?' '+st.unit:''}.`;
   if(g.res === 'you') return base + ' Ganaste la ronda.';
