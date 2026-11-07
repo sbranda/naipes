@@ -1,5 +1,5 @@
 // Subir el número de versión en cada deploy
-const CACHE_NAME = 'naipes80-v21';
+const CACHE_NAME = 'naipes80-v24';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
 self.addEventListener('install', e => {
@@ -16,6 +16,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  if (new URL(e.request.url).origin !== location.origin) return; // pedidos a otros sitios (fotos): no se tocan
   e.respondWith(
     caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
       if (res && res.ok && new URL(e.request.url).origin === location.origin) {

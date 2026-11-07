@@ -83,6 +83,15 @@ body[data-fondo=hw]{background:
  radial-gradient(80% 40% at 100% 100%,#FF8A0044,#0000 70%),
  linear-gradient(180deg,#0B1B63,#0E2A7A 40%,#0B1428) fixed}
 body[data-fondo]::before{content:"";position:fixed;left:0;right:0;top:0;height:14px;z-index:0;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/14px 14px;opacity:.85}
+.lote{display:flex;flex-direction:column;gap:10px}
+.lote .prev{width:100%;max-height:300px;object-fit:contain;border-radius:14px;background:#0008;border:3px solid var(--gold)}
+.lote input{font:inherit;font-size:16px;padding:12px;border-radius:10px;border:2px solid var(--cream);background:#0B1428;color:var(--cream);width:100%}
+.lote .op{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:2px solid var(--cream);background:#0B1428cc;border-radius:12px;padding:10px 12px;font-weight:600}
+.lote .op small{opacity:.7;font-weight:500;white-space:nowrap}
+.lote .op:active{background:var(--gold);color:var(--navy)}
+.lote .row2{display:flex;gap:8px}.lote .row2 .btn{flex:1}
+.busq{background:#0B1428e6;border:2px solid var(--gold);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.busq .row2{display:flex;gap:8px;flex-wrap:wrap}.busq small{opacity:.75;font-size:14px;line-height:1.3}
 .albums{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .alb{position:relative;overflow:hidden;border:3px solid var(--gold);border-radius:16px;padding:12px 10px 12px;min-height:178px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;text-align:left;color:#fff;box-shadow:0 8px 18px #0009,inset 0 0 0 2px #0003}
 .alb.autos{background:linear-gradient(155deg,#E4572E 0%,#B3261E 55%,#6E0F1A 100%)}
@@ -133,6 +142,7 @@ body[data-fondo]::before{content:"";position:fixed;left:0;right:0;top:0;height:1
 <div id="app"></div>
 <div id="toast" role="status"></div>
 <input type="file" id="file" accept="image/*" hidden>
+<input type="file" id="filelote" accept="image/*" multiple hidden>
 <input type="file" id="fileimp" accept=".zip,application/zip,image/*" multiple hidden>
 <script>
 'use strict';
@@ -1593,6 +1603,7 @@ const S = {screen:'home', pref:{deck:'tec',size:'media'}, game:null, fotos:{}, f
 function cargar(){
   try{ S.guardar = localStorage.getItem(LS_GUARDAR) !== 'no'; }catch(e){}
   try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
+  S.legado = Object.assign({}, S.fotos);
   try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
   try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]) S.pref = p; }catch(e){}
 }
@@ -1602,18 +1613,28 @@ function idb(){
   if(IDB) return IDB;
   IDB = new Promise((ok, mal) => {
     try{
-      const r = indexedDB.open('naipes80', 1);
-      r.onupgradeneeded = () => r.result.createObjectStore('hw');
+      const r = indexedDB.open('naipes80', 2);
+      r.onupgradeneeded = () => { ['hw','fotos'].forEach(n => { if(!r.result.objectStoreNames.contains(n)) r.result.createObjectStore(n); }); };
       r.onsuccess = () => ok(r.result); r.onerror = () => mal(r.error);
     }catch(e){ mal(e); }
   });
   return IDB;
 }
-function idbOp(modo, fn){ return idb().then(db => new Promise((ok, mal) => { const t = db.transaction('hw', modo), q = fn(t.objectStore('hw')); t.oncomplete = () => ok(q && q.result); t.onerror = () => mal(t.error); })); }
+function idbOp(modo, fn, tienda){ tienda = tienda || 'hw'; return idb().then(db => new Promise((ok, mal) => { const t = db.transaction(tienda, modo), q = fn(t.objectStore(tienda)); t.oncomplete = () => ok(q && q.result); t.onerror = () => mal(t.error); })); }
 function cargarFotosHW(){
-  idb().then(db => { const t = db.transaction('hw','readonly'), st = t.objectStore('hw'), ks = st.getAllKeys(), vs = st.getAll();
-    t.oncomplete = () => { ks.result.forEach((k,i) => S.fotosHW[k] = vs.result[i]); if(S.screen === 'fotoshw' || S.screen === 'game') render(); }; }).catch(() => {});
+  idb().then(db => { const t = db.transaction(['hw','fotos'],'readonly'), st = t.objectStore('hw'), ks = st.getAllKeys(), vs = st.getAll(), sa = t.objectStore('fotos'), ka = sa.getAllKeys(), va = sa.getAll();
+    t.oncomplete = () => {
+      ks.result.forEach((k,i) => S.fotosHW[k] = vs.result[i]);
+      // fotos de autos: lo guardado en IndexedDB manda; lo que quede en localStorage (versiones anteriores) se migra
+      const viejas = S.legado || {}, nuevas = {}; ka.result.forEach((k,i) => nuevas[k] = va.result[i]);
+      const migrar = Object.keys(viejas).filter(k => !(k in nuevas));
+      S.fotos = Object.assign({}, viejas, nuevas);
+      if(migrar.length) idbOp('readwrite', o => { migrar.forEach(k => o.put(viejas[k], k)); }, 'fotos').then(() => { try{ localStorage.removeItem(LS_FOTOS); }catch(e){} }).catch(() => {});
+      else { try{ localStorage.removeItem(LS_FOTOS); }catch(e){} }
+      if(S.screen !== 'game') render();
+    }; }).catch(() => {});
 }
+function idbAutos(fn){ return idbOp('readwrite', fn, 'fotos'); }
 function guardar(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } }
 function aviso(t){ TOAST.textContent = t; TOAST.style.display = 'block'; clearTimeout(aviso.t); aviso.t = setTimeout(()=>{ TOAST.style.display='none'; },2600); }
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -1797,7 +1818,7 @@ function cambiarGuardar(on){
   if(on){
     S.guardar = true; guardar(LS_GUARDAR,'si');
     try{ localStorage.removeItem(LS_GUARDAR); }catch(e){}
-    guardar(LS_FOTOS,S.fotos);
+    idbAutos(st => { Object.keys(S.fotos).forEach(k => st.put(S.fotos[k], k)); }).catch(() => {});
     Object.keys(S.fotosHW).forEach(k => idbOp('readwrite', st => st.put(S.fotosHW[k], k)).catch(() => {}));
     aviso('Las fotos se guardan en este dispositivo');
   } else {
@@ -1806,6 +1827,7 @@ function cambiarGuardar(on){
       S.fotos = {}; S.fotosHW = {};
       try{ localStorage.removeItem(LS_FOTOS); }catch(e){}
       idbOp('readwrite', st => st.clear()).catch(() => {});
+      idbAutos(st => st.clear()).catch(() => {});
       aviso('Fotos borradas. Las nuevas no se guardan');
     } else aviso('Las fotos nuevas no se guardan');
   }
@@ -1820,9 +1842,9 @@ function ambito(id){
   const usados = {};
   const nom = b => { let n = b, i = 2; while(usados[n]) n = b + '-' + (i++); usados[n] = 1; return n + '.jpg'; };
   if(id === 'hw') return {id, dir:'Hot Wheels', zip:'naipes-hot-wheels.zip', store:S.fotosHW, max:420, q:0.7,
-    items: DECKS.hw.cards.map(c => ({key:c.key, file:nom(slug(c.modelo) + '-' + c.v.lanz)}))};
+    items: DECKS.hw.cards.map(c => ({key:c.key, file:nom(slug(c.modelo) + '-' + c.v.lanz), label:c.modelo + ' (' + c.v.lanz + ')', q:c.modelo, marca:''}))};
   return {id:'autos', dir:'Autos', zip:'naipes-autos.zip', store:S.fotos, max:640, q:0.72,
-    items: MODELOS.map(m => ({key:m.key, file:nom(slug(m.marca + ' ' + m.modelo))}))};
+    items: MODELOS.map(m => ({key:m.key, file:nom(slug(m.marca + ' ' + m.modelo)), label:m.marca + ' ' + m.modelo, q:m.modelo.split('/')[0].replace(/\(.*?\)/g,'').trim(), marca:m.marca}))};
 }
 function aBytes(d){ const b = atob(d.split(',')[1]), u = new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i] = b.charCodeAt(i); return u; }
 const CRC_T = (() => { const t = []; for(let n=0;n<256;n++){ let c = n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320 ^ (c>>>1) : c>>>1; t[n] = c>>>0; } return t; })();
@@ -1883,7 +1905,7 @@ async function importar(sc, entradas){
   let msg = ks.length + ' fotos cargadas' + (ign ? ', ' + ign + ' ignoradas' : '');
   if(!S.guardar) msg += '. No se guardan en el navegador';
   else if(sc.id === 'hw') await idbOp('readwrite', o => { ks.forEach(k => o.put(nuevos[k], k)); }).catch(() => { msg += '. No se pudieron guardar'; });
-  else if(!guardar(LS_FOTOS, S.fotos)) msg += '. No hay espacio para guardarlas en el navegador';
+  else await idbAutos(o => { ks.forEach(k => o.put(nuevos[k], k)); }).catch(() => { msg += '. No se pudieron guardar'; });
   aviso(msg); render();
 }
 function cfgOp(modo, fn){
@@ -1936,10 +1958,148 @@ IMP.addEventListener('change', async () => {
   }catch(e){ aviso('No se pudo leer el archivo'); return; }
   await importar(ambito(id), es);
 });
+
+// ---------- Carga por lote ----------
+const LOTE = document.getElementById('filelote');
+function loteOpciones(){
+  const L = S.lote, sc = ambito(L.id), toks = slug(L.q).split('-').filter(Boolean);
+  let it = sc.items;
+  if(toks.length) it = it.filter(x => { const t = slug(x.label); return toks.every(k => t.indexOf(k) >= 0); });
+  else return '<div class="note">Escribí el nombre del modelo para encontrar su casillero.</div>';
+  if(!it.length) return '<div class="note">No hay casilleros con ese nombre.</div>';
+  return it.slice(0, 8).map(x => `<button class="op" data-act="lote-asignar" data-key="${esc(x.key)}"><span>${esc(x.label)}</span>${sc.store[x.key] ? '<small>ya tiene foto</small>' : ''}</button>`).join('') +
+    (it.length > 8 ? `<div class="note">Hay ${it.length - 8} más: escribí más letras para afinar.</div>` : '');
+}
+function pantallaLote(){
+  const L = S.lote, f = L.cola[L.i];
+  return `<div class="bar"><button class="btn sm" data-act="lote-fin">Terminar</button><div class="sub">Foto ${L.i + 1} de ${L.cola.length} · ${L.hechas} asignadas</div></div>
+    <div class="lote"><img class="prev" src="${f.src}" alt="">
+      <input id="lq" type="search" placeholder="¿De qué modelo es? Escribí el nombre…" value="${esc(L.q)}" autocomplete="off">
+      <div id="llist" class="lote">${loteOpciones()}</div>
+      <div class="row2"><button class="btn" data-act="lote-saltar">Saltar esta foto</button></div></div>`;
+}
+function loteSiguiente(){
+  const L = S.lote; L.i++;
+  if(L.i >= L.cola.length){ loteFin(); return; }
+  L.q = L.cola[L.i].q; render(); window.scrollTo(0,0);
+}
+function loteFin(){
+  const L = S.lote; S.screen = L.id === 'hw' ? 'fotoshw' : 'fotos'; S.lote = null;
+  aviso(L.hechas + (L.hechas === 1 ? ' foto asignada' : ' fotos asignadas') + (S.guardar ? '' : '. No se guardan en el navegador')); render(); window.scrollTo(0,0);
+}
+async function loteAsignar(key){
+  const L = S.lote, sc = ambito(L.id), f = L.cola[L.i];
+  if(L.id === 'hw'){
+    S.fotosHW[key] = f.src;
+    if(S.guardar) await idbOp('readwrite', st => st.put(f.src, key)).catch(() => aviso('Se ve ahora, pero no se pudo guardar'));
+  } else {
+    S.fotos[key] = f.src;
+    if(S.guardar) await idbAutos(st => st.put(f.src, key)).catch(() => aviso('Se ve ahora, pero no se pudo guardar'));
+  }
+  L.hechas++; loteSiguiente();
+}
+LOTE.addEventListener('change', async () => {
+  const fs = Array.from(LOTE.files || []), id = S.imp; LOTE.value = '';
+  if(!fs.length || !id) return;
+  const sc = ambito(id), cola = []; aviso('Preparando ' + fs.length + ' fotos…');
+  for(const f of fs){
+    try{
+      const src = await leerFoto(f, sc.max, sc.q), base = f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+      const q = /[a-zA-Z]{3}/.test(base) && !/^(img|dsc|pxl|photo|image|foto)/i.test(base) ? base : '';
+      cola.push({src, q});
+    }catch(e){}
+  }
+  if(!cola.length){ aviso('No se pudieron leer esas fotos'); return; }
+  S.lote = {id, cola, i:0, hechas:0, q:cola[0].q}; S.screen = 'lote'; render(); window.scrollTo(0,0);
+});
+
+// ---------- Búsqueda automática de fotos ----------
+const FUENTES = {
+  autos: [{base:'https://es.wikipedia.org/w/api.php', n:'Wikipedia'}, {base:'https://en.wikipedia.org/w/api.php', n:'Wikipedia (inglés)'}],
+  hw: [{base:'https://hotwheels.fandom.com/api.php', n:'Hot Wheels Wiki'}]
+};
+async function jget(u){ const r = await fetch(u); if(!r.ok) throw new Error('http'); return r.json(); }
+function validarTitulo(id, it, titulo){
+  const t = slug(titulo), toks = slug(it.q).split('-').filter(Boolean);
+  if(id === 'hw') return toks.slice(0,3).every(k => t.indexOf(k) >= 0);
+  const mt = slug(it.marca).split('-').filter(Boolean);
+  return mt.some(k => t.indexOf(k) >= 0) && (!toks.length || t.indexOf(toks[0]) >= 0);
+}
+async function urlFoto(id, it, px){
+  for(const f of FUENTES[id]){
+    const q = id === 'hw' ? it.q : (it.marca + ' ' + it.q);
+    const u = f.base + '?action=query&generator=search&gsrsearch=' + encodeURIComponent(q) + '&gsrlimit=6&prop=pageimages&piprop=thumbnail&pithumbsize=' + px + '&format=json&origin=*';
+    const j = await jget(u), ps = Object.values((j.query || {}).pages || {}).sort((a,b) => a.index - b.index);
+    for(const pg of ps) if(pg.thumbnail && validarTitulo(id, it, pg.title)) return pg.thumbnail.source;
+  }
+  return null;
+}
+function itemsSinFoto(id){
+  const sc = ambito(id), st = sc.store;
+  if(id === 'hw'){ const ok = {}; hwFiltrar().forEach(c => ok[c.key] = 1); return sc.items.filter(it => ok[it.key] && !st[it.key]); }
+  return sc.items.filter(it => !st[it.key]);
+}
+function panelBusq(){
+  const B = S.busq; if(!B) return '';
+  if(B.fin) return `<div class="busq"><b>Búsqueda terminada</b><div>Encontré ${B.ok} de ${B.total} fotos.${B.error ? ' ' + esc(B.error) : ''}</div>
+    <small>Son fotos de ${B.id === 'hw' ? 'Hot Wheels Wiki' : 'Wikipedia'} (licencias libres, para uso personal). Revisalas: si alguna no es la correcta, tocá "Quitar foto".</small>
+    <div class="row2">${B.claves.length ? '<button class="btn sm" data-act="busq-deshacer">Deshacer lo encontrado</button>' : ''}<button class="btn sm" data-act="busq-cerrar">Cerrar</button></div></div>`;
+  return `<div class="busq"><b>Buscando fotos… ${B.i} de ${B.total}</b><div class="prog" style="margin:0"><span style="width:${Math.round(100*B.i/B.total)}%"></span></div>
+    <div>${B.ok} encontradas</div><div class="row2"><button class="btn sm" data-act="busq-parar">Detener</button></div></div>`;
+}
+function contenidoBusq(id){
+  if(S.busq) return S.busq.id === id ? panelBusq() : '';
+  const n = itemsSinFoto(id).length;
+  return n ? `<button class="btn" data-act="busq-iniciar" data-sc="${id}">Buscar fotos automáticamente (${n}${id === 'hw' ? ' del filtro actual' : ''})</button>` : '';
+}
+function pintarBusq(){ const e = document.getElementById('busq'); if(e) e.innerHTML = contenidoBusq(e.dataset.sc); }
+function botonBusq(id){ return `<div id="busq" data-sc="${id}">${contenidoBusq(id)}</div>`; }
+async function buscarFotos(id){
+  const sc = ambito(id), lista = itemsSinFoto(id);
+  if(!lista.length) return;
+  if(lista.length > 150 && !confirm('Se van a buscar ' + lista.length + ' fotos, una por una. Puede tardar varios minutos y usa datos móviles. ¿Seguir?')) return;
+  const B = S.busq = {id, total:lista.length, i:0, ok:0, claves:[], fin:false, parar:false, errores:0, error:''};
+  const encontradas = {}, px = sc.max, store = sc.store;
+  render(); pintarBusq();
+  let idx = 0;
+  const obrero = async () => {
+    while(!B.parar && idx < lista.length){
+      const it = lista[idx++];
+      try{
+        const u = await urlFoto(id, it, px);
+        if(u){
+          const r = await fetch(u); if(!r.ok) throw new Error('img');
+          const src = await leerFoto(await r.blob(), sc.max, sc.q);
+          if(!store[it.key]){ store[it.key] = src; encontradas[it.key] = src; B.claves.push(it.key); B.ok++; }
+        }
+        B.errores = 0;
+      }catch(e){ B.errores++; if(B.errores >= 5 && !B.ok){ B.parar = true; B.error = 'No pude conectarme: revisá internet o probá más tarde.'; } }
+      B.i++; pintarBusq();
+    }
+  };
+  await Promise.all([obrero(), obrero(), obrero()]);
+  B.fin = true; B.i = Math.min(B.i, B.total);
+  const ks = Object.keys(encontradas);
+  if(ks.length && S.guardar){
+    if(id === 'hw') await idbOp('readwrite', o => { ks.forEach(k => o.put(encontradas[k], k)); }).catch(() => { B.error = 'Se ven ahora, pero no se pudieron guardar.'; });
+    else await idbAutos(o => { ks.forEach(k => o.put(encontradas[k], k)); }).catch(() => { B.error = 'Se ven ahora, pero no se pudieron guardar.'; });
+  }
+  if(S.busq === B){ if(S.screen === 'fotos' || S.screen === 'fotoshw') render(); }
+}
+function busqDeshacer(){
+  const B = S.busq; if(!B) return;
+  const st = B.id === 'hw' ? S.fotosHW : S.fotos;
+  B.claves.forEach(k => delete st[k]);
+  const f = B.id === 'hw' ? (o => B.claves.forEach(k => o.delete(k))) : null;
+  if(B.id === 'hw') idbOp('readwrite', f).catch(() => {}); else idbAutos(o => { B.claves.forEach(k => o.delete(k)); }).catch(() => {});
+  S.busq = null; aviso('Listo, deshice la búsqueda'); render();
+}
 function herramientasCarpeta(id){
+  const auto = botonBusq(id);
+  const lote = `<button class="btn" data-act="lote" data-sc="${id}">Cargar varias fotos</button>`;
   const fs = FS_OK ? `<div class="row2"><button class="btn sm" data-act="fs-guardar" data-sc="${id}">Guardar en carpeta</button><button class="btn sm" data-act="fs-cargar" data-sc="${id}">Cargar desde carpeta</button><button class="btn sm" data-act="fs-elegir" data-sc="${id}">Elegir carpeta</button></div>
     <small>Elegí una carpeta del dispositivo (por ejemplo "Naipes"). La app crea adentro la subcarpeta "${ambito(id).dir}".</small>` : '';
-  return `<details class="cartools"><summary><b>Carpeta en el dispositivo y copia de seguridad</b></summary>${fs}
+  return auto + lote + `<details class="cartools"><summary><b>Carpeta en el dispositivo y copia de seguridad</b></summary>${fs}
     <div class="row2"><button class="btn sm" data-act="zip-exp" data-sc="${id}">Exportar .zip</button><button class="btn sm" data-act="zip-imp" data-sc="${id}">Importar fotos</button></div>
     <small>${FS_OK ? '' : 'Este navegador no permite elegir carpetas: el .zip se baja a Descargas. '}Importar acepta un .zip de la app o fotos sueltas con el mismo nombre de archivo.</small></details>`;
 }
@@ -1979,6 +2139,7 @@ function tileHW(c){
     ${tiene ? `<button class="rm" data-act="quitarhw" data-key="${esc(c.key)}">Quitar foto</button>` : ''}</div>`;
 }
 function gridHW(){
+  setTimeout(() => { if(!S.busq) pintarBusq(); }, 0);
   const l = hwFiltrar(), v = l.slice(0, S.hwmax);
   return (v.length ? `<div class="grid">${v.map(tileHW).join('')}</div>` : `<div class="note">No hay castings con ese filtro.</div>`) +
     (l.length > v.length ? `<button class="btn" data-act="masHW">Ver más (${l.length - v.length} restantes)</button>` : '');
@@ -1995,8 +2156,8 @@ function pantallaFotosHW(){
     <div id="hwgrid">${gridHW()}</div>`;
 }
 function render(){
-  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'fotoshw' ? pantallaFotosHW() : pantallaInicio();
-  document.body.dataset.fondo = S.screen === 'fotos' ? 'autos' : S.screen === 'fotoshw' ? 'hw' : '';
+  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'fotoshw' ? pantallaFotosHW() : S.screen === 'lote' ? pantallaLote() : pantallaInicio();
+  document.body.dataset.fondo = S.screen === 'fotos' ? 'autos' : S.screen === 'fotoshw' ? 'hw' : S.screen === 'lote' ? (S.lote.id === 'hw' ? 'hw' : 'autos') : '';
   if(!document.body.dataset.fondo) delete document.body.dataset.fondo;
   if(S.screen === 'game' || S.screen === 'fin') window.scrollTo(0,0);
 }
@@ -2034,13 +2195,10 @@ FILE.addEventListener('change', async () => {
   }
   try{
     const data = await leerFoto(f);
-    const previa = S.fotos[key];
     S.fotos[key] = data;
     if(!S.guardar) aviso('Foto cargada. No se guarda: se pierde al cerrar la app');
-    else if(!guardar(LS_FOTOS, S.fotos)){
-      if(previa) S.fotos[key] = previa; else delete S.fotos[key];
-      aviso('No hay espacio para guardar la foto. Probá quitando alguna.');
-    } else aviso('Foto guardada');
+    else{ try{ await idbAutos(st => st.put(data, key)); aviso('Foto guardada'); }
+    catch(e){ aviso('Se ve ahora, pero no se pudo guardar en este dispositivo'); } }
   }catch(e){ aviso('No se pudo leer esa imagen'); }
   render();
 });
@@ -2062,12 +2220,20 @@ APP.addEventListener('click', e => {
   else if(a === 'quitarhw'){ const k = b.dataset.key; delete S.fotosHW[k]; idbOp('readwrite', st => st.delete(k)).catch(() => {}); document.getElementById('hwgrid').innerHTML = gridHW(); }
   else if(a === 'masHW'){ S.hwmax += 60; document.getElementById('hwgrid').innerHTML = gridHW(); }
   else if(a === 'foto'){ S.pending = b.dataset.key; FILE.click(); }
-  else if(a === 'quitar'){ delete S.fotos[b.dataset.key]; guardar(LS_FOTOS,S.fotos); render(); }
+  else if(a === 'quitar'){ const k = b.dataset.key; delete S.fotos[k]; idbAutos(st => st.delete(k)).catch(() => {}); render(); }
+  else if(a === 'busq-iniciar') buscarFotos(b.dataset.sc);
+  else if(a === 'busq-parar'){ if(S.busq) S.busq.parar = true; }
+  else if(a === 'busq-deshacer') busqDeshacer();
+  else if(a === 'busq-cerrar'){ S.busq = null; render(); }
+  else if(a === 'lote'){ S.imp = b.dataset.sc; LOTE.click(); }
+  else if(a === 'lote-asignar') loteAsignar(b.dataset.key);
+  else if(a === 'lote-saltar') loteSiguiente();
+  else if(a === 'lote-fin') loteFin();
   else if(/^(zip-exp|zip-imp|fs-guardar|fs-cargar|fs-elegir)$/.test(a)) accionCarpeta(a, b.dataset.sc);
   else if(a === 'instalar' && S.deferred){ S.deferred.prompt(); S.deferred.userChoice.finally(() => { S.deferred = null; render(); }); }
 });
 APP.addEventListener('change', e => { if(e.target.id === 'sw-guardar') cambiarGuardar(e.target.checked); });
-APP.addEventListener('input', e => { if(e.target.id === 'hwq'){ S.hwq = e.target.value; S.hwmax = 60; document.getElementById('hwgrid').innerHTML = gridHW(); } });
+APP.addEventListener('input', e => { if(e.target.id === 'lq'){ S.lote.q = e.target.value; document.getElementById('llist').innerHTML = loteOpciones(); } else if(e.target.id === 'hwq'){ S.hwq = e.target.value; S.hwmax = 60; document.getElementById('hwgrid').innerHTML = gridHW(); } });
 APP.addEventListener('change', e => {
   if(e.target.id === 'hwdec'){ S.hwdec = e.target.value; S.hwmax = 60; document.getElementById('hwgrid').innerHTML = gridHW(); }
   else if(e.target.id === 'hwf'){ S.hwf = e.target.value; S.hwmax = 60; document.getElementById('hwgrid').innerHTML = gridHW(); }
