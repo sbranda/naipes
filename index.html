@@ -233,6 +233,8 @@ body{background:radial-gradient(120% 45% at 50% -8%,#33468a77,#0000 65%),repeati
 .dia .hist{justify-content:flex-start}
 .hist i{width:24px;height:24px;border-radius:6px;box-shadow:inset 0 -3px 0 #0003}
 .hist .w{background:#4C956C}.hist .l{background:#C8352E}.hist .t{background:#F2B705}
+.seg.sm .opt b{font-size:24px}
+.pozo{margin-top:-2px}
 </style>
 </head>
 <body>
@@ -1200,15 +1202,17 @@ function crearMazos(){
 const DECKS = crearMazos();
 const TAMANOS = {corta:{n:6,t:'Corta',d:'6 cartas cada uno'},media:{n:10,t:'Media',d:'10 cartas cada uno'},completa:{n:0,t:'Completa',d:'Todo el mazo repartido'}};
 
+const DIFS = {facil:{t:'Fácil',d:'Elige casi al azar'},normal:{t:'Normal',d:'Elige su mejor dato'},memorioso:{t:'Memorioso',d:'Recuerda tus cartas'}};
+
 // ---------- Estado ----------
-const S = {screen:'home', pref:{deck:'tec',size:'media'}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, deferred:null, pending:null};
+const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal'}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, deferred:null, pending:null};
 function cargar(){
   try{ S.guardar = localStorage.getItem(LS_GUARDAR) !== 'no'; }catch(e){}
   try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
   S.legado = Object.assign({}, S.fotos);
   try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
   try{ const d = JSON.parse(localStorage.getItem(LS_DIARIO)||'null'); if(d) S.dia = Object.assign(S.dia,d); }catch(e){}
-  try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]) S.pref = p; }catch(e){}
+  try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]){ S.pref = Object.assign({dif:'normal'}, p); if(!DIFS[S.pref.dif]) S.pref.dif = 'normal'; } }catch(e){}
 }
 // Fotos: IndexedDB (no entran en localStorage)
 let IDB = null;
@@ -1315,7 +1319,7 @@ function nuevaPartida(modo){
   const mitad = Math.floor(deck.cards.length/2);
   const n = t.n ? Math.min(t.n, mitad) : mitad;
   const mazo = mezclar(deck.cards.slice(), rnd);
-  S.game = {deckId:deck.id, you:mazo.slice(0,n), cpu:mazo.slice(n,2*n), pot:[], turn:rnd()<.5?'you':'cpu', hist:[], diario:dia,
+  S.game = {deckId:deck.id, you:mazo.slice(0,n), cpu:mazo.slice(n,2*n), pot:[], turn:rnd()<.5?'you':'cpu', hist:[], diario:dia, dif: dia ? 'normal' : S.pref.dif, mem: Array(n).fill(null),
             phase:'pick', sel:null, res:null, shown:null, ronda:1, quien:null, fin:null};
   S.screen = 'game';
   render();
@@ -1325,17 +1329,31 @@ function percentil(deck, card, stat){
   let w = 0; deck.cards.forEach(o => { if(stat.dir*(card.v[stat.id]-o.v[stat.id]) >= 0) w++; });
   return w/deck.cards.length;
 }
+function elegirCPU(g, deck, rr){
+  const c = g.cpu[0], dif = g.dif || 'normal';
+  const pri = s => percentil(deck, c, s);
+  let score;
+  if(dif === 'facil') score = s => pri(s) + rr() * 0.7;
+  else if(dif === 'memorioso'){
+    // Recuerda las cartas que ya se mostraron: sabe cuáles siguen en tu mazo y, si tu carta de arriba ya la vio, la conoce.
+    const vistas = new Set([...g.cpu, ...g.pot, ...g.mem.filter(Boolean)]);
+    const posibles = deck.cards.filter(o => !vistas.has(o)), top = g.mem[0];
+    const gana = (s, o) => { const d = s.dir * (c.v[s.id] - o.v[s.id]); return d > 0 ? 1 : d < 0 ? 0 : .5; };
+    score = s => (top ? gana(s, top) : posibles.length ? posibles.reduce((t, o) => t + gana(s, o), 0) / posibles.length : pri(s)) + pri(s) * 0.001 + rr() * 0.001;
+  }
+  else score = s => pri(s) + rr() * 0.15;
+  let mejor = null, pm = -1;
+  deck.stats.forEach(s => { const p = score(s); if(p > pm){ pm = p; mejor = s; } });
+  return mejor;
+}
 function agendarCPU(){
   const g = S.game;
   if(!g || g.phase !== 'pick' || g.turn !== 'cpu' || g.fin) return;
   clearTimeout(agendarCPU.t);
   agendarCPU.t = setTimeout(() => {
     if(S.screen !== 'game' || !S.game || S.game !== g || g.phase !== 'pick') return;
-    const deck = DECKS[g.deckId], c = g.cpu[0];
-    let mejor = null, pm = -1;
     const rr = g.diario ? rng(semilla('cpu|' + g.diario.clave + '|' + g.ronda)) : Math.random;
-    deck.stats.forEach(s => { const p = percentil(deck,c,s) + rr()*0.15; if(p > pm){ pm = p; mejor = s; } });
-    resolver(mejor.id, 'cpu');
+    resolver(elegirCPU(g, DECKS[g.deckId], rr).id, 'cpu');
   }, 1100);
 }
 function resolver(statId, quien){
@@ -1344,8 +1362,8 @@ function resolver(statId, quien){
   const a = g.you[0], b = g.cpu[0];
   const d = st.dir*(a.v[st.id]-b.v[st.id]);
   g.sel = statId; g.quien = quien; g.phase = 'reveal'; g.shown = {a,b};
-  g.you.shift(); g.cpu.shift();
-  if(d > 0){ g.res = 'you'; g.you.push(a,b,...g.pot); g.pot = []; g.turn = 'you'; }
+  g.you.shift(); g.cpu.shift(); g.mem.shift();
+  if(d > 0){ g.res = 'you'; g.you.push(a,b,...g.pot); g.mem.push(a,b,...g.pot); g.pot = []; g.turn = 'you'; }
   else if(d < 0){ g.res = 'cpu'; g.cpu.push(b,a,...g.pot); g.pot = []; g.turn = 'cpu'; }
   else { g.res = 'tie'; g.pot.push(a,b); }
   g.hist.push(g.res === 'you' ? 'w' : g.res === 'cpu' ? 'l' : 't');
@@ -1452,11 +1470,13 @@ function bloqueDia(){
 function pantallaInicio(){
   const mazos = Object.values(DECKS).map(d => `<button class="opt ${S.pref.deck===d.id?'on':''}" data-act="deck" data-v="${d.id}"><span class="tx"><b>${d.nombre}</b><small>${d.desc}</small></span><span class="nb">${d.cards.length}<small>cartas</small></span></button>`).join('');
   const tams = Object.keys(TAMANOS).map(k => `<button class="opt ${S.pref.size===k?'on':''}" data-act="size" data-v="${k}"><b>${TAMANOS[k].t}</b><small>${TAMANOS[k].d}</small></button>`).join('');
+  const difs = Object.keys(DIFS).map(k => `<button class="opt ${S.pref.dif===k?'on':''}" data-act="dif" data-v="${k}"><b>${DIFS[k].t}</b><small>${DIFS[k].d}</small></button>`).join('');
   const inst = S.deferred ? `<button class="btn" data-act="instalar">Instalar la app</button>` : (iosSinInstalar() ? `<div class="note">Para instalarla en iPhone o iPad: tocá Compartir y después "Agregar a pantalla de inicio".</div>` : '');
   return `<div class="hd"><div class="yr">NAIPES · 1980—1999</div><h1>Autos argentinos<br><em>de los 80 a los 90</em></h1><div class="sub">Juego de naipes contra la computadora</div></div>
     ${bloqueDia()}
     <div class="group"><label>Mazo</label><div class="opts">${mazos}</div></div>
     <div class="group"><label>Tamaño de la partida</label><div class="opts seg">${tams}</div></div>
+    <div class="group"><label>Dificultad de la compu</label><div class="opts seg sm">${difs}</div></div>
     <button class="btn big" data-act="jugar">Jugar</button>
     <div class="group"><label>Álbum de fotos</label><div class="albums">${portadaAlbum('autos')}</div></div>
     <div class="group"><label>Tu récord</label><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empatadas</small></div></div></div>
@@ -1490,7 +1510,7 @@ function pantallaJuego(){
       <div class="score"><div class="sc ${turnoYo?'turno':''}"><small>Vos</small><b>${g.you.length}</b></div><span class="vs">VS</span><div class="sc ${turnoCpu?'turno':''}"><small>Compu</small><b>${g.cpu.length}</b></div></div>
       <div class="rd">R${g.ronda}</div></div>
     <div class="meter" title="Cartas en tu poder"><span style="width:${pct}%"></span></div>
-    ${g.pot.length ? `<div class="pozo">Pozo: ${g.pot.length} cartas</div>` : ''}
+    <div class="pozo">Compu: ${DIFS[g.dif].t}${g.pot.length ? ' · Pozo: ' + g.pot.length + ' cartas' : ''}</div>
     <div class="msg ${clsMsg}">${esc(textoMensaje(g,deck))}</div>
     ${oponente}
     ${cartaHTML(mia, deck, {canPick:!reveal && g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
@@ -1500,7 +1520,7 @@ function pantallaFin(){
   const g = S.game;
   const t = g.fin === 'you' ? 'Ganaste' : g.fin === 'cpu' ? 'Perdiste' : 'Empate';
   const ic = g.fin === 'you' ? '🏆' : g.fin === 'cpu' ? '🏁' : '🤝';
-  const s = g.fin === 'tie' ? 'Quedaron igualados.' : `Terminaste con ${g.you.length} cartas contra ${g.cpu.length}.`;
+  const s = (g.fin === 'tie' ? 'Quedaron igualados.' : `Terminaste con ${g.you.length} cartas contra ${g.cpu.length}.`) + (g.diario ? '' : ` Compu: ${DIFS[g.dif].t}.`);
   return `<div class="fin"><div class="res ${g.fin}"><div class="ic">${ic}</div><h1>${t}</h1>
     <div class="pts"><span>${g.you.length}</span><i>–</i><span>${g.cpu.length}</span></div>
     <div class="lab"><span>Vos</span><span>Compu</span></div><div class="sub" style="margin-top:10px">${s}</div></div>
@@ -1856,6 +1876,7 @@ APP.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if(!b) return;
   const a = b.dataset.act;
   if(a === 'deck'){ S.pref.deck = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
+  else if(a === 'dif'){ S.pref.dif = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
   else if(a === 'size'){ S.pref.size = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
   else if(a === 'jugar') nuevaPartida();
   else if(a === 'diario'){ const d = infoDia(); if(!(S.dia.hecho && S.dia.hecho.clave === d.clave)) nuevaPartida('diario'); }
