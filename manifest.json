@@ -1,7 +1,7 @@
 {
-  "name": "Naipes: autos argentinos de los 80",
-  "short_name": "Naipes 80",
-  "description": "Juego de naipes con autos argentinos de los años 80, contra la computadora.",
+  "name": "Naipes: autos argentinos de los 70 a los 90",
+  "short_name": "Naipes 70-90",
+  "description": "Juego de naipes con autos argentinos de los años 70 a 90, contra la computadora.",
   "lang": "es-AR",
   "start_url": "./index.html",
   "scope": "./",

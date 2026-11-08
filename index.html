@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#14213D">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Naipes 80-90">
-<title>Naipes: autos argentinos de los 80 a los 90</title>
+<meta name="apple-mobile-web-app-title" content="Naipes 70-90">
+<title>Naipes: autos argentinos de los 70 a los 90</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -138,7 +138,7 @@ body{background:radial-gradient(120% 45% at 50% -8%,#33468a77,#0000 65%),repeati
 .btn.big:active{transform:translateY(3px);border-bottom-width:2px;box-shadow:0 3px 8px #0006}
 .hd{position:relative;overflow:hidden;border:3px solid var(--gold);border-radius:22px;padding:22px 16px 18px;background:linear-gradient(155deg,#E4572E 0%,#B3261E 55%,#6E0F1A 100%);box-shadow:0 8px 0 #0008,0 14px 26px #0008}
 .hd::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/12px 12px;opacity:.85}
-.hd::after{content:"80·90";position:absolute;right:-8px;bottom:-26px;font-family:var(--disp);font-size:120px;line-height:1;color:#ffffff1f;letter-spacing:.04em;pointer-events:none}
+.hd::after{content:"70·90";position:absolute;right:-8px;bottom:-26px;font-family:var(--disp);font-size:120px;line-height:1;color:#ffffff1f;letter-spacing:.04em;pointer-events:none}
 .hd .yr{font-family:var(--disp);letter-spacing:.34em;font-size:16px;color:#FFE27A;margin-top:6px}
 .hd h1{font-size:46px;line-height:.98;margin-top:2px;text-shadow:0 3px 0 #0007;color:#fff}
 .hd h1 em{font-style:normal;color:var(--gold)}
@@ -359,21 +359,21 @@ const TEC = [
  ['Dodge','1500','sedan',1.5,72,19,1971,'','dodge-1500',0,0],
  ['Dodge','1500 1.8','sedan',1.8,92,19,1971,'','dodge-1500',0,0],
  ['Fiat','1600 Coupé','coupe',1.6,80,3,1970,'Valor aproximado','fiat-1600-coupe',1,1],
- ['Fiat','128 1.1','sedan',1.1,55,19,1971,'Potencia en PS','fiat-128',0,0],
- ['Fiat','128 1.3','sedan',1.3,60,19,1971,'Potencia en PS','fiat-128',0,0],
- ['Fiat','125','sedan',1.6,90,7,1975,'Potencia en PS','fiat-125',0,0],
- ['Fiat','125 S','sedan',1.6,100,7,1975,'Potencia en PS','fiat-125',0,0],
- ['Fiat','133','hatch',0.9,40,5,1977,'Potencia en PS','fiat-133',0,0],
+ ['Fiat','128 1.1','sedan',1.1,55,19,1971,'Potencia en CV','fiat-128',0,0],
+ ['Fiat','128 1.3','sedan',1.3,60,19,1971,'Potencia en CV','fiat-128',0,0],
+ ['Fiat','125','sedan',1.6,90,7,1975,'Potencia en CV','fiat-125',0,0],
+ ['Fiat','125 S','sedan',1.6,100,7,1975,'Potencia en CV','fiat-125',0,0],
+ ['Fiat','133','hatch',0.9,40,5,1977,'Potencia en CV','fiat-133',0,0],
  ['Ford','Ranchero','pickup',3.0,105,16,1971,'Valor aproximado','ford-ranchero',1,1],
- ['Ford','Taunus L','sedan',2.0,92,9,1974,'Potencia SAE','ford-taunus',0,0],
- ['Ford','Taunus GXL','sedan',2.3,122,9,1974,'Potencia SAE','ford-taunus',0,0],
- ['Ford','Taunus Coupé SP5','sedan',2.3,132,9,1974,'Potencia SAE','ford-taunus',0,0],
+ ['Ford','Taunus L','sedan',2.0,92,9,1974,'Potencia SAE (bruta), en CV','ford-taunus',0,0],
+ ['Ford','Taunus GXL','sedan',2.3,122,9,1974,'Potencia SAE (bruta), en CV','ford-taunus',0,0],
+ ['Ford','Taunus Coupé SP5','sedan',2.3,132,9,1974,'Potencia SAE (bruta), en CV','ford-taunus',0,0],
  ['IAME','Rastrojero Conosur','sedan',1.5,55,5,1974,'Valor aproximado','iame-conosur',1,1],
  ['Mercedes','220 D Pickup','pickup',2.2,60,4,1972,'','mercedes-220d',0,0],
  ['Opel','K 180','sedan',1.8,83,4,1974,'','opel-k180',0,0],
  ['Renault','12 TS','sedan',1.4,74,24,1970,'','renault-12',0,0],
- ['Renault','12 Alpine','sedan',1.4,110,24,1970,'Potencia en PS','renault-12',0,0],
- ['Renault','12 Gordini (Francia)','sedan',1.6,113,24,1970,'Potencia en PS','renault-12',0,0],
+ ['Renault','12 Alpine','sedan',1.4,110,24,1970,'Potencia en CV','renault-12',0,0],
+ ['Renault','12 Gordini (Francia)','sedan',1.6,113,24,1970,'Potencia en CV','renault-12',0,0],
  ['Chevrolet','D-20 Diésel','pickup',4.0,89,4,1993,'potencia convertida a CV (fuente en hp)','chevrolet-d20',0,0],
  ['Chevrolet','D-20 Turbo','pickup',4.0,125,4,1993,'potencia convertida a CV (fuente en hp), 1991','chevrolet-d20',0,0],
  ['Chevrolet','D-20 Turbo Plus','pickup',4.0,149,4,1993,'potencia convertida a CV (fuente en hp), 1995','chevrolet-d20',0,0],
@@ -483,7 +483,7 @@ const HIS = [
  ['Volkswagen','Caddy','Utilitario',1996,2008,'vw-caddy','van'],
 ];
 // Período del juego: se muestran solo los modelos lanzados desde este año (los datos de antes siguen en TEC y HIS)
-const AMIN = 1980;
+const AMIN = 1970;
 const MODELOS = HIS.filter(h => h[3] >= AMIN).map(h => ({key:h[5], marca:h[0], modelo:h[1], shape:h[6]}));
 const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
 const FICHAS = {
@@ -1439,7 +1439,7 @@ function resumenDia(h){
 }
 function textoDia(h){
   const r = rachaVigente(), url = location.origin + location.pathname.replace(/index\.html$/, '');
-  return `Naipes 80-90 · Desafío #${h.num} (${fechaCorta(h.clave)})\n${h.fin === 'you' ? '🏆' : h.fin === 'cpu' ? '🏁' : '🤝'} ${resumenDia(h)} · Mazo ${DECKS[h.deck].nombre}\n${h.hist.split('').map(x => EMO[x]).join('')}${r > 1 ? '\n🔥 Racha: ' + r + ' días' : ''}\n${url}`;
+  return `Naipes 70-90 · Desafío #${h.num} (${fechaCorta(h.clave)})\n${h.fin === 'you' ? '🏆' : h.fin === 'cpu' ? '🏁' : '🤝'} ${resumenDia(h)} · Mazo ${DECKS[h.deck].nombre}\n${h.hist.split('').map(x => EMO[x]).join('')}${r > 1 ? '\n🔥 Racha: ' + r + ' días' : ''}\n${url}`;
 }
 async function compartirTexto(){
   const h = S.dia.hecho; if(!h) return;
@@ -1454,7 +1454,7 @@ async function imagenDia(h){
   let g = x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#16254a'); g.addColorStop(1,'#0B1428'); x.fillStyle = g; x.fillRect(0,0,W,H);
   g = x.createLinearGradient(0,0,W,380); g.addColorStop(0,'#E4572E'); g.addColorStop(.55,'#B3261E'); g.addColorStop(1,'#6E0F1A'); x.fillStyle = g; x.fillRect(0,0,W,380);
   for(let i=0;i<W/30;i++) for(let j=0;j<2;j++){ x.fillStyle = (i+j)%2 ? '#111' : '#fff'; x.fillRect(i*30, j*30, 30, 30); }
-  x.textAlign = 'center'; x.fillStyle = '#fff'; x.font = '140px "Bebas Neue", Impact, sans-serif'; x.fillText('NAIPES 80-90', W/2, 215);
+  x.textAlign = 'center'; x.fillStyle = '#fff'; x.font = '140px "Bebas Neue", Impact, sans-serif'; x.fillText('NAIPES 70-90', W/2, 215);
   x.fillStyle = '#FFE27A'; x.font = '700 44px "Barlow Condensed", Arial Narrow, sans-serif'; x.fillText(`DESAFÍO #${h.num} · ${fechaCorta(h.clave)}`, W/2, 300);
   const col = h.fin === 'you' ? '#6fcf97' : h.fin === 'cpu' ? '#ff7b72' : '#F2B705';
   x.fillStyle = col; x.font = '200px "Bebas Neue", Impact, sans-serif'; x.fillText(h.fin === 'you' ? 'GANÉ' : h.fin === 'cpu' ? 'PERDÍ' : 'EMPATÉ', W/2, 600);
@@ -1468,7 +1468,7 @@ async function imagenDia(h){
   }
   const r = rachaVigente();
   if(r > 1){ x.fillStyle = '#F2B705'; x.font = '700 48px "Barlow Condensed", Arial Narrow, sans-serif'; x.fillText(`RACHA: ${r} DÍAS`, W/2, 920 + filas * (sz+gap) + 50); }
-  x.fillStyle = '#F4EAD2aa'; x.font = '700 32px "Barlow Condensed", Arial Narrow, sans-serif'; x.fillText('Autos argentinos de los 80 a los 90 · Seba Branda', W/2, H - 50);
+  x.fillStyle = '#F4EAD2aa'; x.font = '700 32px "Barlow Condensed", Arial Narrow, sans-serif'; x.fillText('Autos argentinos de los 70 a los 90 · Seba Branda', W/2, H - 50);
   return new Promise(ok => c.toBlob(ok, 'image/png'));
 }
 async function compartirImagen(){
@@ -1539,7 +1539,7 @@ function pantallaInicio(){
   const tams = Object.keys(TAMANOS).map(k => `<button class="opt ${S.pref.size===k?'on':''}" data-act="size" data-v="${k}"><b>${TAMANOS[k].t}</b><small>${TAMANOS[k].d}</small></button>`).join('');
   const difs = Object.keys(DIFS).map(k => `<button class="opt ${S.pref.dif===k?'on':''}" data-act="dif" data-v="${k}"><b>${DIFS[k].t}</b><small>${DIFS[k].d}</small></button>`).join('');
   const inst = S.deferred ? `<button class="btn" data-act="instalar">Instalar la app</button>` : (iosSinInstalar() ? `<div class="note">Para instalarla en iPhone o iPad: tocá Compartir y después "Agregar a pantalla de inicio".</div>` : '');
-  return `<div class="hd"><div class="yr">NAIPES · 1980—1999</div><h1>Autos argentinos<br><em>de los 80 a los 90</em></h1><div class="sub">Juego de naipes contra la computadora</div></div>
+  return `<div class="hd"><div class="yr">NAIPES · 1970—1999</div><h1>Autos argentinos<br><em>de los 70 a los 90</em></h1><div class="sub">Juego de naipes contra la computadora</div></div>
     ${bloqueDia()}
     <div class="group"><label>Mazo</label><div class="opts">${mazos}</div></div>
     <div class="group"><label>Tamaño de la partida</label><div class="opts seg">${tams}</div></div>
@@ -1571,7 +1571,7 @@ function pantallaDos(g, deck){
   const cab = `<div class="bar"><button class="btn sm" data-act="salir">Salir</button><div class="score">${marc('you')}<span class="vs">VS</span>${marc('cpu')}</div><div class="rd">R${g.ronda}</div></div>
     <div class="meter"><span style="width:${pct}%"></span></div>
     <div class="pozo">Dos jugadores${g.pot.length ? ' · Pozo: ' + g.pot.length + ' cartas' : ''}</div>`;
-  if(pase) return `${cab}<div class="pase"><div class="back"><span>NAIPES 80-90</span><small>Carta oculta</small></div>
+  if(pase) return `${cab}<div class="pase"><div class="back"><span>NAIPES 70-90</span><small>Carta oculta</small></div>
     <h2>Turno de ${esc(nm[g.turn])}</h2><p>Pasale el celu a ${esc(nm[g.turn])}.<br>${esc(nm[otro(g.turn)])}, no mires.</p>
     <button class="btn big" data-act="pase">Listo, soy ${esc(nm[g.turn])}</button></div>`;
   const yo = reveal ? g.quien : g.turn, el = otro(yo);
@@ -1584,7 +1584,7 @@ function pantallaDos(g, deck){
     msg = `${nm[g.quien]} eligió ${st.label}: ${fmt(st, cy.v[st.id], cy)}${u} contra ${fmt(st, ce.v[st.id], ce)}${u}. ` + (g.res === 'tie' ? 'Empate: las cartas van al pozo.' : `Ganó la ronda ${nm[g.res]}.`);
   } else msg = `${nm[yo]}: tocá una característica de tu carta.`;
   const opp = reveal ? cartaHTML(de(el), deck, {compact:true, sel:g.sel, res:rj[el], n:nm[el], rojo:el === 'cpu'})
-    : `<div class="back"><span>NAIPES 80-90</span><small>Carta de ${esc(nm[el])}</small></div>`;
+    : `<div class="back"><span>NAIPES 70-90</span><small>Carta de ${esc(nm[el])}</small></div>`;
   return `${cab}<div class="msg ${reveal && g.res !== 'tie' ? (g.res === yo ? 'win' : 'lose') : ''}">${esc(msg)}</div>${opp}
     ${cartaHTML(de(yo), deck, {canPick:!reveal, sel:g.sel, res:rj[yo], n:nm[yo], rojo:yo === 'cpu'})}
     ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}`;
@@ -1599,7 +1599,7 @@ function pantallaJuego(){
   const clsMsg = reveal ? (g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : '') : '';
   const oponente = reveal
     ? cartaHTML(g.shown.b, deck, {compact:true, sel:g.sel, res:resCpu, n:'Compu'})
-    : `<div class="back"><span>NAIPES 80-90</span><small>Carta de la compu</small></div>`;
+    : `<div class="back"><span>NAIPES 70-90</span><small>Carta de la compu</small></div>`;
   const tot = g.you.length + g.cpu.length, pct = tot ? Math.round(100 * g.you.length / tot) : 50;
   const turnoYo = !reveal && g.turn === 'you', turnoCpu = !reveal && g.turn === 'cpu';
   return `<div class="bar"><button class="btn sm" data-act="salir">Salir</button>
