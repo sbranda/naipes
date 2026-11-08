@@ -148,8 +148,8 @@ const CLARO = {Renault:1,Volkswagen:1};
 // Mazo técnico: [marca, modelo, forma, cilindrada L, potencia CV, años en producción (modelo), año de lanzamiento (modelo), nota, clave de foto]
 const TEC = [
  ['Renault','18 Break GTX','wagon',2.0,99,13,1981,'','renault-18'],
- ['Renault','18 TL','sedan',1.4,64,13,1981,'Versión europea, potencia en PS','renault-18'],
- ['Renault','18 TS','sedan',1.6,79,13,1981,'Versión europea, potencia en PS','renault-18'],
+ ['Renault','18 TL','sedan',1.4,64,13,1981,'Versión europea, potencia en CV','renault-18'],
+ ['Renault','18 TS','sedan',1.6,79,13,1981,'Versión europea, potencia en CV','renault-18'],
  ['Renault','18 GTL','sedan',1.4,77,13,1981,'','renault-18'],
  ['Renault','18 GTX','sedan',2.0,103,13,1981,'','renault-18'],
  ['Renault','18 GTX II','sedan',2.0,107,13,1981,'Serie limitada (1986-1987)','renault-18'],
@@ -157,75 +157,75 @@ const TEC = [
  ['Renault','18 GTD','sedan',2.1,64,13,1981,'Diésel, potencia DIN (1989-1993)','renault-18'],
  ['Renault','18 LX','sedan',2.0,95,13,1981,'','renault-18'],
  ['Renault','18 TX','sedan',2.0,99,13,1981,'Primera versión argentina (1981-1982)','renault-18'],
- ['Renault','18 Turbo','sedan',1.6,110,13,1981,'Versión europea, potencia en PS (1980-1985)','renault-18'],
+ ['Renault','18 Turbo','sedan',1.6,110,13,1981,'Versión europea, potencia en CV (1980-1985)','renault-18'],
  ['Renault','11 TL / GTL','hatch',1.4,60,11,1984,'Potencia DIN','renault-11'],
  ['Renault','11 TS','hatch',1.4,72,11,1984,'','renault-11'],
- ['Renault','11 TC','hatch',1.1,48,11,1984,'Versión europea, potencia en PS','renault-11'],
- ['Renault','11 GTE','hatch',1.7,95,11,1984,'Versión europea, potencia en PS','renault-11'],
+ ['Renault','11 TC','hatch',1.1,48,11,1984,'Versión europea, potencia en CV','renault-11'],
+ ['Renault','11 GTE','hatch',1.7,95,11,1984,'Versión europea, potencia en CV','renault-11'],
  ['Renault','11 Turbo','hatch',1.4,95,11,1984,'','renault-11'],
  ['Renault','9 TXE','sedan',1.6,75,9,1987,'','renault-9'],
- ['Renault','9 TC','sedan',1.1,48,9,1987,'Versión europea, potencia en PS','renault-9'],
- ['Renault','9 GTL','sedan',1.4,68,9,1987,'Versión europea, potencia en PS','renault-9'],
- ['Renault','9 TXE (Europa)','sedan',1.7,82,9,1987,'Versión europea, potencia en PS','renault-9'],
- ['Renault','9 GTX','sedan',1.7,90,9,1987,'Versión europea, potencia en PS','renault-9'],
- ['Renault','Fuego TL','coupe',1.4,64,10,1982,'Versión europea, potencia en PS','renault-fuego'],
- ['Renault','Fuego GTL','coupe',1.6,73,10,1982,'Versión europea, potencia en PS (1983)','renault-fuego'],
- ['Renault','Fuego GTS','coupe',1.6,96,10,1982,'Versión europea, potencia en PS','renault-fuego'],
+ ['Renault','9 TC','sedan',1.1,48,9,1987,'Versión europea, potencia en CV','renault-9'],
+ ['Renault','9 GTL','sedan',1.4,68,9,1987,'Versión europea, potencia en CV','renault-9'],
+ ['Renault','9 TXE (Europa)','sedan',1.7,82,9,1987,'Versión europea, potencia en CV','renault-9'],
+ ['Renault','9 GTX','sedan',1.7,90,9,1987,'Versión europea, potencia en CV','renault-9'],
+ ['Renault','Fuego TL','coupe',1.4,64,10,1982,'Versión europea, potencia en CV','renault-fuego'],
+ ['Renault','Fuego GTL','coupe',1.6,73,10,1982,'Versión europea, potencia en CV (1983)','renault-fuego'],
+ ['Renault','Fuego GTS','coupe',1.6,96,10,1982,'Versión europea, potencia en CV','renault-fuego'],
  ['Renault','Fuego GTX','coupe',2.0,110,10,1982,'Potencia de la versión europea','renault-fuego'],
- ['Renault','Fuego 2.2','coupe',2.2,116,10,1982,'Argentina 1987, potencia en PS','renault-fuego'],
+ ['Renault','Fuego 2.2','coupe',2.2,116,10,1982,'Argentina 1987, potencia en CV','renault-fuego'],
  ['Fiat','147 Spazio TR','hatch',1.3,60,15,1981,'','fiat-147'],
- ['Fiat','Regata 70','sedan',1.3,65,10,1985,'Versión europea; la fuente da 65 y 68 hp','fiat-regata'],
+ ['Fiat','Regata 70','sedan',1.3,66,10,1985,'Versión europea; la fuente da 65 y 68 hp, convertidos a CV','fiat-regata'],
  ['Fiat','Regata 85','sedan',1.5,82,10,1985,'Potencia de la versión europea','fiat-regata'],
- ['Fiat','Regata 100S','sedan',1.6,100,10,1985,'Versión europea, potencia en hp','fiat-regata'],
- ['Fiat','Regata D','sedan',1.7,60,10,1985,'Diésel europeo, potencia en hp','fiat-regata'],
- ['Fiat','Regata TD','sedan',1.9,80,10,1985,'Turbodiésel europeo, potencia en hp','fiat-regata'],
+ ['Fiat','Regata 100S','sedan',1.6,101,10,1985,'Versión europea, potencia convertida a CV (fuente en hp)','fiat-regata'],
+ ['Fiat','Regata D','sedan',1.7,61,10,1985,'Diésel europeo, potencia convertida a CV (fuente en hp)','fiat-regata'],
+ ['Fiat','Regata TD','sedan',1.9,81,10,1985,'Turbodiésel europeo, potencia convertida a CV (fuente en hp)','fiat-regata'],
  ['Ford','Sierra XR4','coupe',2.3,120,9,1984,'','ford-sierra'],
- ['Ford','Sierra 1.3','hatch',1.3,60,9,1984,'Versión europea, potencia en PS','ford-sierra'],
- ['Ford','Sierra 1.6','hatch',1.6,75,9,1984,'Versión europea, potencia en PS','ford-sierra'],
- ['Ford','Sierra 2.0i','hatch',2.0,115,9,1984,'Versión europea, potencia en PS','ford-sierra'],
- ['Ford','Sierra XR4i','hatch',2.8,150,9,1984,'Versión europea, V6, potencia en PS','ford-sierra'],
- ['Ford','Sierra RS Cosworth','hatch',2.0,204,9,1984,'Versión europea (1986-1987), potencia en PS','ford-sierra'],
- ['Ford','Sierra Diésel','hatch',2.3,67,9,1984,'Diésel europeo (1982-1989), potencia en PS','ford-sierra'],
+ ['Ford','Sierra 1.3','hatch',1.3,60,9,1984,'Versión europea, potencia en CV','ford-sierra'],
+ ['Ford','Sierra 1.6','hatch',1.6,75,9,1984,'Versión europea, potencia en CV','ford-sierra'],
+ ['Ford','Sierra 2.0i','hatch',2.0,115,9,1984,'Versión europea, potencia en CV','ford-sierra'],
+ ['Ford','Sierra XR4i','hatch',2.8,150,9,1984,'Versión europea, V6, potencia en CV','ford-sierra'],
+ ['Ford','Sierra RS Cosworth','hatch',2.0,204,9,1984,'Versión europea (1986-1987), potencia en CV','ford-sierra'],
+ ['Ford','Sierra Diésel','hatch',2.3,67,9,1984,'Diésel europeo (1982-1989), potencia en CV','ford-sierra'],
  ['Volkswagen','Gacel GL','sedan',1.6,73,10,1983,'Datos del lanzamiento','vw-gacel'],
  ['Volkswagen','Gacel 1.6 (1989)','sedan',1.6,83,10,1983,'El 1.6 nafta llegó a 83 CV hacia 1989','vw-gacel'],
  ['Peugeot','505 SR Injection','sedan',2.0,113,14,1981,'Solo Argentina según la fuente','peugeot-505'],
- ['Peugeot','505 STI','sedan',2.2,117,14,1981,'Versión europea (1982), potencia en PS','peugeot-505'],
- ['Peugeot','505 Turbo','sedan',2.2,160,14,1981,'Versión europea (1984), potencia en PS','peugeot-505'],
- ['Peugeot','505 V6','sedan',2.8,170,14,1981,'Versión europea (1986), potencia en PS','peugeot-505'],
- ['Peugeot','505 Diésel','sedan',2.3,70,14,1981,'Diésel europeo, potencia en PS','peugeot-505'],
- ['Peugeot','505 GTD Turbo','sedan',2.5,110,14,1981,'Turbodiésel europeo, potencia en PS','peugeot-505'],
- ['Fiat','Uno 1.0','hatch',1.0,52,12,1988,'Argentina, potencia en PS','fiat-uno'],
- ['Fiat','Uno SCV 1.6','hatch',1.6,87,12,1988,'Argentina, potencia en PS','fiat-uno'],
- ['Fiat','Uno 1.3 Diésel','hatch',1.3,45,12,1988,'Argentina, potencia en PS','fiat-uno'],
- ['Fiat','Uno Turbo i.e.','hatch',1.3,105,12,1988,'Versión europea, potencia en PS (1985-1990)','fiat-uno'],
- ['Fiat','Uno 1.5R','hatch',1.5,85,12,1988,'Versión brasileña (1987-1989), potencia en PS','fiat-uno'],
- ['Fiat','Duna SCV 1.5','sedan',1.5,82,13,1987,'Potencia en PS','fiat-duna'],
+ ['Peugeot','505 STI','sedan',2.2,117,14,1981,'Versión europea (1982), potencia en CV','peugeot-505'],
+ ['Peugeot','505 Turbo','sedan',2.2,160,14,1981,'Versión europea (1984), potencia en CV','peugeot-505'],
+ ['Peugeot','505 V6','sedan',2.8,170,14,1981,'Versión europea (1986), potencia en CV','peugeot-505'],
+ ['Peugeot','505 Diésel','sedan',2.3,70,14,1981,'Diésel europeo, potencia en CV','peugeot-505'],
+ ['Peugeot','505 GTD Turbo','sedan',2.5,110,14,1981,'Turbodiésel europeo, potencia en CV','peugeot-505'],
+ ['Fiat','Uno 1.0','hatch',1.0,52,12,1988,'Argentina, potencia en CV','fiat-uno'],
+ ['Fiat','Uno SCV 1.6','hatch',1.6,87,12,1988,'Argentina, potencia en CV','fiat-uno'],
+ ['Fiat','Uno 1.3 Diésel','hatch',1.3,45,12,1988,'Argentina, potencia en CV','fiat-uno'],
+ ['Fiat','Uno Turbo i.e.','hatch',1.3,105,12,1988,'Versión europea, potencia en CV (1985-1990)','fiat-uno'],
+ ['Fiat','Uno 1.5R','hatch',1.5,85,12,1988,'Versión brasileña (1987-1989), potencia en CV','fiat-uno'],
+ ['Fiat','Duna SCV 1.5','sedan',1.5,82,13,1987,'Potencia en CV','fiat-duna'],
  ['Renault','21 1.8','sedan',1.8,92,7,1989,'Argentina, carburador, potencia en CV','renault-21'],
  ['Renault','21 1.8 inyección','sedan',1.8,95,7,1989,'Argentina, potencia en CV','renault-21'],
  ['Renault','21 2.0','sedan',2.0,110,7,1989,'Argentina, sin catalizador, potencia en CV','renault-21'],
  ['Renault','21 2.2','sedan',2.2,120,7,1989,'Argentina, sin catalizador, potencia en CV','renault-21'],
  ['Renault','21 Diésel','sedan',2.1,72,7,1989,'Argentina, potencia en CV','renault-21'],
- ['Renault','21 TS 1.7','sedan',1.7,90,7,1989,'Versión europea, potencia en PS','renault-21'],
- ['Renault','21 TXi','sedan',2.0,136,7,1989,'Versión europea, potencia en PS','renault-21'],
- ['Renault','21 Turbo Quadra','sedan',2.0,175,7,1989,'Versión europea, potencia en PS','renault-21'],
- ['Ford','Escort RS 1600i','hatch',1.6,115,15,1988,'Versión europea, potencia en PS','ford-escort'],
- ['Ford','Escort RS Turbo','hatch',1.6,132,15,1988,'Versión europea, potencia en PS','ford-escort'],
+ ['Renault','21 TS 1.7','sedan',1.7,90,7,1989,'Versión europea, potencia en CV','renault-21'],
+ ['Renault','21 TXi','sedan',2.0,136,7,1989,'Versión europea, potencia en CV','renault-21'],
+ ['Renault','21 Turbo Quadra','sedan',2.0,175,7,1989,'Versión europea, potencia en CV','renault-21'],
+ ['Ford','Escort RS 1600i','hatch',1.6,115,15,1988,'Versión europea, potencia en CV','ford-escort'],
+ ['Ford','Escort RS Turbo','hatch',1.6,132,15,1988,'Versión europea, potencia en CV','ford-escort'],
  ['Ford','Escort XR3 (Brasil)','hatch',1.6,83,15,1988,'Versión brasileña a alcohol, potencia en CV','ford-escort'],
- ['Fiat','147 C','hatch',0.9,48,15,1981,'Argentina (1982), potencia en PS','fiat-147'],
- ['Fiat','147 CL','hatch',1.0,52,15,1981,'Argentina (1982), motor de 1,05 L, potencia en PS','fiat-147'],
- ['Fiat','147 Sorpasso','hatch',1.3,90,15,1981,'Argentina (1982-1984), doble carburador, potencia en PS','fiat-147'],
- ['Fiat','147 TR (Brasil)','hatch',1.3,72,15,1981,'Versión brasileña, potencia en PS','fiat-147'],
- ['Fiat','147 Diésel','hatch',1.3,45,15,1981,'Versión brasileña (1982), potencia en PS','fiat-147'],
- ['Fiat','Uno 1.7 Diésel','hatch',1.7,58,12,1988,'Argentina (1992), potencia en PS','fiat-uno'],
- ['Volkswagen','Gol GTS','hatch',1.8,94,10,1993,'Versión brasileña, potencia en hp','vw-gol'],
- ['Volkswagen','Gol GTI','hatch',2.0,121,10,1993,'Versión brasileña (1989), potencia en PS','vw-gol'],
- ['Volkswagen','Gol 1000','hatch',1.0,50,10,1993,'Versión brasileña (1991), potencia en hp','vw-gol'],
- ['Volkswagen','Kombi Diésel','van',1.6,50,9,1981,'Diésel refrigerado por agua (1981-1985), potencia en hp','vw-kombi'],
+ ['Fiat','147 C','hatch',0.9,48,15,1981,'Argentina (1982), potencia en CV','fiat-147'],
+ ['Fiat','147 CL','hatch',1.0,52,15,1981,'Argentina (1982), motor de 1,05 L, potencia en CV','fiat-147'],
+ ['Fiat','147 Sorpasso','hatch',1.3,90,15,1981,'Argentina (1982-1984), doble carburador, potencia en CV','fiat-147'],
+ ['Fiat','147 TR (Brasil)','hatch',1.3,72,15,1981,'Versión brasileña, potencia en CV','fiat-147'],
+ ['Fiat','147 Diésel','hatch',1.3,45,15,1981,'Versión brasileña (1982), potencia en CV','fiat-147'],
+ ['Fiat','Uno 1.7 Diésel','hatch',1.7,58,12,1988,'Argentina (1992), potencia en CV','fiat-uno'],
+ ['Volkswagen','Gol GTS','hatch',1.8,95,10,1993,'Versión brasileña, potencia convertida a CV (fuente en hp)','vw-gol'],
+ ['Volkswagen','Gol GTI','hatch',2.0,121,10,1993,'Versión brasileña (1989), potencia en CV','vw-gol'],
+ ['Volkswagen','Gol 1000','hatch',1.0,51,10,1993,'Versión brasileña (1991), potencia convertida a CV (fuente en hp)','vw-gol'],
+ ['Volkswagen','Kombi Diésel','van',1.6,51,9,1981,'Diésel refrigerado por agua (1981-1985), potencia convertida a CV (fuente en hp)','vw-kombi'],
  ['Renault','Trafic 2.1 Diésel','van',2.1,64,15,1986,'','renault-trafic',0,0],
  ['Fiat','Brio','hatch',1.1,53,4,1987,'','fiat-brio',0,0],
- ['Fiat','147 Fiorino 1.3','van',1.3,57,8,1989,'Potencia en hp, 57–61','fiat-fiorino',0,0],
- ['Fiat','147 Fiorino 1.5','van',1.5,67,8,1989,'Potencia en hp','fiat-fiorino',0,0],
- ['Fiat','147 Fiorino Diésel','van',1.3,45,8,1989,'Potencia en hp','fiat-fiorino',0,0],
+ ['Fiat','147 Fiorino 1.3','van',1.3,58,8,1989,'potencia convertida a CV (fuente en hp), 57–61','fiat-fiorino',0,0],
+ ['Fiat','147 Fiorino 1.5','van',1.5,68,8,1989,'potencia convertida a CV (fuente en hp)','fiat-fiorino',0,0],
+ ['Fiat','147 Fiorino Diésel','van',1.3,46,8,1989,'potencia convertida a CV (fuente en hp)','fiat-fiorino',0,0],
  ['Ford','F-150 4.9','pickup',4.9,145,10,1987,'Potencia de la versión de EE.UU. · Valor aproximado','ford-f150',0,1],
  ['Volkswagen','Carat 1.8','sedan',1.8,96,4,1987,'','vw-carat',0,0],
  ['IES','Súper América','hatch',1.4,60,7,1983,'Valor aproximado','ies-super-america',1,1],
@@ -249,57 +249,57 @@ const TEC = [
  ['Renault','12 TS','sedan',1.4,74,24,1970,'','renault-12',0,0],
  ['Renault','12 Alpine','sedan',1.4,110,24,1970,'Potencia en PS','renault-12',0,0],
  ['Renault','12 Gordini (Francia)','sedan',1.6,113,24,1970,'Potencia en PS','renault-12',0,0],
- ['Chevrolet','D-20 Diésel','pickup',4.0,88,4,1993,'Potencia en hp','chevrolet-d20',0,0],
- ['Chevrolet','D-20 Turbo','pickup',4.0,123,4,1993,'Potencia en hp, 1991','chevrolet-d20',0,0],
- ['Chevrolet','D-20 Turbo Plus','pickup',4.0,147,4,1993,'Potencia en hp, 1995','chevrolet-d20',0,0],
+ ['Chevrolet','D-20 Diésel','pickup',4.0,89,4,1993,'potencia convertida a CV (fuente en hp)','chevrolet-d20',0,0],
+ ['Chevrolet','D-20 Turbo','pickup',4.0,125,4,1993,'potencia convertida a CV (fuente en hp), 1991','chevrolet-d20',0,0],
+ ['Chevrolet','D-20 Turbo Plus','pickup',4.0,149,4,1993,'potencia convertida a CV (fuente en hp), 1995','chevrolet-d20',0,0],
  ['Chevrolet','Silverado','pickup',4.1,138,3,1997,'Valor aproximado','chevrolet-silverado',1,1],
  ['Chevrolet','Corsa 1.6','hatch',1.6,92,19,1997,'Valor aproximado','chevrolet-corsa',0,1],
- ['Fiat','Palio 1.6 16v Sporting','hatch',1.6,120,4,1996,'Potencia en hp','fiat-palio',0,0],
- ['Fiat','Palio 1.8','hatch',1.8,112,4,1996,'Potencia en hp','fiat-palio',0,0],
+ ['Fiat','Palio 1.6 16v Sporting','hatch',1.6,122,4,1996,'potencia convertida a CV (fuente en hp)','fiat-palio',0,0],
+ ['Fiat','Palio 1.8','hatch',1.8,114,4,1996,'potencia convertida a CV (fuente en hp)','fiat-palio',0,0],
  ['Fiat','Siena','sedan',1.6,92,4,1996,'Valor aproximado','fiat-siena',1,1],
- ['Ford','Orion Ghia Si 1.8','sedan',1.8,130,3,1994,'Potencia en bhp, versión europea','ford-orion',0,0],
- ['Ford','Focus 1.4','hatch',1.4,74,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
- ['Ford','Focus 1.6','hatch',1.6,100,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
- ['Ford','Focus 1.8','hatch',1.8,113,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
- ['Ford','Focus 2.0','hatch',2.0,127,20,1999,'Potencia en bhp, Europa','ford-focus',0,0],
- ['Ford','Focus 2.0 Duratec HE','hatch',2.0,146,20,1999,'Potencia en bhp, Brasil','ford-focus',0,0],
- ['Peugeot','405 1.4','sedan',1.4,70,7,1992,'Potencia en hp','peugeot-405',0,0],
- ['Peugeot','405 1.6','sedan',1.6,92,7,1992,'Potencia en hp','peugeot-405',0,0],
- ['Peugeot','405 1.9','sedan',1.9,110,7,1992,'Potencia en hp','peugeot-405',0,0],
- ['Peugeot','405 Mi16','sedan',1.9,160,7,1992,'Potencia en hp','peugeot-405',0,0],
- ['Peugeot','405 Diésel','sedan',1.9,70,7,1992,'Potencia en hp','peugeot-405',0,0],
- ['Peugeot','306 S16','hatch',2.0,155,7,1996,'Potencia en bhp','peugeot-306',0,0],
- ['Peugeot','306 GTI-6','hatch',2.0,167,7,1996,'Potencia en bhp','peugeot-306',0,0],
- ['Peugeot','206 1.1','hatch',1.1,60,17,1999,'Potencia en PS','peugeot-206',0,0],
- ['Peugeot','206 1.4','hatch',1.4,75,17,1999,'Potencia en PS','peugeot-206',0,0],
- ['Peugeot','206 1.6','hatch',1.6,110,17,1999,'Potencia en PS','peugeot-206',0,0],
- ['Peugeot','206 2.0','hatch',2.0,137,17,1999,'Potencia en PS','peugeot-206',0,0],
- ['Peugeot','206 GTi','hatch',2.0,177,17,1999,'Potencia en PS','peugeot-206',0,0],
- ['Peugeot','206 Diésel','hatch',1.9,70,17,1999,'Potencia en PS','peugeot-206',0,0],
- ['Renault','19 1.6','hatch',1.6,75,9,1992,'Potencia en PS','renault-19',0,0],
- ['Renault','19 16S','hatch',1.8,137,9,1992,'Potencia en PS','renault-19',0,0],
- ['Renault','19 Diésel','hatch',1.9,90,9,1992,'Potencia en PS','renault-19',0,0],
- ['Renault','Mégane 1.4','hatch',1.4,70,12,1997,'Potencia en hp','renault-megane',0,0],
- ['Renault','Mégane 1.6 16v','hatch',1.6,110,12,1997,'Potencia en hp','renault-megane',0,0],
- ['Renault','Mégane 1.8','hatch',1.8,120,12,1997,'Potencia en hp','renault-megane',0,0],
- ['Renault','Mégane 2.0','hatch',2.0,150,12,1997,'Potencia en hp','renault-megane',0,0],
- ['Renault','Mégane Diésel','hatch',1.9,105,12,1997,'Potencia en hp','renault-megane',0,0],
- ['Renault','Clio 1.2','sedan',1.2,60,20,1996,'Potencia en PS','renault-clio',0,0],
- ['Renault','Clio 1.4','sedan',1.4,75,20,1996,'Potencia en PS','renault-clio',0,0],
- ['Renault','Clio 1.6','sedan',1.6,110,20,1996,'Potencia en PS','renault-clio',0,0],
- ['Renault','Clio RS','sedan',2.0,172,20,1996,'Potencia en PS','renault-clio',0,0],
- ['Renault','Clio dCi','sedan',1.5,64,20,1996,'Potencia en PS','renault-clio',0,0],
- ['Seat','Inca 1.4','van',1.4,60,3,1999,'Potencia en PS','seat-inca',0,0],
- ['Seat','Inca 1.6','van',1.6,75,3,1999,'Potencia en PS','seat-inca',0,0],
- ['Seat','Inca TDI','van',1.9,90,3,1999,'Potencia en PS','seat-inca',0,0],
+ ['Ford','Orion Ghia Si 1.8','sedan',1.8,132,3,1994,'potencia convertida a CV (fuente en hp), versión europea','ford-orion',0,0],
+ ['Ford','Focus 1.4','hatch',1.4,75,20,1999,'potencia convertida a CV (fuente en hp), Europa','ford-focus',0,0],
+ ['Ford','Focus 1.6','hatch',1.6,101,20,1999,'potencia convertida a CV (fuente en hp), Europa','ford-focus',0,0],
+ ['Ford','Focus 1.8','hatch',1.8,115,20,1999,'potencia convertida a CV (fuente en hp), Europa','ford-focus',0,0],
+ ['Ford','Focus 2.0','hatch',2.0,129,20,1999,'potencia convertida a CV (fuente en hp), Europa','ford-focus',0,0],
+ ['Ford','Focus 2.0 Duratec HE','hatch',2.0,148,20,1999,'potencia convertida a CV (fuente en hp), Brasil','ford-focus',0,0],
+ ['Peugeot','405 1.4','sedan',1.4,71,7,1992,'potencia convertida a CV (fuente en hp)','peugeot-405',0,0],
+ ['Peugeot','405 1.6','sedan',1.6,93,7,1992,'potencia convertida a CV (fuente en hp)','peugeot-405',0,0],
+ ['Peugeot','405 1.9','sedan',1.9,112,7,1992,'potencia convertida a CV (fuente en hp)','peugeot-405',0,0],
+ ['Peugeot','405 Mi16','sedan',1.9,162,7,1992,'potencia convertida a CV (fuente en hp)','peugeot-405',0,0],
+ ['Peugeot','405 Diésel','sedan',1.9,71,7,1992,'potencia convertida a CV (fuente en hp)','peugeot-405',0,0],
+ ['Peugeot','306 S16','hatch',2.0,157,7,1996,'potencia convertida a CV (fuente en hp)','peugeot-306',0,0],
+ ['Peugeot','306 GTI-6','hatch',2.0,169,7,1996,'potencia convertida a CV (fuente en hp)','peugeot-306',0,0],
+ ['Peugeot','206 1.1','hatch',1.1,60,17,1999,'Potencia en CV','peugeot-206',0,0],
+ ['Peugeot','206 1.4','hatch',1.4,75,17,1999,'Potencia en CV','peugeot-206',0,0],
+ ['Peugeot','206 1.6','hatch',1.6,110,17,1999,'Potencia en CV','peugeot-206',0,0],
+ ['Peugeot','206 2.0','hatch',2.0,137,17,1999,'Potencia en CV','peugeot-206',0,0],
+ ['Peugeot','206 GTi','hatch',2.0,177,17,1999,'Potencia en CV','peugeot-206',0,0],
+ ['Peugeot','206 Diésel','hatch',1.9,70,17,1999,'Potencia en CV','peugeot-206',0,0],
+ ['Renault','19 1.6','hatch',1.6,75,9,1992,'Potencia en CV','renault-19',0,0],
+ ['Renault','19 16S','hatch',1.8,137,9,1992,'Potencia en CV','renault-19',0,0],
+ ['Renault','19 Diésel','hatch',1.9,90,9,1992,'Potencia en CV','renault-19',0,0],
+ ['Renault','Mégane 1.4','hatch',1.4,71,12,1997,'potencia convertida a CV (fuente en hp)','renault-megane',0,0],
+ ['Renault','Mégane 1.6 16v','hatch',1.6,112,12,1997,'potencia convertida a CV (fuente en hp)','renault-megane',0,0],
+ ['Renault','Mégane 1.8','hatch',1.8,122,12,1997,'potencia convertida a CV (fuente en hp)','renault-megane',0,0],
+ ['Renault','Mégane 2.0','hatch',2.0,152,12,1997,'potencia convertida a CV (fuente en hp)','renault-megane',0,0],
+ ['Renault','Mégane Diésel','hatch',1.9,106,12,1997,'potencia convertida a CV (fuente en hp)','renault-megane',0,0],
+ ['Renault','Clio 1.2','sedan',1.2,60,20,1996,'Potencia en CV','renault-clio',0,0],
+ ['Renault','Clio 1.4','sedan',1.4,75,20,1996,'Potencia en CV','renault-clio',0,0],
+ ['Renault','Clio 1.6','sedan',1.6,110,20,1996,'Potencia en CV','renault-clio',0,0],
+ ['Renault','Clio RS','sedan',2.0,172,20,1996,'Potencia en CV','renault-clio',0,0],
+ ['Renault','Clio dCi','sedan',1.5,64,20,1996,'Potencia en CV','renault-clio',0,0],
+ ['Seat','Inca 1.4','van',1.4,60,3,1999,'Potencia en CV','seat-inca',0,0],
+ ['Seat','Inca 1.6','van',1.6,75,3,1999,'Potencia en CV','seat-inca',0,0],
+ ['Seat','Inca TDI','van',1.9,90,3,1999,'Potencia en CV','seat-inca',0,0],
  ['Volkswagen','Senda 1.6','sedan',1.6,83,6,1990,'','vw-senda',0,0],
  ['Volkswagen','Senda Diésel','sedan',1.6,54,6,1990,'','vw-senda',0,0],
  ['Volkswagen','Pointer AP 2000','hatch',2.0,99,3,1994,'Valor aproximado','vw-pointer',0,1],
- ['Volkswagen','Polo 1.0','sedan',1.0,50,12,1996,'Potencia en PS','vw-polo',0,0],
- ['Volkswagen','Polo 1.6','sedan',1.6,75,12,1996,'Potencia en PS','vw-polo',0,0],
- ['Volkswagen','Polo 1.6 16v','sedan',1.6,101,12,1996,'Potencia en PS','vw-polo',0,0],
- ['Volkswagen','Polo 1.8','sedan',1.8,90,12,1996,'Potencia en PS','vw-polo',0,0],
- ['Volkswagen','Polo Diésel','sedan',1.9,110,12,1996,'Potencia en PS','vw-polo',0,0],
+ ['Volkswagen','Polo 1.0','sedan',1.0,50,12,1996,'Potencia en CV','vw-polo',0,0],
+ ['Volkswagen','Polo 1.6','sedan',1.6,75,12,1996,'Potencia en CV','vw-polo',0,0],
+ ['Volkswagen','Polo 1.6 16v','sedan',1.6,101,12,1996,'Potencia en CV','vw-polo',0,0],
+ ['Volkswagen','Polo 1.8','sedan',1.8,90,12,1996,'Potencia en CV','vw-polo',0,0],
+ ['Volkswagen','Polo Diésel','sedan',1.9,110,12,1996,'Potencia en CV','vw-polo',0,0],
  ['Volkswagen','Caddy','van',1.6,75,12,1996,'Valor aproximado','vw-caddy',1,1]
 ];
 // Mazo historia: [marca, modelo, tipo, inicio, fin, clave de foto, forma]
@@ -387,7 +387,7 @@ const FICHAS = {
  "renault-fuego": [
   [
    "Motores",
-   "1.4 L (64 PS) · 1.6 L (73–96 PS) · 2.0 L (110 PS) · 2.2 L (116 PS, Argentina 1987)"
+   "1.4 L (64 CV) · 1.6 L (73–96 CV) · 2.0 L (110 CV) · 2.2 L (116 CV, Argentina 1987)"
   ],
   [
    "Medidas",
@@ -405,7 +405,7 @@ const FICHAS = {
  "renault-11": [
   [
    "Motores",
-   "1.1 L (48 PS) · 1.4 L (60–72 PS; Turbo 95 CV en Argentina) · 1.7 L (82–95 PS)"
+   "1.1 L (48 CV) · 1.4 L (60–72 CV; Turbo 95 CV en Argentina) · 1.7 L (82–95 CV)"
   ],
   [
    "Vel. máx.",
@@ -419,7 +419,7 @@ const FICHAS = {
  "renault-9": [
   [
    "Motores",
-   "1.1 L (48 PS) · 1.4 L (60–72 PS) · 1.6 L (75 CV, TXE argentino) · 1.7 L (82–95 PS)"
+   "1.1 L (48 CV) · 1.4 L (60–72 CV) · 1.6 L (75 CV, TXE argentino) · 1.7 L (82–95 CV)"
   ],
   [
    "TXE argentino",
@@ -461,7 +461,7 @@ const FICHAS = {
  "fiat-147": [
   [
    "Motores",
-   "0.9 L (48 PS) · 1.05 L (52 PS) · 1.3 L (60 PS) · Sorpasso 1.3 L (90 PS) · 1.3 L diésel (45 PS, Brasil)"
+   "0.9 L (48 CV) · 1.05 L (52 CV) · 1.3 L (60 CV) · Sorpasso 1.3 L (90 CV) · 1.3 L diésel (45 CV, Brasil)"
   ],
   [
    "Spazio TR 1.3",
@@ -475,7 +475,7 @@ const FICHAS = {
  "fiat-regata": [
   [
    "Motores",
-   "1.3 L (65–68) · 1.5 L (82) · 1.6 L (100 hp) · 1.7 L diésel (60 hp) · 1.9 L turbodiésel (80 hp)"
+   "1.3 L (66–69 CV) · 1.5 L (82 CV) · 1.6 L (101 CV) · 1.7 L diésel (61 CV) · 1.9 L turbodiésel (81 CV)"
   ],
   [
    "Medidas",
@@ -497,7 +497,7 @@ const FICHAS = {
  "fiat-duna": [
   [
    "Motores",
-   "1.1 L · 1.3 L · 1.5 L (82 PS) · 1.6 L · 1.7 L diésel"
+   "1.1 L · 1.3 L · 1.5 L (82 CV) · 1.6 L · 1.7 L diésel"
   ],
   [
    "Largo",
@@ -507,11 +507,11 @@ const FICHAS = {
  "fiat-uno": [
   [
    "Motores (Argentina)",
-   "1.0 L (52 PS) · 1.3 L · 1.5 L · 1.6 L (87 PS) · 1.3 L diésel (45 PS) · 1.7 L diésel (58 PS)"
+   "1.0 L (52 CV) · 1.3 L · 1.5 L · 1.6 L (87 CV) · 1.3 L diésel (45 CV) · 1.7 L diésel (58 CV)"
   ],
   [
    "Turbo i.e. (Europa)",
-   "1.3 L · 105 PS · 204–205 km/h"
+   "1.3 L · 105 CV · 204–205 km/h"
   ],
   [
    "Vel. máx. 1.0",
@@ -531,7 +531,7 @@ const FICHAS = {
  "fiat-fiorino": [
   [
    "Motores",
-   "1.05 L (50 hp) · 1.3 L (57–61 hp) · 1.3 L diésel (45 hp) · 1.5 L (67 hp)"
+   "1.05 L (51 CV) · 1.3 L (58–62 CV) · 1.3 L diésel (46 CV) · 1.5 L (68 CV)"
   ],
   [
    "Carga útil",
@@ -563,7 +563,7 @@ const FICHAS = {
  "ford-sierra": [
   [
    "Motores",
-   "1.3 L (60 PS) · 1.6 L (75 PS) · 1.8 L (90 PS) · 2.0 L (105–115 PS) · 2.3 L (XR4 argentino, 120 CV) · 2.8 L V6 (150 PS) · diésel 2.3 L (67 PS)"
+   "1.3 L (60 CV) · 1.6 L (75 CV) · 1.8 L (90 CV) · 2.0 L (105–115 CV) · 2.3 L (XR4 argentino, 120 CV) · 2.8 L V6 (150 CV) · diésel 2.3 L (67 CV)"
   ],
   [
    "Medidas",
@@ -581,7 +581,7 @@ const FICHAS = {
  "ford-escort": [
   [
    "Motores",
-   "RS 1600i 1.6 L (115 PS) · RS Turbo 1.6 L (132 PS) · XR3 brasileño 1.6 L (83 CV, alcohol)"
+   "RS 1600i 1.6 L (115 CV) · RS Turbo 1.6 L (132 CV) · XR3 brasileño 1.6 L (83 CV, alcohol)"
   ],
   [
    "Largo (rural)",
@@ -595,7 +595,7 @@ const FICHAS = {
   ],
   [
    "Motores (EE.UU.)",
-   "4.9 L (145–150 hp) · 5.0 L V8 (185 hp) · 5.8 L V8 (210 hp) · 7.5 L V8 (230 hp) · diésel 7.3 L (180 hp). No consta cuáles usó la versión argentina"
+   "4.9 L (147–152 CV) · 5.0 L V8 (188 CV) · 5.8 L V8 (213 CV) · 7.5 L V8 (233 CV) · diésel 7.3 L (182 CV). No consta cuáles usó la versión argentina"
   ],
   [
    "Medidas",
@@ -615,7 +615,7 @@ const FICHAS = {
  "vw-gol": [
   [
    "Motores",
-   "1.0 L (50 hp) · 1.3 L · 1.6 L · 1.8 L (GTS 94 hp) · 2.0 L (GTI 121 PS)"
+   "1.0 L (51 CV) · 1.3 L · 1.6 L · 1.8 L (GTS 95 CV) · 2.0 L (GTI 121 CV)"
   ],
   [
    "Largo",
@@ -639,7 +639,7 @@ const FICHAS = {
  "vw-kombi": [
   [
    "Motor diésel",
-   "1.6 L refrigerado por agua · 50 hp (1981-1985)"
+   "1.6 L refrigerado por agua · 51 CV (1981-1985)"
   ],
   [
    "Entre ejes",
@@ -655,7 +655,7 @@ const FICHAS = {
  "citroen-ami8": [
   [
    "Motor",
-   "602 cc bicilíndrico plano refrigerado por aire · 32 hp"
+   "602 cc bicilíndrico plano refrigerado por aire · 32 CV"
   ],
   [
    "Medidas",
@@ -711,7 +711,7 @@ const FICHAS = {
  "fiat-128": [
   [
    "Motores",
-   "1.1 L (55 PS) · 1.3 L (60 PS)"
+   "1.1 L (55 CV) · 1.3 L (60 CV)"
   ],
   [
    "Medidas",
@@ -733,7 +733,7 @@ const FICHAS = {
  "fiat-125": [
   [
    "Motores",
-   "1.6 L DOHC (90 PS) · 125 S (100 PS)"
+   "1.6 L DOHC (90 CV) · 125 S (100 CV)"
   ],
   [
    "Medidas",
@@ -751,7 +751,7 @@ const FICHAS = {
  "fiat-133": [
   [
    "Motor",
-   "Fiat 133B argentino: 903 cc · 40 PS"
+   "Fiat 133B argentino: 903 cc · 40 CV"
   ],
   [
    "Argentina",
@@ -795,7 +795,7 @@ const FICHAS = {
  "renault-12": [
   [
    "Motores",
-   "Argentina: 1.4 L (desde 1977) · Alpine 1.4 L (110 PS, 1978-1980) · 1.6 L desde 1992. Francia: Gordini 1.6 L (113 PS)"
+   "Argentina: 1.4 L (desde 1977) · Alpine 1.4 L (110 CV, 1978-1980) · 1.6 L desde 1992. Francia: Gordini 1.6 L (113 CV)"
   ],
   [
    "12 TS argentino",
@@ -805,7 +805,7 @@ const FICHAS = {
  "chevrolet-d20": [
   [
    "Motores",
-   "Diésel Maxion 4.0 L: 88 hp, turbo 123 hp (1991) y Turbo Plus 147 hp (1995) · nafta o alcohol 4.1 L"
+   "Diésel Maxion 4.0 L: 89 CV, turbo 125 CV (1991) y Turbo Plus 149 CV (1995) · nafta o alcohol 4.1 L"
   ],
   [
    "Medidas",
@@ -843,7 +843,7 @@ const FICHAS = {
  "fiat-palio": [
   [
    "Motores",
-   "1.0 L · 1.2 L Fire · 1.6 L 16v Sporting (120 hp) · 1.8 L (112–115 hp)"
+   "1.0 L · 1.2 L Fire · 1.6 L 16v Sporting (122 CV) · 1.8 L (114–117 CV)"
   ],
   [
    "Medidas",
@@ -863,7 +863,7 @@ const FICHAS = {
  "ford-orion": [
   [
    "Motores",
-   "1.3 L · 1.6 L · 1.8 L Zetec (130 bhp en el Ghia Si) · 1.8 L diésel"
+   "1.3 L · 1.6 L · 1.8 L Zetec (132 CV en el Ghia Si) · 1.8 L diésel"
   ],
   [
    "Vel. máx.",
@@ -877,7 +877,7 @@ const FICHAS = {
  "ford-focus": [
   [
    "Motores",
-   "Europa: 1.4 L (74 bhp) · 1.6 L (100 bhp) · 1.8 L (113 bhp) · 2.0 L (127 bhp) · diésel 1.8 L. Argentina: 1.6 L Rocam flex, 2.0 L Duratec HE (146 bhp en Brasil) y diésel 1.8 L"
+   "Europa: 1.4 L (75 CV) · 1.6 L (101 CV) · 1.8 L (115 CV) · 2.0 L (129 CV) · diésel 1.8 L. Argentina: 1.6 L Rocam flex, 2.0 L Duratec HE (148 CV en Brasil) y diésel 1.8 L"
   ],
   [
    "Medidas",
@@ -891,7 +891,7 @@ const FICHAS = {
  "peugeot-405": [
   [
    "Motores",
-   "1.4 L (70 hp) · 1.6 L (92 hp) · 1.9 L (110–125 hp) · Mi16 (160 hp) · diésel 1.9 L (70 hp)"
+   "1.4 L (71 CV) · 1.6 L (93 CV) · 1.9 L (112–127 CV) · Mi16 (162 CV) · diésel 1.9 L (71 CV)"
   ],
   [
    "Medidas",
@@ -913,7 +913,7 @@ const FICHAS = {
  "peugeot-306": [
   [
    "Motores",
-   "1.1 a 1.6 L (TU) · 1.8 y 2.0 L (XU) · S16 (155 bhp) · GTI-6 (167 bhp) · diésel 1.9 L"
+   "1.1 a 1.6 L (TU) · 1.8 y 2.0 L (XU) · S16 (157 CV) · GTI-6 (169 CV) · diésel 1.9 L"
   ],
   [
    "Medidas",
@@ -927,7 +927,7 @@ const FICHAS = {
  "peugeot-206": [
   [
    "Motores",
-   "1.1 L (60 PS) · 1.4 L (75 PS) · 1.6 L (90–110 PS) · 2.0 L (137 PS) · diésel 1.9 L (70 PS)"
+   "1.1 L (60 CV) · 1.4 L (75 CV) · 1.6 L (90–110 CV) · 2.0 L (137 CV) · diésel 1.9 L (70 CV)"
   ],
   [
    "Medidas",
@@ -939,7 +939,7 @@ const FICHAS = {
   ],
   [
    "Vel. máx.",
-   "Hasta 217 km/h (GTi 177 PS)"
+   "Hasta 217 km/h (GTi 177 CV)"
   ],
   [
    "Argentina",
@@ -949,7 +949,7 @@ const FICHAS = {
  "renault-19": [
   [
    "Motores",
-   "1.2–1.4 L (55–80 PS) · 1.6 L (75–78 PS, solo Sudamérica) · 1.7–1.8 L (73–109 PS) · 1.8 16S (137–140 PS) · diésel 1.9 L (64–90 PS)"
+   "1.2–1.4 L (55–80 CV) · 1.6 L (75–78 CV, solo Sudamérica) · 1.7–1.8 L (73–109 CV) · 1.8 16S (137–140 CV) · diésel 1.9 L (64–90 CV)"
   ],
   [
    "Medidas",
@@ -971,7 +971,7 @@ const FICHAS = {
  "renault-megane": [
   [
    "Motores",
-   "1.4 L (70–98 hp) · 1.6 L (90–110 hp) · 1.8 L (120 hp) · 2.0 L (115–150 hp) · diésel 1.9 L (65–105 hp)"
+   "1.4 L (71–99 CV) · 1.6 L (91–112 CV) · 1.8 L (122 CV) · 2.0 L (117–152 CV) · diésel 1.9 L (66–106 CV)"
   ],
   [
    "Medidas",
@@ -983,13 +983,13 @@ const FICHAS = {
   ],
   [
    "Argentina",
-   "Santa Isabel, sedán y rural. El 1.6 16v de 110 hp se hizo en Argentina y Colombia"
+   "Santa Isabel, sedán y rural. El 1.6 16v de 112 CV se hizo en Argentina y Colombia"
   ]
  ],
  "renault-clio": [
   [
    "Motores",
-   "Clio II: 1.2 L (60–75 PS) · 1.4 L (75–100 PS) · 1.6 L (90–110 PS) · 2.0 RS (172–182 PS) · diésel 1.5 dCi (64–100 PS)"
+   "Clio II: 1.2 L (60–75 CV) · 1.4 L (75–100 CV) · 1.6 L (90–110 CV) · 2.0 RS (172–182 CV) · diésel 1.5 dCi (64–100 CV)"
   ],
   [
    "Argentina",
@@ -999,7 +999,7 @@ const FICHAS = {
  "seat-inca": [
   [
    "Motores",
-   "1.4 L (60 PS) · 1.6 L (75 PS) · diésel 1.9 L (64 PS) y 1.9 TDI (90 PS)"
+   "1.4 L (60 CV) · 1.6 L (75 CV) · diésel 1.9 L (64 CV) y 1.9 TDI (90 CV)"
   ],
   [
    "Medidas",
@@ -1037,7 +1037,7 @@ const FICHAS = {
  "vw-polo": [
   [
    "Motores",
-   "1.0 L (50 PS) · 1.4 L (60 PS) · 1.6 L (75 PS; 101 PS 16v) · 1.8 L (90 PS) · diésel 1.7 L SDI (60 PS) y 1.9 L (60–110 PS)"
+   "1.0 L (50 CV) · 1.4 L (60 CV) · 1.6 L (75 CV; 101 CV 16v) · 1.8 L (90 CV) · diésel 1.7 L SDI (60 CV) y 1.9 L (60–110 CV)"
   ],
   [
    "Medidas",
@@ -1057,7 +1057,7 @@ const FICHAS = {
 };
 
 
-const CILPOT = {'renault-18':[2.0,103,0,0],'renault-fuego':[2.0,110,0,0],'renault-11':[1.4,72,0,0],'renault-9':[1.6,75,0,0],'renault-21':[2.0,110,0,0],'renault-trafic':[2.1,64,0,0],'fiat-147':[1.3,60,0,0],'fiat-regata':[1.5,82,0,0],'fiat-duna':[1.5,82,0,0],'fiat-brio':[1.1,53,0,0],'fiat-uno':[1.6,87,0,0],'fiat-fiorino':[1.3,57,0,0],'peugeot-505':[2.2,117,0,0],'ford-sierra':[2.3,120,0,0],'ford-escort':[1.6,115,0,0],'ford-f150':[4.9,145,0,1],'vw-gacel':[1.6,83,0,0],'vw-gol':[1.8,94,0,0],'vw-carat':[1.8,96,0,0],'vw-kombi':[1.6,50,0,0],'ies-super-america':[1.4,60,1,1],'citroen-ami8':[0.6,35,0,0],'citroen-mehari':[0.6,35,0,0],'dodge-1500':[1.5,72,0,0],'fiat-1600-coupe':[1.6,80,0,1],'fiat-128':[1.3,60,0,0],'fiat-125':[1.6,90,0,0],'fiat-133':[0.9,40,0,0],'ford-ranchero':[3.0,105,1,1],'ford-taunus':[2.3,122,0,0],'iame-conosur':[1.5,55,1,1],'mercedes-220d':[2.2,60,0,0],'opel-k180':[1.8,83,0,0],'renault-12':[1.4,74,0,0],'chevrolet-d20':[4.0,88,0,0],'chevrolet-silverado':[4.1,138,1,1],'chevrolet-corsa':[1.6,92,0,1],'fiat-palio':[1.6,120,0,0],'fiat-siena':[1.6,92,1,1],'ford-orion':[1.8,130,0,0],'ford-focus':[2.0,146,0,0],'peugeot-405':[1.9,110,0,0],'peugeot-306':[2.0,155,0,0],'peugeot-206':[1.6,110,0,0],'renault-19':[1.8,137,0,0],'renault-megane':[2.0,115,0,0],'renault-clio':[1.6,90,0,0],'seat-inca':[1.6,75,0,0],'vw-senda':[1.6,83,0,0],'vw-pointer':[2.0,99,0,1],'vw-polo':[1.6,75,0,0],'vw-caddy':[1.6,75,1,1],};
+const CILPOT = {'renault-18':[2.0,103,0,0],'renault-fuego':[2.0,110,0,0],'renault-11':[1.4,72,0,0],'renault-9':[1.6,75,0,0],'renault-21':[2.0,110,0,0],'renault-trafic':[2.1,64,0,0],'fiat-147':[1.3,60,0,0],'fiat-regata':[1.5,82,0,0],'fiat-duna':[1.5,82,0,0],'fiat-brio':[1.1,53,0,0],'fiat-uno':[1.6,87,0,0],'fiat-fiorino':[1.3,58,0,0],'peugeot-505':[2.2,117,0,0],'ford-sierra':[2.3,120,0,0],'ford-escort':[1.6,115,0,0],'ford-f150':[4.9,147,0,1],'vw-gacel':[1.6,83,0,0],'vw-gol':[1.8,95,0,0],'vw-carat':[1.8,96,0,0],'vw-kombi':[1.6,51,0,0],'ies-super-america':[1.4,60,1,1],'citroen-ami8':[0.6,35,0,0],'citroen-mehari':[0.6,35,0,0],'dodge-1500':[1.5,72,0,0],'fiat-1600-coupe':[1.6,80,0,1],'fiat-128':[1.3,60,0,0],'fiat-125':[1.6,90,0,0],'fiat-133':[0.9,40,0,0],'ford-ranchero':[3.0,105,1,1],'ford-taunus':[2.3,122,0,0],'iame-conosur':[1.5,55,1,1],'mercedes-220d':[2.2,60,0,0],'opel-k180':[1.8,83,0,0],'renault-12':[1.4,74,0,0],'chevrolet-d20':[4.0,89,0,0],'chevrolet-silverado':[4.1,138,1,1],'chevrolet-corsa':[1.6,92,0,1],'fiat-palio':[1.6,122,0,0],'fiat-siena':[1.6,92,1,1],'ford-orion':[1.8,132,0,0],'ford-focus':[2.0,148,0,0],'peugeot-405':[1.9,112,0,0],'peugeot-306':[2.0,157,0,0],'peugeot-206':[1.6,110,0,0],'renault-19':[1.8,137,0,0],'renault-megane':[2.0,117,0,0],'renault-clio':[1.6,90,0,0],'seat-inca':[1.6,75,0,0],'vw-senda':[1.6,83,0,0],'vw-pointer':[2.0,99,0,1],'vw-polo':[1.6,75,0,0],'vw-caddy':[1.6,75,1,1],};
 function crearMazos(){
   const tec = {
     id:'tec', nombre:'Técnico', desc:'',
