@@ -270,6 +270,17 @@ body{background:transparent;font-weight:500}
 .lg .tx b{display:block;font-family:var(--disp);font-size:20px;letter-spacing:.05em}
 .lg .tx small{display:block;font-size:13px;opacity:.85}
 .lg.nuevo{margin:10px 0}
+
+.adivfoto{height:220px!important;margin:6px 0}
+.adivfoto img{width:100%;height:100%;object-fit:cover}
+.adivfoto .tag{position:absolute;top:8px;left:8px;background:#0008;color:#fff;font-family:var(--disp);letter-spacing:.14em;font-size:15px;padding:2px 10px;border-radius:8px}
+.pistas{display:flex;gap:8px;justify-content:center;margin:2px 0 6px}
+.pistas span{border:2px solid #F4EAD244;border-radius:999px;padding:3px 12px;font-weight:700;font-size:15px;letter-spacing:.04em}
+.adivops{display:flex;flex-direction:column;gap:10px;margin:8px 0}
+.adivops .opt b{font-size:22px}
+.adivops .opt.ok{border-color:#58C27D;background:linear-gradient(180deg,#2d7a4d,#1f5a38);box-shadow:0 4px 0 #14402a}
+.adivops .opt.mal{border-color:#E4572E;background:linear-gradient(180deg,#9a3a22,#6e2917);box-shadow:0 4px 0 #4a1c10}
+.adivops .opt:disabled{opacity:1}
 </style>
 </head>
 <body>
@@ -284,7 +295,7 @@ body{background:transparent;font-weight:500}
 const APP = document.getElementById('app');
 const TOAST = document.getElementById('toast');
 const FILE = document.getElementById('file');
-const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario', LS_TORNEO = 'naipes80.torneo', LS_LOGROS = 'naipes80.logros';
+const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario', LS_TORNEO = 'naipes80.torneo', LS_LOGROS = 'naipes80.logros', LS_ADIV = 'naipes80.adiv';
 const MAX_RONDAS = 60;
 const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280',"Auto Union":'#8E8E93',Borgward:'#B08968',CIDASA:'#4D908E',Chrysler:'#577590',Simca:'#43AA8B',"Siam Di Tella":'#C1121F',Studebaker:'#9C6644',"De Carlo":'#7B2CBF',Heinkel:'#F9844A',Chevrolet:'#D97B29',IAME:'#6A4C93',Opel:'#E4572E',Seat:'#2A9D8F'};
 const CLARO = {Renault:1,Volkswagen:1};
@@ -1273,13 +1284,14 @@ const TAMANOS = {corta:{n:6,t:'Corta',d:'6 cartas cada uno'},media:{n:10,t:'Medi
 const DIFS = {facil:{t:'Fácil',d:'Elige casi al azar'},normal:{t:'Normal',d:'Elige su mejor dato'},memorioso:{t:'Memorioso',d:'Recuerda tus cartas'}};
 
 // ---------- Estado ----------
-const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal',esp:true}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, logros:{u:{},racha:0,mejor:0}, nuevos:[], deferred:null, pending:null};
+const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal',esp:true}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, logros:{u:{},racha:0,mejor:0}, nuevos:[], adiv:null, adivRec:{mejor:0,jugadas:0}, deferred:null, pending:null};
 function cargar(){
   try{ S.guardar = localStorage.getItem(LS_GUARDAR) !== 'no'; }catch(e){}
   try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
   S.legado = Object.assign({}, S.fotos);
   try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
   try{ const t = JSON.parse(localStorage.getItem(LS_TORNEO)||'null'); if(t){ S.tor = {g:t.g|0, p:t.p|0}; if(t.act && !t.act.fin && t.act.cfg && DECKS[t.act.cfg.deck] && TAMANOS[t.act.cfg.size] && DIFS[t.act.cfg.dif] && Array.isArray(t.act.hist)) S.torneo = t.act; } }catch(e){}
+  try{ const a = JSON.parse(localStorage.getItem(LS_ADIV)||'null'); if(a && typeof a === 'object') S.adivRec = {mejor:a.mejor|0, jugadas:a.jugadas|0}; }catch(e){}
   try{ const l = JSON.parse(localStorage.getItem(LS_LOGROS)||'null'); if(l && typeof l === 'object') S.logros = {u:(l.u && typeof l.u === 'object') ? l.u : {}, racha:l.racha|0, mejor:l.mejor|0}; }catch(e){}
   try{ const d = JSON.parse(localStorage.getItem(LS_DIARIO)||'null'); if(d) S.dia = Object.assign(S.dia,d); }catch(e){}
   try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]){ S.pref = Object.assign({dif:'normal',esp:true}, p); if(!DIFS[S.pref.dif]) S.pref.dif = 'normal'; } }catch(e){}
@@ -1635,6 +1647,60 @@ function bloqueDos(){
     <button class="btn" data-act="dos">Jugar de a dos en este celu</button>
     <div class="sub" style="font-size:14px;opacity:.8">Usa el mazo y el tamaño elegidos arriba. Se pasan el celu en cada turno y la carta del otro queda oculta.</div></div>`;
 }
+// ---------- Adiviná el auto ----------
+const INFO = {}; HIS.filter(h => h[3] >= AMIN).forEach(h => INFO[h[5]] = {tipo:h[2], ini:h[3], fin:h[4]});
+const ADIV_N = 10;
+function etiqueta(m){ return m.marca + ' ' + m.modelo; }
+function nuevaAdiv(){
+  const conFoto = MODELOS.filter(m => S.fotos[m.key]), sin = MODELOS.filter(m => !S.fotos[m.key]);
+  const mez = a => mezclar(a.slice(), Math.random);
+  const elegidos = mez(conFoto).concat(mez(sin)).slice(0, ADIV_N);
+  const qs = mez(elegidos).map(m => {
+    const mismos = mez(MODELOS.filter(o => o.key !== m.key && o.shape === m.shape && o.marca !== m.marca));
+    const otros = mez(MODELOS.filter(o => o.key !== m.key && !mismos.includes(o)));
+    const dis = mismos.concat(otros).slice(0, 3);
+    return {m, foto: !!S.fotos[m.key], ops: mez([m].concat(dis)), resp: null};
+  });
+  S.adiv = {i:0, pts:0, racha:0, mejorRacha:0, qs, fin:false};
+  S.screen = 'adiv'; render();
+}
+function pantallaAdiv(){
+  const A = S.adiv, tot = A.qs.length;
+  if(A.fin){
+    const nuevo = A.pts > 0 && A.pts >= S.adivRec.mejor && A.nuevoRecord;
+    const msg = A.pts === tot ? '¡Perfecto! Los conocés a todos.' : A.pts >= tot * .7 ? 'Muy bien: tenés ojo de fierrero.' : A.pts >= tot * .4 ? 'Nada mal. Con más fotos en el álbum se pone más lindo.' : 'Hay que mirar más autos de los 70 a los 90.';
+    return `<div class="fin"><div class="res you"><div class="ic">🔍</div><h1>${A.pts} de ${tot}</h1>
+      <div class="sub" style="margin-top:6px">${msg}</div>
+      <div class="sub" style="margin-top:10px">${nuevo ? '¡Nuevo récord!' : 'Tu mejor puntaje: ' + S.adivRec.mejor + ' de ' + tot} · Mejor racha de aciertos: ${A.mejorRacha}</div></div>
+      <button class="btn big" data-act="adiv">Jugar otra vez</button><button class="btn" data-act="home">Inicio</button></div>`;
+  }
+  const q = A.qs[A.i], m = q.m, inf = INFO[m.key] || {}, resp = q.resp !== null;
+  const col = COLOR[m.marca] || '#888', fg = CLARO[m.marca] ? '#14213D' : '#F4EAD2';
+  const f = S.fotos[m.key];
+  const foto = q.foto && f ? `<img src="${f}" alt="Auto a adivinar">` : sil(m.shape, fg, col);
+  const pista = q.foto ? '' : `<div class="pistas"><span>${esc(inf.tipo || '')}</span><span>${inf.ini}–${inf.fin}</span></div>`;
+  const ops = q.ops.map((o, i) => {
+    let cls = 'opt';
+    if(resp){ if(o.key === m.key) cls += ' ok'; else if(i === q.resp) cls += ' mal'; }
+    return `<button class="${cls}" data-act="adiv-op" data-i="${i}" ${resp ? 'disabled' : ''}><span class="tx"><b>${esc(etiqueta(o))}</b></span></button>`;
+  }).join('');
+  const acierto = resp && q.ops[q.resp].key === m.key;
+  return `<div class="bar"><button class="btn sm" data-act="adiv-out">Salir</button>
+      <div class="score"><div class="sc"><small>Pregunta</small><b>${A.i + 1}/${tot}</b></div><span class="vs">·</span><div class="sc"><small>Aciertos</small><b>${A.pts}</b></div></div>
+      <div class="rd">${A.racha > 1 ? '🔥' + A.racha : ''}</div></div>
+    <div class="meter"><span style="width:${Math.round(100 * (A.i + (resp ? 1 : 0)) / tot)}%"></span></div>
+    <div class="msg ${resp ? (acierto ? 'win' : 'lose') : ''}">${resp ? (acierto ? '¡Correcto! Era el ' + esc(etiqueta(m)) + '.' : 'Era el ' + esc(etiqueta(m)) + '.') + ' ' + esc(inf.tipo || '') + ' · ' + inf.ini + '–' + inf.fin + '.' : (q.foto ? '¿Qué auto es el de la foto?' : '¿Qué auto es esta silueta? Tenés pistas abajo.')}</div>
+    <div class="photo adivfoto" style="background:${col}">${foto}<span class="tag">${q.foto ? 'FOTO' : 'SILUETA'}</span></div>
+    ${pista}
+    <div class="opts adivops">${ops}</div>
+    ${resp ? `<button class="btn big" data-act="adiv-sig">${A.i + 1 >= tot ? 'Ver resultado' : 'Siguiente'}</button>` : ''}`;
+}
+function bloqueAdiv(){
+  const n = MODELOS.filter(m => S.fotos[m.key]).length;
+  return `<div class="group"><label>Adiviná el auto</label>
+    <button class="btn" data-act="adiv">Jugar a adivinar</button>
+    <div class="sub" style="font-size:14px;opacity:.8">${ADIV_N} preguntas: una foto o silueta y cuatro opciones. No usa el mazo. Hoy hay ${n} de ${MODELOS.length} fotos en tu álbum; los autos sin foto aparecen como silueta con pistas.${S.adivRec.jugadas ? ' Tu mejor puntaje: ' + S.adivRec.mejor + ' de ' + ADIV_N + '.' : ''}</div></div>`;
+}
 function bloqueTorneo(){
   const T = S.torneo;
   if(!T){
@@ -1667,6 +1733,7 @@ function pantallaInicio(){
     <div class="group"><label>Cartas especiales</label><div class="opts seg sm"><button class="opt ${S.pref.esp!==false?'on':''}" data-act="esp" data-v="1"><b>Sí</b><small>Comodín y Auto del Año</small></button><button class="opt ${S.pref.esp===false?'on':''}" data-act="esp" data-v="0"><b>No</b><small>Solo autos</small></button></div></div>
     <button class="btn big" data-act="jugar">Jugar</button>
     ${bloqueDos()}
+    ${bloqueAdiv()}
     ${bloqueTorneo()}
     <div class="group"><label>Álbum de fotos</label><div class="albums">${portadaAlbum('autos')}</div></div>
     ${logrosHTML()}
@@ -2075,7 +2142,7 @@ function pantallaFotos(){
     <div class="grid">${MODELOS.map(tileFoto).join('')}</div>`;
 }
 function render(){
-  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'lote' ? pantallaLote() : pantallaInicio();
+  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'lote' ? pantallaLote() : S.screen === 'adiv' ? pantallaAdiv() : pantallaInicio();
   document.body.dataset.fondo = S.screen === 'fotos' || S.screen === 'lote' ? 'autos' : '';
   if(!document.body.dataset.fondo) delete document.body.dataset.fondo;
   if(S.screen === 'game' || S.screen === 'fin') window.scrollTo(0,0);
@@ -2129,6 +2196,22 @@ APP.addEventListener('click', e => {
   else if(a === 'comp-img') compartirImagen();
   else if(a === 'stat'){ const g = S.game; if(g && g.phase === 'pick' && (g.modo2 || g.turn === 'you')) resolver(b.dataset.stat, g.modo2 ? g.turn : 'you'); }
   else if(a === 'next') siguiente();
+  else if(a === 'adiv'){ nuevaAdiv(); }
+  else if(a === 'adiv-op'){
+    const A = S.adiv; if(!A || A.fin) return; const q = A.qs[A.i]; if(q.resp !== null) return;
+    q.resp = +b.dataset.i;
+    if(q.ops[q.resp].key === q.m.key){ A.pts++; A.racha++; A.mejorRacha = Math.max(A.mejorRacha, A.racha); } else A.racha = 0;
+    render();
+  }
+  else if(a === 'adiv-sig'){
+    const A = S.adiv; if(!A || A.qs[A.i].resp === null) return;
+    if(A.i + 1 >= A.qs.length){
+      A.fin = true; A.nuevoRecord = A.pts > S.adivRec.mejor;
+      S.adivRec.jugadas++; if(A.pts > S.adivRec.mejor) S.adivRec.mejor = A.pts; guardar(LS_ADIV, S.adivRec);
+    } else A.i++;
+    render();
+  }
+  else if(a === 'adiv-out'){ if(confirm('¿Salir de la partida?')){ S.adiv = null; S.screen = 'home'; render(); } }
   else if(a === 'salir'){ if(confirm('¿Salir de la partida?')){ clearTimeout(agendarCPU.t); S.game = null; S.screen = 'home'; render(); } }
   else if(a === 'home'){ clearTimeout(agendarCPU.t); if(S.torneo && S.torneo.fin) cerrarTorneo(); S.screen = 'home'; render(); }
   else if(a === 'torneo'){ S.torneo = {cfg:{deck:S.pref.deck, size:S.pref.size, dif:S.pref.dif, n:+b.dataset.v}, hist:[], fin:null}; guardarTorneo(); nuevaPartida('torneo'); }
