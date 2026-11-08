@@ -518,6 +518,21 @@ const HIS = [
 const AMIN = 1970;
 const MODELOS = HIS.filter(h => h[3] >= AMIN).map(h => ({key:h[5], marca:h[0], modelo:h[1], shape:h[6]}));
 const NOMBRE = {}; MODELOS.forEach(m => NOMBRE[m.key] = m);
+const CURIOSOS = {
+ "fiat-128":"Auto del Año europeo 1970.",
+ "renault-9":"Auto del Año europeo 1982.",
+ "fiat-uno":"Auto del Año europeo 1984. En Argentina se hicieron 179.767 y dejó de fabricarse en 2013 porque no tenía airbags, ya obligatorios.",
+ "peugeot-405":"Auto del Año europeo 1988.",
+ "renault-clio":"Auto del Año europeo 1991. De los 12.100 Clio Williams (150 CV) que se hicieron, algo más de 200 llegaron al país.",
+ "ford-focus":"Auto del Año europeo 1999.",
+ "dodge-1500":"Se lanzó el 12 de agosto de 1971. Diseño británico basado en el Hillman Avenger; lo apodaron \"Milqui\". La última unidad salió en 1990, ya con marca Volkswagen.",
+ "citroen-mehari":"Su carrocería era de plástico ABS, por eso lo llamaban \"caracol de plástico\". Citroën lo fabricó acá de 1971 a 1980.",
+ "renault-fuego":"Debutó en el Salón de Ginebra de 1980. La versión GTA Max, de 2.2 litros, fue exclusiva de Argentina.",
+ "vw-gacel":"Debutó el 21 de septiembre de 1983. Se hicieron más de 167.000 unidades; unas 18.000 se exportaron a Brasil como Voyage.",
+ "vw-senda":"Fue la versión de entrada de gama del Gacel, con un diésel 1.6 de 72 CV. Dejó de fabricarse en 1996 y lo reemplazó el Polo Classic.",
+ "fiat-palio":"Se lanzó en 1996 junto con Siena, Weekend y Strada para competir con el Gol. Se dejó de producir en 2018 y lo reemplazó el Argo.",
+ "peugeot-206":"Llegó en 1999, se produjo en El Palomar desde 2000 y la fabricación nacional terminó en 2016."
+};
 const FICHAS = {
  "renault-18": [
   [
@@ -1358,7 +1373,7 @@ function fotoHTML(c){
 function fichaHTML(c, deck){
   const f = deck.id === 'his' && FICHAS[c.key];
   if(!f) return '';
-  return `<details class="ficha"><summary>Ficha técnica</summary><dl>${f.map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl></details>`;
+  return `<details class="ficha"><summary>Ficha técnica</summary><dl>${f.concat(CURIOSOS[c.key] ? [['Dato curioso', CURIOSOS[c.key]]] : []).map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl></details>`;
 }
 // opts: {n, total, compact, canPick, sel, res}  res: 'win'|'lose'|'tie' resultado para ESTA carta
 const _rg = {};
