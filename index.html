@@ -1626,6 +1626,43 @@ async function compartirImagen(){
   const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(u), 4000); aviso('Imagen descargada');
 }
+async function imagenFin(g){
+  try{ await Promise.all([document.fonts.load('80px "Bebas Neue"'), document.fonts.load('700 30px "Barlow Condensed"')]); }catch(e){}
+  const T = g.torneo ? S.torneo : null, N = g.modo2;
+  let fin = g.fin, big, p1, p2, l1 = 'VOS', l2 = 'COMPU', tag;
+  if(N){ const gan = fin === 'you' ? N.n1 : fin === 'cpu' ? N.n2 : null; big = gan ? ('GANÓ ' + gan).toUpperCase() : 'EMPATE'; p1 = g.you.length; p2 = g.cpu.length; l1 = N.n1.toUpperCase(); l2 = N.n2.toUpperCase(); tag = 'DOS JUGADORES'; }
+  else if(T && T.fin){ fin = T.fin; const w = victorias(T); big = fin === 'you' ? 'TORNEO GANADO' : 'TORNEO PERDIDO'; p1 = w.you; p2 = w.cpu; l1 = 'VOS (PARTIDAS)'; l2 = 'COMPU (PARTIDAS)'; tag = 'TORNEO'; }
+  else { big = fin === 'you' ? 'GANASTE' : fin === 'cpu' ? 'PERDISTE' : 'EMPATE'; p1 = g.you.length; p2 = g.cpu.length; tag = 'PARTIDA vs COMPU'; }
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  let gr = x.createLinearGradient(0,0,0,H); gr.addColorStop(0,'#16254a'); gr.addColorStop(1,'#0B1428'); x.fillStyle = gr; x.fillRect(0,0,W,H);
+  gr = x.createLinearGradient(0,0,W,380); gr.addColorStop(0,'#E4572E'); gr.addColorStop(.55,'#B3261E'); gr.addColorStop(1,'#6E0F1A'); x.fillStyle = gr; x.fillRect(0,0,W,380);
+  for(let i=0;i<W/30;i++) for(let j=0;j<2;j++){ x.fillStyle = (i+j)%2 ? '#111' : '#fff'; x.fillRect(i*30, j*30, 30, 30); }
+  x.textAlign = 'center'; x.fillStyle = '#fff'; x.font = '140px "Bebas Neue", Impact, sans-serif'; x.fillText('NAIPES 70-90', W/2, 215);
+  x.fillStyle = '#FFE27A'; x.font = '700 44px "Barlow Condensed", Arial Narrow, sans-serif';
+  const dn = DECKS[g.deckId].nombre.toUpperCase();
+  x.fillText(`${tag} · MAZO ${dn}`, W/2, 300);
+  const col = fin === 'you' ? '#6fcf97' : fin === 'cpu' ? '#ff7b72' : '#F2B705';
+  x.fillStyle = col; x.font = (big.length > 12 ? '130px' : '190px') + ' "Bebas Neue", Impact, sans-serif'; x.fillText(big, W/2, 600);
+  x.fillStyle = '#F4EAD2'; x.font = '200px "Bebas Neue", Impact, sans-serif'; x.fillText(`${p1} – ${p2}`, W/2, 820);
+  x.fillStyle = '#F4EAD2cc'; x.font = '700 40px "Barlow Condensed", Arial Narrow, sans-serif'; x.fillText(`${l1}  ·  ${l2}`, W/2, 885);
+  const h = g.hist.join(''), cols = {w:'#4C956C', l:'#C8352E', t:'#F2B705'}, por = Math.min(12, h.length || 1), sz = 60, gap = 10;
+  for(let i=0;i<h.length;i++){
+    const f = Math.floor(i / por), n = Math.min(por, h.length - f * por), ox = (W - (n * sz + (n-1) * gap)) / 2;
+    x.fillStyle = cols[h[i]]; x.beginPath(); x.roundRect ? x.roundRect(ox + (i % por) * (sz+gap), 950 + f * (sz+gap), sz, sz, 12) : x.rect(ox + (i % por) * (sz+gap), 950 + f * (sz+gap), sz, sz); x.fill();
+  }
+  x.fillStyle = '#F4EAD2aa'; x.font = '700 32px "Barlow Condensed", Arial Narrow, sans-serif'; x.fillText('Autos argentinos de los 70 a los 90 · Seba Branda', W/2, H - 50);
+  return new Promise(ok => c.toBlob(ok, 'image/png'));
+}
+async function compartirFin(){
+  const g = S.game; if(!g) return;
+  const blob = await imagenFin(g); if(!blob){ aviso('No se pudo crear la imagen'); return; }
+  const file = new File([blob], 'naipes-resultado.png', {type:'image/png'});
+  const txt = 'Naipes 70-90 · ' + g.you.length + '–' + g.cpu.length;
+  try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], text:txt}); return; } }catch(e){ if(e && e.name === 'AbortError') return; }
+  const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 4000); aviso('Imagen descargada');
+}
 function bloqueDia(){
   const d = infoDia(), h = S.dia.hecho && S.dia.hecho.clave === d.clave ? S.dia.hecho : null, r = rachaVigente();
   if(!h) return `<div class="dia"><div class="k">Desafío del día · #${d.num}</div><h2>Mazo ${DECKS[d.deck].nombre}</h2>
@@ -1826,7 +1863,7 @@ function pantallaFin(){
     const N = g.modo2, gan = g.fin === 'you' ? N.n1 : g.fin === 'cpu' ? N.n2 : null;
     lab = [N.n1, N.n2]; cls = 'dos'; titulo = gan ? 'Ganó ' + gan : 'Empate'; icono = gan ? '🏆' : '🤝';
     sub = g.fin === 'tie' ? 'Quedaron igualados.' : `${gan} terminó con ${g.fin === 'you' ? g.you.length : g.cpu.length} cartas contra ${g.fin === 'you' ? g.cpu.length : g.you.length}.`;
-    botones = `<button class="btn big" data-act="dos">Revancha</button><button class="btn" data-act="home">Inicio</button>`;
+    botones = `<button class="btn big" data-act="dos">Revancha</button><button class="btn" data-act="comp-fin">Compartir imagen</button><button class="btn" data-act="home">Inicio</button>`;
   } else if(g.diario){
     extra = `${histHTML({hist:g.hist.join('')})}<div class="sub" style="text-align:center">Desafío #${g.diario.num} · ${rachaVigente() > 1 ? 'Racha: ' + rachaVigente() + ' días' : 'Volvé mañana'}</div>`;
     botones = `<button class="btn big" data-act="comp-txt">Compartir resultado</button><button class="btn" data-act="comp-img">Compartir imagen</button><button class="btn" data-act="home">Inicio</button>`;
@@ -1835,14 +1872,14 @@ function pantallaFin(){
     if(T.fin){
       cls = T.fin; titulo = T.fin === 'you' ? 'Torneo ganado' : 'Torneo perdido'; icono = T.fin === 'you' ? '🏆' : '🏁'; pts = [w.you, w.cpu];
       sub = `Última partida: ${t.toLowerCase()} ${g.you.length}–${g.cpu.length}. Cartas acumuladas: ${a.you}–${a.cpu}.`;
-      botones = `<button class="btn big" data-act="home">Inicio</button>`;
+      botones = `<button class="btn big" data-act="home">Inicio</button><button class="btn" data-act="comp-fin">Compartir imagen</button>`;
     } else {
       sub = base + (g.fin === 'tie' ? ' No cuenta: se juega de nuevo.' : '');
       botones = `<button class="btn big" data-act="torneo-sig">Siguiente partida</button><button class="btn" data-act="home">Inicio</button>`;
     }
     extra = serieHTML(T);
   } else {
-    botones = `<button class="btn big" data-act="jugar">Revancha</button><button class="btn" data-act="home">Inicio</button>`;
+    botones = `<button class="btn big" data-act="jugar">Revancha</button><button class="btn" data-act="comp-fin">Compartir imagen</button><button class="btn" data-act="home">Inicio</button>`;
   }
   return `<div class="fin"><div class="res ${cls}"><div class="ic">${icono}</div><h1>${titulo}</h1>
     <div class="pts"><span>${pts[0]}</span><i>–</i><span>${pts[1]}</span></div>
@@ -2209,6 +2246,7 @@ APP.addEventListener('click', e => {
   else if(a === 'diario'){ const d = infoDia(); if(!(S.dia.hecho && S.dia.hecho.clave === d.clave)) nuevaPartida('diario'); }
   else if(a === 'comp-txt') compartirTexto();
   else if(a === 'comp-img') compartirImagen();
+  else if(a === 'comp-fin') compartirFin();
   else if(a === 'stat'){ const g = S.game; if(g && g.phase === 'pick' && (g.modo2 || g.turn === 'you')) resolver(b.dataset.stat, g.modo2 ? g.turn : 'you'); }
   else if(a === 'next') siguiente();
   else if(a === 'adiv'){ nuevaAdiv(); }
