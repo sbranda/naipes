@@ -251,6 +251,13 @@ body{background:transparent;font-weight:500}
 .pase p{margin:0;font-size:20px;line-height:1.25;color:#F4EAD2d9}
 .pase .btn{align-self:stretch}
 .res.dos{background:linear-gradient(160deg,#9b3bb5,#3a1450)}
+
+.card.esp{background:linear-gradient(160deg,#FFF1BF,#F2B700 55%,#C98F00);border-color:#FFE27A}
+.card.esp .chead small{color:#6a4c00}
+.espfoto{display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#fff6cc,#F2B700 60%,#a87800)!important;color:#14213D}
+.espfoto b{font-family:var(--disp);font-size:84px;line-height:1}
+.espfoto span{font-family:var(--disp);font-size:24px;letter-spacing:.14em}
+.card.esp .row .v{color:#14213D}
 </style>
 </head>
 <body>
@@ -1246,7 +1253,7 @@ const TAMANOS = {corta:{n:6,t:'Corta',d:'6 cartas cada uno'},media:{n:10,t:'Medi
 const DIFS = {facil:{t:'Fácil',d:'Elige casi al azar'},normal:{t:'Normal',d:'Elige su mejor dato'},memorioso:{t:'Memorioso',d:'Recuerda tus cartas'}};
 
 // ---------- Estado ----------
-const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal'}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, deferred:null, pending:null};
+const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal',esp:true}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, deferred:null, pending:null};
 function cargar(){
   try{ S.guardar = localStorage.getItem(LS_GUARDAR) !== 'no'; }catch(e){}
   try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
@@ -1254,7 +1261,7 @@ function cargar(){
   try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
   try{ const t = JSON.parse(localStorage.getItem(LS_TORNEO)||'null'); if(t){ S.tor = {g:t.g|0, p:t.p|0}; if(t.act && !t.act.fin && t.act.cfg && DECKS[t.act.cfg.deck] && TAMANOS[t.act.cfg.size] && DIFS[t.act.cfg.dif] && Array.isArray(t.act.hist)) S.torneo = t.act; } }catch(e){}
   try{ const d = JSON.parse(localStorage.getItem(LS_DIARIO)||'null'); if(d) S.dia = Object.assign(S.dia,d); }catch(e){}
-  try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]){ S.pref = Object.assign({dif:'normal'}, p); if(!DIFS[S.pref.dif]) S.pref.dif = 'normal'; } }catch(e){}
+  try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]){ S.pref = Object.assign({dif:'normal',esp:true}, p); if(!DIFS[S.pref.dif]) S.pref.dif = 'normal'; } }catch(e){}
 }
 // Fotos: IndexedDB (no entran en localStorage)
 let IDB = null;
@@ -1307,8 +1314,10 @@ function sil(shape, fg, bg){
 }
 
 // ---------- Cartas ----------
-function fmt(stat, v, c){ const t = stat.id === 'cil' ? v.toFixed(1).replace('.',',') : String(v); return (c && c.est && c.est[stat.id] ? '≈' : '') + t; }
+function estrella(c, stat){ return !!(c && c.esp && (c.esp.t === 'comodin' || c.esp.stat === stat.id)); }
+function fmt(stat, v, c){ if(estrella(c, stat)) return '★'; const t = stat.id === 'cil' ? v.toFixed(1).replace('.',',') : String(v); return (c && c.est && c.est[stat.id] ? '≈' : '') + t; }
 function fotoHTML(c){
+  if(c.esp) return `<div class="photo espfoto"><b>★</b><span>${c.esp.t === 'comodin' ? 'COMODÍN' : 'AUTO DEL AÑO'}</span></div>`;
   const col = COLOR[c.marca] || '#888', fg = CLARO[c.marca] ? '#14213D' : '#F4EAD2';
   const f = S.fotos[c.key];
   return `<div class="photo" style="background:${col}">${f ? `<img src="${f}" alt="${esc(c.marca+' '+c.modelo)}">` : sil(c.shape, fg, col)}</div>`;
@@ -1320,7 +1329,8 @@ function fichaHTML(c, deck){
 }
 // opts: {n, total, compact, canPick, sel, res}  res: 'win'|'lose'|'tie' resultado para ESTA carta
 const _rg = {};
-function medidor(deck, st, v){
+function medidor(deck, st, v, c){
+  if(estrella(c, st)) return 100;
   const k = deck.id + st.id;
   if(!_rg[k]){ let mn = 1e9, mx = -1e9; deck.cards.forEach(c => { const x = c.v[st.id]; if(x < mn) mn = x; if(x > mx) mx = x; }); _rg[k] = [mn, mx]; }
   const [mn, mx] = _rg[k];
@@ -1337,15 +1347,33 @@ function cartaHTML(c, deck, o){
     return `<button class="${cls.join(' ')}" data-act="stat" data-stat="${s.id}" ${o.canPick?'':'disabled'}>
       <span class="k">${i+1}</span>
       <span class="l">${s.label}<i>${s.hint}</i></span>
-      <span><span class="v">${fmt(s,c.v[s.id],c)}</span><span class="u">${s.unit}</span></span>
-      <span class="g"><i style="width:${medidor(deck,s,c.v[s.id])}%"></i></span></button>`;
+      <span><span class="v">${fmt(s,c.v[s.id],c)}</span><span class="u">${estrella(c,s)?'':s.unit}</span></span>
+      <span class="g"><i style="width:${medidor(deck,s,c.v[s.id],c)}%"></i></span></button>`;
   }).join('');
-  return `<div class="card ${o.compact?'compact':''}" style="--bc:${COLOR[c.marca]||'#888'}">
+  return `<div class="card ${o.compact?'compact':''} ${c.esp?'esp':''}" style="--bc:${COLOR[c.marca]||'#888'}">
     <div class="chead"><div><small>${esc(c.marca)}</small><b>${esc(c.modelo)}</b></div>${o.n?`<span class="num ${o.n==='Compu'||o.rojo?'cpu':''}">${o.n}</span>`:''}</div>
     ${fotoHTML(c)}
     <div class="stats">${filas}</div>
     ${o.compact ? '' : fichaHTML(c, deck)}
     <div class="cfoot">${esc(c.nota||'')}</div></div>`;
+}
+function crearEspeciales(deck){
+  const med = id => { const a = deck.cards.map(c => c.v[id]).sort((x,y) => x-y); return a[a.length>>1]; };
+  const v = {}; deck.stats.forEach(s => v[s.id] = med(s.id));
+  const st = deck.stats[Math.floor(Math.random()*deck.stats.length)];
+  return {
+    ano:{id:'esp-ano',marca:'Especial',modelo:'Auto del Año',shape:'sedan',key:'esp-ano',est:{},v:Object.assign({},v),esp:{t:'ano',stat:st.id},nota:'★ Gana siempre en '+st.label+'. En el resto vale un valor medio.'},
+    com:{id:'esp-com',marca:'Especial',modelo:'Comodín',shape:'sedan',key:'esp-com',est:{},v:Object.assign({},v),esp:{t:'comodin'},nota:'★ Si lo jugás vos, gana la ronda. Si elige el rival, empatan.'}
+  };
+}
+function duelo(st, a, b, quien){
+  const fz = (c, own) => !c.esp ? null : c.esp.t === 'ano' ? (c.esp.stat === st.id ? 'w' : null) : (own === quien ? 'w' : 't');
+  const A = fz(a,'you'), B = fz(b,'cpu');
+  if(A === 'w' && B === 'w') return 0;
+  if(A === 'w') return 1;
+  if(B === 'w') return -1;
+  if(A === 't' || B === 't') return 0;
+  return st.dir*(a.v[st.id]-b.v[st.id]);
 }
 
 // ---------- Juego ----------
@@ -1365,6 +1393,11 @@ function nuevaPartida(modo){
   const mazo = mezclar(deck.cards.slice(), rnd);
   S.game = {deckId:deck.id, you:mazo.slice(0,n), cpu:mazo.slice(n,2*n), pot:[], turn:rnd()<.5?'you':'cpu', hist:[], diario:dia, torneo: !!tor, dif: dia ? 'normal' : cfg.dif, mem: Array(n).fill(null),
             phase:'pick', sel:null, res:null, shown:null, ronda:1, quien:null, fin:null};
+  if(!dia && cfg.esp !== false && S.pref.esp !== false){
+    const e = crearEspeciales(deck), par = Math.random() < .5 ? [e.ano, e.com] : [e.com, e.ano];
+    [S.game.you, S.game.cpu].forEach((h,i) => h.splice(Math.floor(Math.random()*(h.length+1)), 0, par[i]));
+    S.game.mem = Array(S.game.you.length).fill(null);
+  }
   if(modo === 'dos'){ S.game.modo2 = {n1, n2}; S.game.phase = 'pase'; }
   S.screen = 'game';
   render();
@@ -1376,6 +1409,7 @@ function percentil(deck, card, stat){
 }
 function elegirCPU(g, deck, rr){
   const c = g.cpu[0], dif = g.dif || 'normal';
+  if(c.esp && c.esp.t === 'ano') return deck.stats.find(s => s.id === c.esp.stat);
   const pri = s => percentil(deck, c, s);
   let score;
   if(dif === 'facil') score = s => pri(s) + rr() * 0.7;
@@ -1405,7 +1439,8 @@ function resolver(statId, quien){
   const g = S.game; if(!g || g.phase !== 'pick') return;
   const deck = DECKS[g.deckId], st = deck.stats.find(s => s.id === statId);
   const a = g.you[0], b = g.cpu[0];
-  const d = st.dir*(a.v[st.id]-b.v[st.id]);
+  const d = duelo(st, a, b, quien);
+  g.espMsg = (a.esp || b.esp) ? [a,b].filter(c => c.esp).map(c => c.esp.t === 'ano' ? (c.esp.stat === st.id ? 'El Auto del Año gana siempre en ' + st.label + '.' : 'El Auto del Año no tiene ventaja en ' + st.label + '.') : (( c === a ? 'you' : 'cpu') === quien ? 'El Comodín gana la ronda.' : 'El Comodín empata si elige el rival.')).join(' ') : '';
   g.sel = statId; g.quien = quien; g.phase = 'reveal'; g.shown = {a,b};
   g.you.shift(); g.cpu.shift(); g.mem.shift();
   if(d > 0){ g.res = 'you'; g.you.push(a,b,...g.pot); g.mem.push(a,b,...g.pot); g.pot = []; g.turn = 'you'; }
@@ -1570,13 +1605,14 @@ function pantallaInicio(){
     <div class="group"><label>Mazo</label><div class="opts">${mazos}</div></div>
     <div class="group"><label>Tamaño de la partida</label><div class="opts seg">${tams}</div></div>
     <div class="group"><label>Dificultad de la compu</label><div class="opts seg sm">${difs}</div></div>
+    <div class="group"><label>Cartas especiales</label><div class="opts seg sm"><button class="opt ${S.pref.esp!==false?'on':''}" data-act="esp" data-v="1"><b>Sí</b><small>Comodín y Auto del Año</small></button><button class="opt ${S.pref.esp===false?'on':''}" data-act="esp" data-v="0"><b>No</b><small>Solo autos</small></button></div></div>
     <button class="btn big" data-act="jugar">Jugar</button>
     ${bloqueDos()}
     ${bloqueTorneo()}
     <div class="group"><label>Álbum de fotos</label><div class="albums">${portadaAlbum('autos')}</div></div>
     <div class="group"><label>Tu récord</label><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empatadas</small></div></div></div>
     ${inst}
-    <details class="rules"><summary>Cómo se juega</summary><p>Se reparten las cartas. Quien tiene el turno elige una característica de su carta; gana quien tenga el mejor valor y se queda con ambas cartas. En empate las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo.</p></details>
+    <details class="rules"><summary>Cómo se juega</summary><p>Se reparten las cartas. Quien tiene el turno elige una característica de su carta; gana quien tenga el mejor valor y se queda con ambas cartas. En empate las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo.</p><p>Con las cartas especiales activadas, cada uno recibe una: el <b>Auto del Año</b> gana siempre en una característica (la indica la carta) y el <b>Comodín</b> gana la ronda si lo jugás vos, pero empata si elige el rival.</p></details>
     <div class="foot">Desarrollado por Seba Branda</div>`;
 }
 function textoMensaje(g, deck){
@@ -1585,9 +1621,9 @@ function textoMensaje(g, deck){
   const va = fmt(st,g.shown.a.v[st.id],g.shown.a), vb = fmt(st,g.shown.b.v[st.id],g.shown.b);
   const quien = g.quien === 'cpu' ? 'La computadora eligió' : 'Elegiste';
   const base = `${quien} ${st.label}: ${va}${st.unit?' '+st.unit:''} contra ${vb}${st.unit?' '+st.unit:''}.`;
-  if(g.res === 'you') return base + ' Ganaste la ronda.';
-  if(g.res === 'cpu') return base + ' Perdiste la ronda.';
-  return base + ' Empate: las cartas van al pozo.';
+  if(g.res === 'you') return base + ' Ganaste la ronda.' + (g.espMsg ? ' ' + g.espMsg : '');
+  if(g.res === 'cpu') return base + ' Perdiste la ronda.' + (g.espMsg ? ' ' + g.espMsg : '');
+  return base + ' Empate: las cartas van al pozo.' + (g.espMsg ? ' ' + g.espMsg : '');
 }
 function pantallaDos(g, deck){
   const N = g.modo2, nm = {you:N.n1, cpu:N.n2}, otro = k => k === 'you' ? 'cpu' : 'you';
@@ -1607,7 +1643,7 @@ function pantallaDos(g, deck){
   if(reveal){
     const st = deck.stats.find(s => s.id === g.sel), cy = de(yo), ce = de(el);
     const u = st.unit ? ' ' + st.unit : '';
-    msg = `${nm[g.quien]} eligió ${st.label}: ${fmt(st, cy.v[st.id], cy)}${u} contra ${fmt(st, ce.v[st.id], ce)}${u}. ` + (g.res === 'tie' ? 'Empate: las cartas van al pozo.' : `Ganó la ronda ${nm[g.res]}.`);
+    msg = `${nm[g.quien]} eligió ${st.label}: ${fmt(st, cy.v[st.id], cy)}${u} contra ${fmt(st, ce.v[st.id], ce)}${u}. ` + (g.res === 'tie' ? 'Empate: las cartas van al pozo.' : `Ganó la ronda ${nm[g.res]}.`) + (g.espMsg ? ' ' + g.espMsg : '');
   } else msg = `${nm[yo]}: tocá una característica de tu carta.`;
   const opp = reveal ? cartaHTML(de(el), deck, {compact:true, sel:g.sel, res:rj[el], n:nm[el], rojo:el === 'cpu'})
     : `<div class="back"><span>NAIPES 70-90</span><small>Carta de ${esc(nm[el])}</small></div>`;
@@ -2019,6 +2055,7 @@ APP.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if(!b) return;
   const a = b.dataset.act;
   if(a === 'deck'){ S.pref.deck = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
+  else if(a === 'esp'){ S.pref.esp = b.dataset.v === '1'; guardar(LS_PREF,S.pref); render(); }
   else if(a === 'dif'){ S.pref.dif = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
   else if(a === 'dos') nuevaPartida('dos');
   else if(a === 'pase'){ if(S.game && S.game.phase === 'pase'){ S.game.phase = 'pick'; render(); } }
