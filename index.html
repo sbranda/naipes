@@ -235,6 +235,12 @@ body{background:radial-gradient(120% 45% at 50% -8%,#33468a77,#0000 65%),repeati
 .hist .w{background:#4C956C}.hist .l{background:#C8352E}.hist .t{background:#F2B705}
 .seg.sm .opt b{font-size:24px}
 .pozo{margin-top:-2px}
+.serie{background:#0B142899;border:2px solid #F4EAD233;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+.serie .k{font-family:var(--disp);letter-spacing:.16em;font-size:18px;color:var(--gold)}
+.serie p{margin:0;font-size:16px;color:#F4EAD2d9}
+.dia.tor{background:linear-gradient(160deg,#7a2a8f,#16254a)}
+.seg.two{grid-template-columns:1fr 1fr}
+.dia .btn.sm{align-self:flex-start}
 </style>
 </head>
 <body>
@@ -249,7 +255,7 @@ body{background:radial-gradient(120% 45% at 50% -8%,#33468a77,#0000 65%),repeati
 const APP = document.getElementById('app');
 const TOAST = document.getElementById('toast');
 const FILE = document.getElementById('file');
-const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario';
+const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario', LS_TORNEO = 'naipes80.torneo';
 const MAX_RONDAS = 60;
 const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280',"Auto Union":'#8E8E93',Borgward:'#B08968',CIDASA:'#4D908E',Chrysler:'#577590',Simca:'#43AA8B',"Siam Di Tella":'#C1121F',Studebaker:'#9C6644',"De Carlo":'#7B2CBF',Heinkel:'#F9844A',Chevrolet:'#D97B29',IAME:'#6A4C93',Opel:'#E4572E',Seat:'#2A9D8F'};
 const CLARO = {Renault:1,Volkswagen:1};
@@ -1205,12 +1211,13 @@ const TAMANOS = {corta:{n:6,t:'Corta',d:'6 cartas cada uno'},media:{n:10,t:'Medi
 const DIFS = {facil:{t:'Fácil',d:'Elige casi al azar'},normal:{t:'Normal',d:'Elige su mejor dato'},memorioso:{t:'Memorioso',d:'Recuerda tus cartas'}};
 
 // ---------- Estado ----------
-const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal'}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, deferred:null, pending:null};
+const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal'}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, deferred:null, pending:null};
 function cargar(){
   try{ S.guardar = localStorage.getItem(LS_GUARDAR) !== 'no'; }catch(e){}
   try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
   S.legado = Object.assign({}, S.fotos);
   try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
+  try{ const t = JSON.parse(localStorage.getItem(LS_TORNEO)||'null'); if(t){ S.tor = {g:t.g|0, p:t.p|0}; if(t.act && !t.act.fin && t.act.cfg && DECKS[t.act.cfg.deck] && TAMANOS[t.act.cfg.size] && DIFS[t.act.cfg.dif] && Array.isArray(t.act.hist)) S.torneo = t.act; } }catch(e){}
   try{ const d = JSON.parse(localStorage.getItem(LS_DIARIO)||'null'); if(d) S.dia = Object.assign(S.dia,d); }catch(e){}
   try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]){ S.pref = Object.assign({dif:'normal'}, p); if(!DIFS[S.pref.dif]) S.pref.dif = 'normal'; } }catch(e){}
 }
@@ -1314,12 +1321,13 @@ function infoDia(){
 }
 function nuevaPartida(modo){
   const dia = modo === 'diario' ? infoDia() : null;
+  const tor = modo === 'torneo' && S.torneo ? S.torneo : null, cfg = tor ? tor.cfg : S.pref;
   const rnd = dia ? rng(semilla('naipes80|' + dia.clave)) : Math.random;
-  const deck = DECKS[dia ? dia.deck : S.pref.deck], t = TAMANOS[dia ? 'corta' : S.pref.size];
+  const deck = DECKS[dia ? dia.deck : cfg.deck], t = TAMANOS[dia ? 'corta' : cfg.size];
   const mitad = Math.floor(deck.cards.length/2);
   const n = t.n ? Math.min(t.n, mitad) : mitad;
   const mazo = mezclar(deck.cards.slice(), rnd);
-  S.game = {deckId:deck.id, you:mazo.slice(0,n), cpu:mazo.slice(n,2*n), pot:[], turn:rnd()<.5?'you':'cpu', hist:[], diario:dia, dif: dia ? 'normal' : S.pref.dif, mem: Array(n).fill(null),
+  S.game = {deckId:deck.id, you:mazo.slice(0,n), cpu:mazo.slice(n,2*n), pot:[], turn:rnd()<.5?'you':'cpu', hist:[], diario:dia, torneo: !!tor, dif: dia ? 'normal' : cfg.dif, mem: Array(n).fill(null),
             phase:'pick', sel:null, res:null, shown:null, ronda:1, quien:null, fin:null};
   S.screen = 'game';
   render();
@@ -1384,6 +1392,7 @@ function terminar(){
   else r = g.you.length > g.cpu.length ? 'you' : g.cpu.length > g.you.length ? 'cpu' : 'tie';
   g.fin = r;
   if(g.diario) registrarDia(g, r);
+  else if(g.torneo) registrarTorneo(g, r);
   else{ if(r === 'you') S.rec.g++; else if(r === 'cpu') S.rec.p++; else S.rec.e++; guardar(LS_STATS, S.rec); }
   S.screen = 'fin';
   render();
@@ -1467,6 +1476,46 @@ function bloqueDia(){
     <p>Mazo ${DECKS[h.deck].nombre}${r > 1 ? ` · Racha: ${r} días` : ''}. Volvé mañana para el próximo.</p>
     <div class="row2"><button class="btn sm" data-act="comp-txt">Compartir texto</button><button class="btn sm" data-act="comp-img">Compartir imagen</button></div></div>`;
 }
+// ---------- Torneo ----------
+function victorias(T){ return {you:T.hist.filter(h => h.r === 'you').length, cpu:T.hist.filter(h => h.r === 'cpu').length}; }
+function acumulado(T){ return {you:T.hist.reduce((t,h) => t + h.you, 0), cpu:T.hist.reduce((t,h) => t + h.cpu, 0)}; }
+function guardarTorneo(){ guardar(LS_TORNEO, {act:S.torneo, g:S.tor.g, p:S.tor.p}); }
+function registrarTorneo(g, r){
+  const T = S.torneo; if(!T) return;
+  T.hist.push({r, you:g.you.length, cpu:g.cpu.length});
+  const meta = Math.ceil(T.cfg.n / 2), w = victorias(T);
+  if(w.you >= meta) T.fin = 'you';
+  else if(w.cpu >= meta) T.fin = 'cpu';
+  else if(T.hist.length >= T.cfg.n + 2){ const a = acumulado(T); if(a.you !== a.cpu) T.fin = a.you > a.cpu ? 'you' : 'cpu'; }
+  if(T.fin){ if(T.fin === 'you') S.tor.g++; else S.tor.p++; }
+  guardarTorneo();
+}
+function cerrarTorneo(){ S.torneo = null; guardarTorneo(); }
+function serieHTML(T){
+  const w = victorias(T), a = acumulado(T);
+  return `<div class="serie"><div class="k">Torneo · al mejor de ${T.cfg.n}</div>
+    <div class="hist">${T.hist.map(h => `<i class="${h.r === 'you' ? 'w' : h.r === 'cpu' ? 'l' : 't'}"></i>`).join('')}</div>
+    <p>Partidas ganadas: Vos ${w.you} – ${w.cpu} Compu</p><p>Cartas acumuladas: Vos ${a.you} – ${a.cpu} Compu</p></div>`;
+}
+function bloqueTorneo(){
+  const T = S.torneo;
+  if(!T){
+    return `<div class="group"><label>Torneo</label><div class="opts seg two">
+      <button class="opt" data-act="torneo" data-v="3"><b>Mejor de 3</b><small>Gana quien sume 2</small></button>
+      <button class="opt" data-act="torneo" data-v="5"><b>Mejor de 5</b><small>Gana quien sume 3</small></button></div>
+      <div class="sub" style="font-size:14px;opacity:.8">Usa el mazo, el tamaño y la dificultad que elegiste arriba.${S.tor.g + S.tor.p ? ` Torneos: ${S.tor.g} ${S.tor.g === 1 ? 'ganado' : 'ganados'} · ${S.tor.p} ${S.tor.p === 1 ? 'perdido' : 'perdidos'}.` : ''}</div></div>`;
+  }
+  const w = victorias(T);
+  return `<div class="dia tor"><div class="k">Torneo en curso · mejor de ${T.cfg.n}</div><h2>Vos ${w.you} – ${w.cpu} Compu</h2>
+    <div class="hist">${T.hist.map(h => `<i class="${h.r === 'you' ? 'w' : h.r === 'cpu' ? 'l' : 't'}"></i>`).join('')}</div>
+    <p>${DECKS[T.cfg.deck].nombre} · ${TAMANOS[T.cfg.size].t} · Compu ${DIFS[T.cfg.dif].t}. Sigue la partida ${T.hist.length + 1}.</p>
+    <button class="btn big" data-act="torneo-sig">Continuar</button><button class="btn sm" data-act="torneo-fin">Abandonar torneo</button></div>`;
+}
+function lineaEstado(g){
+  const T = g.torneo ? S.torneo : null, w = T ? victorias(T) : null;
+  return (T ? `<div class="pozo">Torneo · Partida ${T.hist.length + 1} · Vos ${w.you}–${w.cpu} Compu</div>` : '') +
+    `<div class="pozo">Compu: ${DIFS[g.dif].t}${g.pot.length ? ' · Pozo: ' + g.pot.length + ' cartas' : ''}</div>`;
+}
 function pantallaInicio(){
   const mazos = Object.values(DECKS).map(d => `<button class="opt ${S.pref.deck===d.id?'on':''}" data-act="deck" data-v="${d.id}"><span class="tx"><b>${d.nombre}</b><small>${d.desc}</small></span><span class="nb">${d.cards.length}<small>cartas</small></span></button>`).join('');
   const tams = Object.keys(TAMANOS).map(k => `<button class="opt ${S.pref.size===k?'on':''}" data-act="size" data-v="${k}"><b>${TAMANOS[k].t}</b><small>${TAMANOS[k].d}</small></button>`).join('');
@@ -1478,6 +1527,7 @@ function pantallaInicio(){
     <div class="group"><label>Tamaño de la partida</label><div class="opts seg">${tams}</div></div>
     <div class="group"><label>Dificultad de la compu</label><div class="opts seg sm">${difs}</div></div>
     <button class="btn big" data-act="jugar">Jugar</button>
+    ${bloqueTorneo()}
     <div class="group"><label>Álbum de fotos</label><div class="albums">${portadaAlbum('autos')}</div></div>
     <div class="group"><label>Tu récord</label><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empatadas</small></div></div></div>
     ${inst}
@@ -1510,23 +1560,39 @@ function pantallaJuego(){
       <div class="score"><div class="sc ${turnoYo?'turno':''}"><small>Vos</small><b>${g.you.length}</b></div><span class="vs">VS</span><div class="sc ${turnoCpu?'turno':''}"><small>Compu</small><b>${g.cpu.length}</b></div></div>
       <div class="rd">R${g.ronda}</div></div>
     <div class="meter" title="Cartas en tu poder"><span style="width:${pct}%"></span></div>
-    <div class="pozo">Compu: ${DIFS[g.dif].t}${g.pot.length ? ' · Pozo: ' + g.pot.length + ' cartas' : ''}</div>
+    ${lineaEstado(g)}
     <div class="msg ${clsMsg}">${esc(textoMensaje(g,deck))}</div>
     ${oponente}
     ${cartaHTML(mia, deck, {canPick:!reveal && g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
     ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}`;
 }
 function pantallaFin(){
-  const g = S.game;
+  const g = S.game, T = g.torneo ? S.torneo : null;
   const t = g.fin === 'you' ? 'Ganaste' : g.fin === 'cpu' ? 'Perdiste' : 'Empate';
   const ic = g.fin === 'you' ? '🏆' : g.fin === 'cpu' ? '🏁' : '🤝';
-  const s = (g.fin === 'tie' ? 'Quedaron igualados.' : `Terminaste con ${g.you.length} cartas contra ${g.cpu.length}.`) + (g.diario ? '' : ` Compu: ${DIFS[g.dif].t}.`);
-  return `<div class="fin"><div class="res ${g.fin}"><div class="ic">${ic}</div><h1>${t}</h1>
-    <div class="pts"><span>${g.you.length}</span><i>–</i><span>${g.cpu.length}</span></div>
-    <div class="lab"><span>Vos</span><span>Compu</span></div><div class="sub" style="margin-top:10px">${s}</div></div>
-    ${g.diario ? `${histHTML({hist:g.hist.join('')})}<div class="sub" style="text-align:center">Desafío #${g.diario.num} · ${rachaVigente() > 1 ? 'Racha: ' + rachaVigente() + ' días' : 'Volvé mañana'}</div>
-    <button class="btn big" data-act="comp-txt">Compartir resultado</button><button class="btn" data-act="comp-img">Compartir imagen</button>` : `<button class="btn big" data-act="jugar">Revancha</button>`}
-    <button class="btn" data-act="home">Inicio</button></div>`;
+  const base = g.fin === 'tie' ? 'Quedaron igualados.' : `Terminaste con ${g.you.length} cartas contra ${g.cpu.length}.`;
+  let cls = g.fin, titulo = t, icono = ic, pts = [g.you.length, g.cpu.length], sub = base + (g.diario ? '' : ` Compu: ${DIFS[g.dif].t}.`), extra = '', botones;
+  if(g.diario){
+    extra = `${histHTML({hist:g.hist.join('')})}<div class="sub" style="text-align:center">Desafío #${g.diario.num} · ${rachaVigente() > 1 ? 'Racha: ' + rachaVigente() + ' días' : 'Volvé mañana'}</div>`;
+    botones = `<button class="btn big" data-act="comp-txt">Compartir resultado</button><button class="btn" data-act="comp-img">Compartir imagen</button><button class="btn" data-act="home">Inicio</button>`;
+  } else if(T){
+    const w = victorias(T), a = acumulado(T);
+    if(T.fin){
+      cls = T.fin; titulo = T.fin === 'you' ? 'Torneo ganado' : 'Torneo perdido'; icono = T.fin === 'you' ? '🏆' : '🏁'; pts = [w.you, w.cpu];
+      sub = `Última partida: ${t.toLowerCase()} ${g.you.length}–${g.cpu.length}. Cartas acumuladas: ${a.you}–${a.cpu}.`;
+      botones = `<button class="btn big" data-act="home">Inicio</button>`;
+    } else {
+      sub = base + (g.fin === 'tie' ? ' No cuenta: se juega de nuevo.' : '');
+      botones = `<button class="btn big" data-act="torneo-sig">Siguiente partida</button><button class="btn" data-act="home">Inicio</button>`;
+    }
+    extra = serieHTML(T);
+  } else {
+    botones = `<button class="btn big" data-act="jugar">Revancha</button><button class="btn" data-act="home">Inicio</button>`;
+  }
+  return `<div class="fin"><div class="res ${cls}"><div class="ic">${icono}</div><h1>${titulo}</h1>
+    <div class="pts"><span>${pts[0]}</span><i>–</i><span>${pts[1]}</span></div>
+    <div class="lab"><span>Vos</span><span>Compu</span></div><div class="sub" style="margin-top:10px">${sub}</div></div>
+    ${extra}${botones}</div>`;
 }
 function tileFoto(m){
   const tiene = !!S.fotos[m.key];
@@ -1885,7 +1951,10 @@ APP.addEventListener('click', e => {
   else if(a === 'stat'){ if(S.game && S.game.phase === 'pick' && S.game.turn === 'you') resolver(b.dataset.stat,'you'); }
   else if(a === 'next') siguiente();
   else if(a === 'salir'){ if(confirm('¿Salir de la partida?')){ clearTimeout(agendarCPU.t); S.game = null; S.screen = 'home'; render(); } }
-  else if(a === 'home'){ clearTimeout(agendarCPU.t); S.screen = 'home'; render(); }
+  else if(a === 'home'){ clearTimeout(agendarCPU.t); if(S.torneo && S.torneo.fin) cerrarTorneo(); S.screen = 'home'; render(); }
+  else if(a === 'torneo'){ S.torneo = {cfg:{deck:S.pref.deck, size:S.pref.size, dif:S.pref.dif, n:+b.dataset.v}, hist:[], fin:null}; guardarTorneo(); nuevaPartida('torneo'); }
+  else if(a === 'torneo-sig'){ if(S.torneo && !S.torneo.fin) nuevaPartida('torneo'); }
+  else if(a === 'torneo-fin'){ if(confirm('¿Abandonar el torneo?')){ cerrarTorneo(); render(); } }
   else if(a === 'fotos'){ S.screen = 'fotos'; render(); }
   else if(a === 'foto'){ S.pending = b.dataset.key; FILE.click(); }
   else if(a === 'quitar'){ const k = b.dataset.key; delete S.fotos[k]; idbAutos(st => st.delete(k)).catch(() => {}); render(); }
