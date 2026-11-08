@@ -258,6 +258,18 @@ body{background:transparent;font-weight:500}
 .espfoto b{font-family:var(--disp);font-size:84px;line-height:1}
 .espfoto span{font-family:var(--disp);font-size:24px;letter-spacing:.14em}
 .card.esp .row .v{color:#14213D}
+
+.racha{display:flex;gap:10px;margin-bottom:10px}
+.racha div{flex:1;background:#ffffff0c;border:2px solid #F4EAD233;border-radius:14px;text-align:center;padding:6px 4px 4px}
+.racha b{display:block;font-family:var(--disp);font-size:34px;line-height:1;color:var(--gold)}
+.racha small{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.logros{display:flex;flex-direction:column;gap:8px}
+.lg{display:flex;align-items:center;gap:12px;border:2px solid #F4EAD222;border-radius:14px;padding:10px 12px;opacity:.6;background:#ffffff08}
+.lg.ok{opacity:1;border-color:var(--gold);background:#F2B70018}
+.lg .ic{font-size:28px;line-height:1}
+.lg .tx b{display:block;font-family:var(--disp);font-size:20px;letter-spacing:.05em}
+.lg .tx small{display:block;font-size:13px;opacity:.85}
+.lg.nuevo{margin:10px 0}
 </style>
 </head>
 <body>
@@ -272,7 +284,7 @@ body{background:transparent;font-weight:500}
 const APP = document.getElementById('app');
 const TOAST = document.getElementById('toast');
 const FILE = document.getElementById('file');
-const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario', LS_TORNEO = 'naipes80.torneo';
+const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario', LS_TORNEO = 'naipes80.torneo', LS_LOGROS = 'naipes80.logros';
 const MAX_RONDAS = 60;
 const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280',"Auto Union":'#8E8E93',Borgward:'#B08968',CIDASA:'#4D908E',Chrysler:'#577590',Simca:'#43AA8B',"Siam Di Tella":'#C1121F',Studebaker:'#9C6644',"De Carlo":'#7B2CBF',Heinkel:'#F9844A',Chevrolet:'#D97B29',IAME:'#6A4C93',Opel:'#E4572E',Seat:'#2A9D8F'};
 const CLARO = {Renault:1,Volkswagen:1};
@@ -1253,13 +1265,14 @@ const TAMANOS = {corta:{n:6,t:'Corta',d:'6 cartas cada uno'},media:{n:10,t:'Medi
 const DIFS = {facil:{t:'Fácil',d:'Elige casi al azar'},normal:{t:'Normal',d:'Elige su mejor dato'},memorioso:{t:'Memorioso',d:'Recuerda tus cartas'}};
 
 // ---------- Estado ----------
-const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal',esp:true}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, deferred:null, pending:null};
+const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal',esp:true}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, logros:{u:{},racha:0,mejor:0}, nuevos:[], deferred:null, pending:null};
 function cargar(){
   try{ S.guardar = localStorage.getItem(LS_GUARDAR) !== 'no'; }catch(e){}
   try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
   S.legado = Object.assign({}, S.fotos);
   try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
   try{ const t = JSON.parse(localStorage.getItem(LS_TORNEO)||'null'); if(t){ S.tor = {g:t.g|0, p:t.p|0}; if(t.act && !t.act.fin && t.act.cfg && DECKS[t.act.cfg.deck] && TAMANOS[t.act.cfg.size] && DIFS[t.act.cfg.dif] && Array.isArray(t.act.hist)) S.torneo = t.act; } }catch(e){}
+  try{ const l = JSON.parse(localStorage.getItem(LS_LOGROS)||'null'); if(l && typeof l === 'object') S.logros = {u:(l.u && typeof l.u === 'object') ? l.u : {}, racha:l.racha|0, mejor:l.mejor|0}; }catch(e){}
   try{ const d = JSON.parse(localStorage.getItem(LS_DIARIO)||'null'); if(d) S.dia = Object.assign(S.dia,d); }catch(e){}
   try{ const p = JSON.parse(localStorage.getItem(LS_PREF)||'null'); if(p && DECKS[p.deck] && TAMANOS[p.size]){ S.pref = Object.assign({dif:'normal',esp:true}, p); if(!DIFS[S.pref.dif]) S.pref.dif = 'normal'; } }catch(e){}
 }
@@ -1377,6 +1390,40 @@ function duelo(st, a, b, quien){
 }
 
 // ---------- Juego ----------
+// ---------- Logros ----------
+const LOGROS = [
+  {id:'viejo', ico:'🕰️', t:'Veterano', d:'Ganar una ronda con el auto más viejo del mazo'},
+  {id:'racha5', ico:'🔥', t:'Imparable', d:'Ganar 5 partidas seguidas contra la compu'},
+  {id:'album', ico:'📸', t:'Coleccionista', d:'Completar el álbum de fotos'}
+];
+function darLogro(id){
+  if(S.logros.u[id]) return;
+  S.logros.u[id] = hoyAR(); guardar(LS_LOGROS, S.logros);
+  const L = LOGROS.find(x => x.id === id); if(!S.nuevos.includes(id)) S.nuevos.push(id);
+  aviso('🏅 Logro desbloqueado: ' + L.t);
+}
+function comprobarAlbum(){
+  if(S.logros.u.album) return;
+  const it = ambito('autos').items;
+  if(it.length && it.every(x => S.fotos[x.key])) darLogro('album');
+}
+function actualizarRacha(r){
+  const L = S.logros;
+  if(r === 'you'){ L.racha++; L.mejor = Math.max(L.mejor, L.racha); if(L.racha >= 5) darLogro('racha5'); }
+  else if(r === 'cpu') L.racha = 0;
+  guardar(LS_LOGROS, L);
+}
+function esMasViejo(deck, c){
+  if(c.esp) return false;
+  let mn = 1e9; deck.cards.forEach(o => { if(o.v.lanz < mn) mn = o.v.lanz; });
+  return c.v.lanz === mn;
+}
+function logrosHTML(){
+  const L = S.logros, n = LOGROS.filter(x => L.u[x.id]).length;
+  return `<div class="group"><label>Logros · ${n} de ${LOGROS.length}</label>
+    <div class="racha"><div><b>${L.racha}</b><small>Racha actual</small></div><div><b>${L.mejor}</b><small>Mejor racha</small></div></div>
+    <div class="logros">${LOGROS.map(x => `<div class="lg ${L.u[x.id] ? 'ok' : ''}"><span class="ic">${L.u[x.id] ? x.ico : '🔒'}</span><span class="tx"><b>${x.t}</b><small>${x.d}</small></span></div>`).join('')}</div></div>`;
+}
 function hoyAR(){ try{ return new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'}); }catch(e){ return new Date().toISOString().slice(0,10); } }
 function infoDia(){
   const clave = hoyAR(), num = Math.max(1, Math.floor((Date.parse(clave) - Date.parse('2026-11-08')) / 864e5) + 1);
@@ -1391,6 +1438,7 @@ function nuevaPartida(modo){
   const mitad = Math.floor(deck.cards.length/2);
   const n = t.n ? Math.min(t.n, mitad) : mitad;
   const mazo = mezclar(deck.cards.slice(), rnd);
+  S.nuevos = [];
   S.game = {deckId:deck.id, you:mazo.slice(0,n), cpu:mazo.slice(n,2*n), pot:[], turn:rnd()<.5?'you':'cpu', hist:[], diario:dia, torneo: !!tor, dif: dia ? 'normal' : cfg.dif, mem: Array(n).fill(null),
             phase:'pick', sel:null, res:null, shown:null, ronda:1, quien:null, fin:null};
   if(!dia && cfg.esp !== false && S.pref.esp !== false){
@@ -1446,6 +1494,7 @@ function resolver(statId, quien){
   if(d > 0){ g.res = 'you'; g.you.push(a,b,...g.pot); g.mem.push(a,b,...g.pot); g.pot = []; g.turn = 'you'; }
   else if(d < 0){ g.res = 'cpu'; g.cpu.push(b,a,...g.pot); g.pot = []; g.turn = 'cpu'; }
   else { g.res = 'tie'; g.pot.push(a,b); }
+  if(d > 0 && !g.modo2 && esMasViejo(deck, a)) darLogro('viejo');
   g.hist.push(g.res === 'you' ? 'w' : g.res === 'cpu' ? 'l' : 't');
   render();
 }
@@ -1463,6 +1512,8 @@ function terminar(){
   if(!g.you.length) r = 'cpu'; else if(!g.cpu.length) r = 'you';
   else r = g.you.length > g.cpu.length ? 'you' : g.cpu.length > g.you.length ? 'cpu' : 'tie';
   g.fin = r;
+  if(!g.modo2) actualizarRacha(r);
+  g.nuevos = S.nuevos.splice(0);
   if(g.modo2){}
   else if(g.diario) registrarDia(g, r);
   else if(g.torneo) registrarTorneo(g, r);
@@ -1610,6 +1661,7 @@ function pantallaInicio(){
     ${bloqueDos()}
     ${bloqueTorneo()}
     <div class="group"><label>Álbum de fotos</label><div class="albums">${portadaAlbum('autos')}</div></div>
+    ${logrosHTML()}
     <div class="group"><label>Tu récord</label><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empatadas</small></div></div></div>
     ${inst}
     <details class="rules"><summary>Cómo se juega</summary><p>Se reparten las cartas. Quien tiene el turno elige una característica de su carta; gana quien tenga el mejor valor y se queda con ambas cartas. En empate las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo.</p><p>Con las cartas especiales activadas, cada uno recibe una: el <b>Auto del Año</b> gana siempre en una característica (la indica la carta) y el <b>Comodín</b> gana la ronda si lo jugás vos, pero empata si elige el rival.</p></details>
@@ -1678,7 +1730,7 @@ function pantallaFin(){
   const g = S.game, T = g.torneo ? S.torneo : null;
   const t = g.fin === 'you' ? 'Ganaste' : g.fin === 'cpu' ? 'Perdiste' : 'Empate';
   const ic = g.fin === 'you' ? '🏆' : g.fin === 'cpu' ? '🏁' : '🤝';
-  const base = g.fin === 'tie' ? 'Quedaron igualados.' : `Terminaste con ${g.you.length} cartas contra ${g.cpu.length}.`;
+  const base = g.fin === 'tie' ? 'Quedaron igualados.' : `Terminaste con ${g.you.length} ${g.you.length === 1 ? 'carta' : 'cartas'} contra ${g.cpu.length}.`;
   let lab = ['Vos', 'Compu'], cls = g.fin, titulo = t, icono = ic, pts = [g.you.length, g.cpu.length], sub = base + (g.diario ? '' : ` Compu: ${DIFS[g.dif].t}.`), extra = '', botones;
   if(g.modo2){
     const N = g.modo2, gan = g.fin === 'you' ? N.n1 : g.fin === 'cpu' ? N.n2 : null;
@@ -1705,6 +1757,8 @@ function pantallaFin(){
   return `<div class="fin"><div class="res ${cls}"><div class="ic">${icono}</div><h1>${titulo}</h1>
     <div class="pts"><span>${pts[0]}</span><i>–</i><span>${pts[1]}</span></div>
     <div class="lab"><span>${esc(lab[0])}</span><span>${esc(lab[1])}</span></div><div class="sub" style="margin-top:10px">${sub}</div></div>
+    ${(g.nuevos||[]).map(id => { const L = LOGROS.find(x => x.id === id); return `<div class="lg ok nuevo"><span class="ic">${L.ico}</span><span class="tx"><b>Logro desbloqueado: ${L.t}</b><small>${L.d}</small></span></div>`; }).join('')}
+    ${(!g.modo2 && S.logros.racha > 1) ? `<div class="sub" style="text-align:center">Racha: ${S.logros.racha} partidas ganadas seguidas</div>` : ''}
     ${extra}${botones}</div>`;
 }
 function tileFoto(m){
@@ -2017,6 +2071,7 @@ function render(){
   document.body.dataset.fondo = S.screen === 'fotos' || S.screen === 'lote' ? 'autos' : '';
   if(!document.body.dataset.fondo) delete document.body.dataset.fondo;
   if(S.screen === 'game' || S.screen === 'fin') window.scrollTo(0,0);
+  comprobarAlbum();
 }
 
 // ---------- Fotos ----------
