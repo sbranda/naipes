@@ -1518,6 +1518,28 @@ function agendarCPU(){
     resolver(elegirCPU(g, DECKS[g.deckId], rr).id, 'cpu');
   }, 800);
 }
+// ---------- Sonido y vibración ----------
+let _ac = null;
+function sonidoOn(){ return S.pref.snd !== false; }
+function tono(f, t0, dur, tipo, vol){
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+    if(!_ac) _ac = new AC(); if(_ac.state === 'suspended') _ac.resume();
+    const o = _ac.createOscillator(), gn = _ac.createGain(), t = _ac.currentTime + t0;
+    o.type = tipo || 'sine'; o.frequency.setValueAtTime(f, t);
+    gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(vol || .18, t + .015); gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(gn); gn.connect(_ac.destination); o.start(t); o.stop(t + dur + .03);
+  }catch(e){}
+}
+function vibrar(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
+function cue(k){
+  if(!sonidoOn()) return;
+  if(k === 'win'){ tono(523, 0, .12, 'triangle'); tono(784, .1, .18, 'triangle'); vibrar(40); }
+  else if(k === 'lose'){ tono(330, 0, .14, 'sawtooth', .1); tono(220, .12, .22, 'sawtooth', .1); vibrar([60,40,60]); }
+  else if(k === 'tie'){ tono(440, 0, .1, 'sine', .12); vibrar(20); }
+  else if(k === 'fwin'){ [523,659,784,1047].forEach((f,i) => tono(f, i*.11, .2, 'triangle')); vibrar([80,40,80,40,160]); }
+  else if(k === 'flose'){ [330,262,208].forEach((f,i) => tono(f, i*.16, .28, 'sawtooth', .1)); vibrar([200,80,200]); }
+}
 function resolver(statId, quien){
   const g = S.game; if(!g || g.phase !== 'pick') return;
   const deck = DECKS[g.deckId], st = deck.stats.find(s => s.id === statId);
@@ -1531,6 +1553,7 @@ function resolver(statId, quien){
   else { g.res = 'tie'; g.pot.push(a,b); }
   if(d > 0 && !g.modo2 && esMasViejo(deck, a)) darLogro('viejo');
   g.hist.push(g.res === 'you' ? 'w' : g.res === 'cpu' ? 'l' : 't');
+  cue(g.modo2 && g.res !== 'tie' ? 'tie' : g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie');
   render();
 }
 function siguiente(){
@@ -1547,6 +1570,7 @@ function terminar(){
   if(!g.you.length) r = 'cpu'; else if(!g.cpu.length) r = 'you';
   else r = g.you.length > g.cpu.length ? 'you' : g.cpu.length > g.you.length ? 'cpu' : 'tie';
   g.fin = r;
+  setTimeout(() => cue(g.modo2 || r === 'you' ? 'fwin' : r === 'cpu' ? 'flose' : 'tie'), 350);
   if(!g.modo2) actualizarRacha(r);
   g.nuevos = S.nuevos.splice(0);
   if(g.modo2){}
@@ -1783,6 +1807,7 @@ function pantallaInicio(){
     <div class="group"><label>Tamaño de la partida</label><div class="opts seg">${tams}</div></div>
     <div class="group"><label>Dificultad de la compu</label><div class="opts seg sm">${difs}</div></div>
     <div class="group"><label>Cartas especiales</label><div class="opts seg sm"><button class="opt ${S.pref.esp!==false?'on':''}" data-act="esp" data-v="1"><b>Sí</b><small>Comodín y Auto del Año</small></button><button class="opt ${S.pref.esp===false?'on':''}" data-act="esp" data-v="0"><b>No</b><small>Solo autos</small></button></div></div>
+    <div class="group"><label>Sonido y vibración</label><div class="opts seg sm"><button class="opt ${sonidoOn()?'on':''}" data-act="snd" data-v="1"><b>Sí</b><small>Al ganar o perder</small></button><button class="opt ${!sonidoOn()?'on':''}" data-act="snd" data-v="0"><b>No</b><small>Silencio</small></button></div></div>
     <button class="btn big" data-act="jugar">Jugar</button>
     ${bloqueDos()}
     ${bloqueAdiv()}
@@ -2237,6 +2262,7 @@ APP.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if(!b) return;
   const a = b.dataset.act;
   if(a === 'deck'){ S.pref.deck = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
+  else if(a === 'snd'){ S.pref.snd = b.dataset.v === '1'; guardar(LS_PREF,S.pref); render(); cue('win'); }
   else if(a === 'esp'){ S.pref.esp = b.dataset.v === '1'; guardar(LS_PREF,S.pref); render(); }
   else if(a === 'dif'){ S.pref.dif = b.dataset.v; guardar(LS_PREF,S.pref); render(); }
   else if(a === 'dos') nuevaPartida('dos');
@@ -2253,6 +2279,7 @@ APP.addEventListener('click', e => {
   else if(a === 'adiv-op'){
     const A = S.adiv; if(!A || A.fin) return; const q = A.qs[A.i]; if(q.resp !== null) return;
     q.resp = +b.dataset.i;
+    cue(q.ops[q.resp].key === q.m.key ? 'win' : 'lose');
     if(q.ops[q.resp].key === q.m.key){ A.pts++; A.racha++; A.mejorRacha = Math.max(A.mejorRacha, A.racha); } else A.racha = 0;
     render();
   }
