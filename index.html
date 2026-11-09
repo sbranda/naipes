@@ -1363,6 +1363,15 @@ function idb(){
 }
 function idbOp(modo, fn, tienda){ tienda = tienda || 'fotos'; return idb().then(db => new Promise((ok, mal) => { const t = db.transaction(tienda, modo), q = fn(t.objectStore(tienda)); t.oncomplete = () => ok(q && q.result); t.onerror = () => mal(t.error); })); }
 // Fotos incluidas en el sitio: si hay una carpeta "fotos/" junto a index.html, se bajan las que falten
+// Lee fotos/index.json con tolerancia: BOM, comillas raras o formato roto
+async function listaDelSitio(){
+  const r = await fetch('fotos/index.json', {cache:'no-cache'});
+  if(!r.ok) return {estado:r.status, lista:null, txt:''};
+  const txt = await r.text(), limpio = txt.replace(/^\uFEFF/, '').trim();
+  try{ const j = JSON.parse(limpio); if(Array.isArray(j)) return {estado:200, lista:j.map(String), txt}; }catch(e){}
+  const nombres = (limpio.match(/[A-Za-z0-9_\-.]+\.(?:jpe?g|png|webp)/gi) || []).filter((x, i, a) => a.indexOf(x) === i);
+  return {estado:200, lista:nombres.length ? nombres : null, txt, tolerante:true};
+}
 async function sincronizarFotos(forzar){
   try{
     const LS = 'naipes80.remoto', ult = JSON.parse(localStorage.getItem(LS) || 'null');
@@ -1370,7 +1379,7 @@ async function sincronizarFotos(forzar){
     if(!faltan.length) return;
     if(!forzar && ult && ult.n === 0 && Date.now() - ult.t < 6*3600*1000) return;
     let lista = null;
-    try{ const r = await fetch('fotos/index.json', {cache:'no-cache'}); if(r.ok) lista = await r.json(); }catch(e){}
+    try{ lista = (await listaDelSitio()).lista; }catch(e){}
     if(!Array.isArray(lista)){ try{ localStorage.setItem(LS, JSON.stringify({t:Date.now(), n:0})); }catch(e){} return; }
     const quiero = faltan.filter(it => lista.indexOf(it.file) >= 0), es = [], mal = []; let i = 0;
     const obrero = async () => { while(i < quiero.length){ const it = quiero[i++]; let ok = false;
@@ -2267,9 +2276,11 @@ async function diagnosticoSitio(){
   const sc = ambito('autos'), L = [];
   S.diag = 'Revisando…'; render();
   try{
-    const r = await fetch('fotos/index.json', {cache:'no-cache'});
-    if(!r.ok){ S.diag = 'No encuentro fotos/index.json en el sitio (código ' + r.status + '). Tiene que estar en la carpeta fotos/, junto a index.html.'; render(); return; }
-    let lista; try{ lista = await r.json(); }catch(e){ S.diag = 'fotos/index.json existe pero no es un JSON válido.'; render(); return; }
+    const R = await listaDelSitio();
+    if(R.estado !== 200){ S.diag = 'No encuentro fotos/index.json en el sitio (código ' + R.estado + '). Tiene que estar en la carpeta fotos/, junto a index.html.'; render(); return; }
+    if(!R.lista){ S.diag = 'fotos/index.json existe pero no tiene ninguna foto reconocible. Empieza con: ' + JSON.stringify(R.txt.slice(0, 80)) + '\nSubí de nuevo el archivo index.json que te pasé (sin abrirlo ni editarlo).'; render(); return; }
+    const lista = R.lista;
+    if(R.tolerante) L.push('Aviso: index.json no es un JSON válido, pero pude leer ' + lista.length + ' nombres igual.');
     const sin = sc.items.filter(it => !S.fotos[it.key]);
     L.push('En el álbum de este dispositivo: ' + (sc.items.length - sin.length) + ' de ' + sc.items.length + '.');
     const noLista = sin.filter(it => lista.indexOf(it.file) < 0), enLista = sin.filter(it => lista.indexOf(it.file) >= 0), r404 = [], noImg = [];
