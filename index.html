@@ -1371,13 +1371,17 @@ async function sincronizarFotos(){
     let lista = null;
     try{ const r = await fetch('fotos/index.json', {cache:'no-cache'}); if(r.ok) lista = await r.json(); }catch(e){}
     if(!Array.isArray(lista)){ try{ localStorage.setItem(LS, JSON.stringify({t:Date.now(), n:0})); }catch(e){} return; }
-    const quiero = faltan.filter(it => lista.indexOf(it.file) >= 0), es = []; let i = 0;
-    const obrero = async () => { while(i < quiero.length){ const it = quiero[i++];
-      try{ const r = await fetch('fotos/' + it.file, {cache:'no-cache'});
-        if(r.ok && /^image\//.test(r.headers.get('content-type') || '')) es.push({name:it.file, blob:await r.blob()}); }catch(e){} } };
-    await Promise.all([obrero(), obrero(), obrero(), obrero(), obrero(), obrero()]);
+    const quiero = faltan.filter(it => lista.indexOf(it.file) >= 0), es = [], mal = []; let i = 0;
+    const obrero = async () => { while(i < quiero.length){ const it = quiero[i++]; let ok = false;
+      for(let t = 0; t < 2 && !ok; t++){
+        try{ const r = await fetch('fotos/' + it.file, {cache:'no-cache'});
+          if(r.ok && /^image\//.test(r.headers.get('content-type') || '')){ es.push({name:it.file, blob:await r.blob()}); ok = true; } else break; }catch(e){} }
+      if(!ok) mal.push(it.file); } };
+    await Promise.all([obrero(), obrero()]);
+    if(mal.length) console.warn('Fotos que no se pudieron bajar:', mal.join(', '));
     try{ localStorage.setItem(LS, JSON.stringify({t:Date.now(), n:es.length})); }catch(e){}
     if(es.length) await importar(sc, es);
+    if(mal.length) aviso('Se bajaron ' + es.length + ' de ' + quiero.length + ' fotos. Abrí la app de nuevo para reintentar');
   }catch(e){}
 }
 function cargarFotos(){
