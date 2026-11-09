@@ -1361,6 +1361,25 @@ function idb(){
   return IDB;
 }
 function idbOp(modo, fn, tienda){ tienda = tienda || 'fotos'; return idb().then(db => new Promise((ok, mal) => { const t = db.transaction(tienda, modo), q = fn(t.objectStore(tienda)); t.oncomplete = () => ok(q && q.result); t.onerror = () => mal(t.error); })); }
+// Fotos incluidas en el sitio: si hay una carpeta "fotos/" junto a index.html, se bajan las que falten
+async function sincronizarFotos(){
+  try{
+    const LS = 'naipes80.remoto', ult = JSON.parse(localStorage.getItem(LS) || 'null');
+    const sc = ambito('autos'), faltan = sc.items.filter(it => !S.fotos[it.key]);
+    if(!faltan.length) return;
+    if(ult && ult.n === 0 && Date.now() - ult.t < 6*3600*1000) return;
+    let lista = null;
+    try{ const r = await fetch('fotos/index.json', {cache:'no-cache'}); if(r.ok) lista = await r.json(); }catch(e){}
+    if(!Array.isArray(lista)){ try{ localStorage.setItem(LS, JSON.stringify({t:Date.now(), n:0})); }catch(e){} return; }
+    const quiero = faltan.filter(it => lista.indexOf(it.file) >= 0), es = []; let i = 0;
+    const obrero = async () => { while(i < quiero.length){ const it = quiero[i++];
+      try{ const r = await fetch('fotos/' + it.file, {cache:'no-cache'});
+        if(r.ok && /^image\//.test(r.headers.get('content-type') || '')) es.push({name:it.file, blob:await r.blob()}); }catch(e){} } };
+    await Promise.all([obrero(), obrero(), obrero(), obrero(), obrero(), obrero()]);
+    try{ localStorage.setItem(LS, JSON.stringify({t:Date.now(), n:es.length})); }catch(e){}
+    if(es.length) await importar(sc, es);
+  }catch(e){}
+}
 function cargarFotos(){
   // limpieza: fotos que el mazo de otra versión dejó guardadas
   idb().then(db => { if(db.objectStoreNames.contains('hw')) db.transaction('hw','readwrite').objectStore('hw').clear(); }).catch(() => {});
@@ -1373,6 +1392,7 @@ function cargarFotos(){
       if(migrar.length) idbOp('readwrite', o => { migrar.forEach(k => o.put(viejas[k], k)); }, 'fotos').then(() => { try{ localStorage.removeItem(LS_FOTOS); }catch(e){} }).catch(() => {});
       else { try{ localStorage.removeItem(LS_FOTOS); }catch(e){} }
       if(S.screen !== 'game') render();
+      setTimeout(sincronizarFotos, 400);
     }; }).catch(() => {});
 }
 function idbAutos(fn){ return idbOp('readwrite', fn, 'fotos'); }
@@ -2048,6 +2068,7 @@ async function importar(sc, entradas){
   const mapa = {}; sc.items.forEach(it => mapa[it.file.replace(/\.jpg$/,'')] = it);
   const nuevos = {}; let ign = 0;
   for(const e of entradas){
+    if(/\.json$/i.test(e.name)) continue;
     const it = mapa[e.name.replace(/\.[^.]+$/,'').toLowerCase()];
     if(!it){ ign++; continue; }
     try{ nuevos[it.key] = await leerFoto(e.blob, sc.max, sc.q); }catch(x){ ign++; }
@@ -2082,6 +2103,7 @@ async function accionCarpeta(a, id){
     if(a === 'zip-exp'){
       const fs = sc.items.filter(it => sc.store[it.key]).map(it => ({name:it.file, data:aBytes(sc.store[it.key])}));
       if(!fs.length){ aviso('No hay fotos para exportar'); return; }
+      fs.push({name:'index.json', data:new TextEncoder().encode(JSON.stringify(fs.map(f => f.name)))});
       bajar(zipCrear(fs), sc.zip); aviso(fs.length + ' fotos exportadas en ' + sc.zip);
     } else if(a === 'zip-imp'){ S.imp = id; IMP.click();
     } else if(a === 'fs-guardar'){
