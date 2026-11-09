@@ -1849,7 +1849,15 @@ function pantallaInicio(){
     <div class="group"><label>Tu récord</label><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empatadas</small></div></div></div>
     ${inst}
     <button class="btn sm" data-act="reset" style="margin-top:14px">Restablecer datos</button>
-    <details class="rules"><summary>Cómo se juega</summary><p>Se reparten las cartas. Quien tiene el turno elige una característica de su carta; gana quien tenga el mejor valor y se queda con ambas cartas. En empate las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo.</p><p>Con las cartas especiales activadas, cada uno recibe una: el <b>Auto del Año</b> gana siempre en una característica (la indica la carta) y el <b>Comodín</b> gana la ronda si lo jugás vos, pero empata si elige el rival.</p></details>
+    <details class="rules"><summary>Cómo se juega</summary>
+      <p><b>Lo básico.</b> Se reparten las cartas. Quien tiene el turno elige una característica de su carta y se comparan las dos: gana quien tenga el mejor valor y se queda con ambas cartas. Si hay empate, las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo; si pasan 60 rondas, gana quien tenga más cartas.</p>
+      <p><b>Qué valor gana.</b> En casi todo gana el mayor. Gana el menor en <b>Peso</b> (el más liviano) y en <b>Año de lanzamiento</b> (el más antiguo). Cada característica lo aclara. El símbolo ≈ marca un valor aproximado.</p>
+      <p><b>Mazos.</b> <b>Técnico</b>: 155 versiones con cilindrada, potencia, velocidad máxima, peso, años en producción y año de lanzamiento. <b>Historia</b>: 52 modelos, con una versión representativa de cada uno, y suma el año de fin.</p>
+      <p><b>Compu.</b> En Fácil elige casi al azar, en Normal elige su mejor dato y en Memorioso además recuerda las cartas que ya viste.</p>
+      <p><b>Cartas especiales.</b> Con ellas activadas, cada uno recibe una: el <b>Auto del Año</b> gana siempre en una característica (la indica la carta) y el <b>Comodín</b> gana la ronda si lo jugás vos, pero empata si elige el rival.</p>
+      <p><b>Desafío del día.</b> Una partida corta de 6 cartas, igual para todos, con un resultado por día. Si jugás días seguidos, sumás racha, y podés compartir el resultado.</p>
+      <p><b>Más modos.</b> <b>Dos jugadores</b> en el mismo celu, con pantalla de pase para que no se vea la carta del otro. <b>Adiviná el auto</b>: 10 preguntas con foto o silueta y cuatro opciones. <b>Torneo</b> al mejor de 3 o de 5 partidas.</p>
+      <p><b>Álbum, logros y estadísticas.</b> Podés cargar tus fotos de los autos, que se ven en las cartas. Hay logros por ganar con el auto más viejo, por 5 victorias seguidas y por completar el álbum, y una pantalla con la carta y la característica que más te sirven. Al terminar una partida podés compartir una imagen con el marcador. El sonido y la vibración se apagan desde el inicio.</p></details>
     <div class="foot">Desarrollado por @sebranda</div>`;
 }
 function textoMensaje(g, deck){
