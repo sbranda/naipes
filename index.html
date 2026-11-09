@@ -1379,7 +1379,7 @@ async function sincronizarFotos(forzar){
     if(!faltan.length) return;
     if(!forzar && ult && ult.n === 0 && Date.now() - ult.t < 6*3600*1000) return;
     let lista = null;
-    try{ lista = (await listaDelSitio()).lista; }catch(e){}
+    try{ const R = await listaDelSitio(); lista = R.lista; if(!lista && R.estado === 200) lista = faltan.map(it => it.file); }catch(e){}
     if(!Array.isArray(lista)){ try{ localStorage.setItem(LS, JSON.stringify({t:Date.now(), n:0})); }catch(e){} return; }
     const quiero = faltan.filter(it => lista.indexOf(it.file) >= 0), es = [], mal = []; let i = 0;
     const obrero = async () => { while(i < quiero.length){ const it = quiero[i++]; let ok = false;
@@ -1899,7 +1899,7 @@ function pantallaInicio(){
       <p><b>Desafío del día.</b> Una partida corta de 6 cartas, igual para todos, con un resultado por día. Si jugás días seguidos, sumás racha, y podés compartir el resultado.</p>
       <p><b>Más modos.</b> <b>Dos jugadores</b> en el mismo celu, con pantalla de pase para que no se vea la carta del otro. <b>Adiviná el auto</b>: 10 preguntas con foto o silueta y cuatro opciones. <b>Torneo</b> al mejor de 3 o de 5 partidas.</p>
       <p><b>Álbum, logros y estadísticas.</b> Podés cargar tus fotos de los autos, que se ven en las cartas. Hay logros por ganar con el auto más viejo, por 5 victorias seguidas y por completar el álbum, y una pantalla con la carta y la característica que más te sirven. Al terminar una partida podés compartir una imagen con el marcador. El sonido y la vibración se apagan desde el inicio.</p></details>
-    <div class="foot">Desarrollado por @sebranda<br><small>Versión 72</small></div>`;
+    <div class="foot">Desarrollado por @sebranda<br><small>Versión 73</small></div>`;
 }
 function textoMensaje(g, deck){
   if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
@@ -2278,9 +2278,9 @@ async function diagnosticoSitio(){
   try{
     const R = await listaDelSitio();
     if(R.estado !== 200){ S.diag = 'No encuentro fotos/index.json en el sitio (código ' + R.estado + '). Tiene que estar en la carpeta fotos/, junto a index.html.'; render(); return; }
-    if(!R.lista){ S.diag = 'fotos/index.json existe pero no tiene ninguna foto reconocible. Empieza con: ' + JSON.stringify(R.txt.slice(0, 80)) + '\nSubí de nuevo el archivo index.json que te pasé (sin abrirlo ni editarlo).'; render(); return; }
-    const lista = R.lista;
-    if(R.tolerante) L.push('Aviso: index.json no es un JSON válido, pero pude leer ' + lista.length + ' nombres igual.');
+    let lista = R.lista;
+    if(!lista){ lista = sc.items.map(it => it.file); L.push('Aviso: fotos/index.json está vacío o dañado (empieza con: ' + JSON.stringify(R.txt.slice(0, 40)) + '). Igual busco las fotos por su nombre.'); }
+    if(R.tolerante && R.lista) L.push('Aviso: index.json no es un JSON válido, pero pude leer ' + lista.length + ' nombres igual.');
     const sin = sc.items.filter(it => !S.fotos[it.key]);
     L.push('En el álbum de este dispositivo: ' + (sc.items.length - sin.length) + ' de ' + sc.items.length + '.');
     const noLista = sin.filter(it => lista.indexOf(it.file) < 0), enLista = sin.filter(it => lista.indexOf(it.file) >= 0), r404 = [], noImg = [];
