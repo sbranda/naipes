@@ -314,6 +314,7 @@ body{background:transparent;font-weight:500}
 #splash img{position:relative;width:min(46vmin,260px);height:auto;border-radius:22%;animation:spl .9s ease-out both}
 #splash.off{opacity:0;pointer-events:none}
 @keyframes spl{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+.diag{white-space:pre-wrap;word-break:break-word;font:13px/1.4 var(--body,sans-serif);background:#ffffff12;border:2px solid #F4EAD233;border-radius:12px;padding:10px;margin:8px 0;color:#F4EAD2}
 </style>
 </head>
 <body>
@@ -1362,12 +1363,12 @@ function idb(){
 }
 function idbOp(modo, fn, tienda){ tienda = tienda || 'fotos'; return idb().then(db => new Promise((ok, mal) => { const t = db.transaction(tienda, modo), q = fn(t.objectStore(tienda)); t.oncomplete = () => ok(q && q.result); t.onerror = () => mal(t.error); })); }
 // Fotos incluidas en el sitio: si hay una carpeta "fotos/" junto a index.html, se bajan las que falten
-async function sincronizarFotos(){
+async function sincronizarFotos(forzar){
   try{
     const LS = 'naipes80.remoto', ult = JSON.parse(localStorage.getItem(LS) || 'null');
     const sc = ambito('autos'), faltan = sc.items.filter(it => !S.fotos[it.key]);
     if(!faltan.length) return;
-    if(ult && ult.n === 0 && Date.now() - ult.t < 6*3600*1000) return;
+    if(!forzar && ult && ult.n === 0 && Date.now() - ult.t < 6*3600*1000) return;
     let lista = null;
     try{ const r = await fetch('fotos/index.json', {cache:'no-cache'}); if(r.ok) lista = await r.json(); }catch(e){}
     if(!Array.isArray(lista)){ try{ localStorage.setItem(LS, JSON.stringify({t:Date.now(), n:0})); }catch(e){} return; }
@@ -2262,12 +2263,37 @@ function busqDeshacer(){
   idbAutos(o => { B.claves.forEach(k => o.delete(k)); }).catch(() => {});
   S.busq = null; aviso('Listo, deshice la búsqueda'); render();
 }
+async function diagnosticoSitio(){
+  const sc = ambito('autos'), L = [];
+  S.diag = 'Revisando…'; render();
+  try{
+    const r = await fetch('fotos/index.json', {cache:'no-cache'});
+    if(!r.ok){ S.diag = 'No encuentro fotos/index.json en el sitio (código ' + r.status + '). Tiene que estar en la carpeta fotos/, junto a index.html.'; render(); return; }
+    let lista; try{ lista = await r.json(); }catch(e){ S.diag = 'fotos/index.json existe pero no es un JSON válido.'; render(); return; }
+    const sin = sc.items.filter(it => !S.fotos[it.key]);
+    L.push('En el álbum de este dispositivo: ' + (sc.items.length - sin.length) + ' de ' + sc.items.length + '.');
+    const noLista = sin.filter(it => lista.indexOf(it.file) < 0), enLista = sin.filter(it => lista.indexOf(it.file) >= 0), r404 = [], noImg = [];
+    for(const it of enLista){
+      try{ const x = await fetch('fotos/' + it.file, {method:'HEAD', cache:'no-cache'});
+        if(!x.ok) r404.push(it); else if(!/^image\//.test(x.headers.get('content-type') || '')) noImg.push(it); }catch(e){ r404.push(it); }
+    }
+    if(noLista.length) L.push('No están en index.json: ' + noLista.map(it => it.file).join(', '));
+    if(r404.length) L.push('Están en index.json pero NO en la carpeta fotos/ (o con otro nombre): ' + r404.map(it => it.file).join(', '));
+    if(noImg.length) L.push('El sitio no las entrega como imagen: ' + noImg.map(it => it.file).join(', '));
+    const bajables = enLista.length - r404.length - noImg.length;
+    if(bajables) L.push(bajables + ' se pueden bajar ahora: tocá "Bajar fotos del sitio".');
+    if(!sin.length) L.push('No falta ninguna.');
+    else if(!noLista.length && !r404.length && !noImg.length && !bajables) L.push('Sin novedades.');
+  }catch(e){ L.push('No se pudo consultar el sitio (¿sin conexión?).'); }
+  S.diag = L.join('\n'); render();
+}
 function herramientasCarpeta(id){
   const auto = botonBusq(id);
   const lote = `<button class="btn" data-act="lote" data-sc="${id}">Cargar varias fotos</button>`;
   const fs = FS_OK ? `<div class="row2"><button class="btn sm" data-act="fs-guardar" data-sc="${id}">Guardar en carpeta</button><button class="btn sm" data-act="fs-cargar" data-sc="${id}">Cargar desde carpeta</button><button class="btn sm" data-act="fs-elegir" data-sc="${id}">Elegir carpeta</button></div>
     <small>Elegí una carpeta del dispositivo (por ejemplo "Naipes"). La app crea adentro la subcarpeta "${ambito(id).dir}".</small>` : '';
-  return auto + lote + `<details class="cartools"><summary><b>Carpeta en el dispositivo y copia de seguridad</b></summary>${fs}
+  const sitio = `<div class="row2"><button class="btn sm" data-act="sitio-bajar">Bajar fotos del sitio</button><button class="btn sm" data-act="sitio-diag">Revisar fotos del sitio</button></div>${S.diag ? `<pre class="diag">${esc(S.diag)}</pre>` : ''}`;
+  return auto + lote + sitio + `<details class="cartools"><summary><b>Carpeta en el dispositivo y copia de seguridad</b></summary>${fs}
     <div class="row2"><button class="btn sm" data-act="zip-exp" data-sc="${id}">Exportar .zip</button><button class="btn sm" data-act="zip-imp" data-sc="${id}">Importar fotos</button></div>
     <small>${FS_OK ? '' : 'Este navegador no permite elegir carpetas: el .zip se baja a Descargas. '}Importar acepta un .zip de la app o fotos sueltas con el mismo nombre de archivo.</small></details>`;
 }
@@ -2405,6 +2431,8 @@ APP.addEventListener('click', e => {
   else if(a === 'torneo-sig'){ if(S.torneo && !S.torneo.fin) nuevaPartida('torneo'); }
   else if(a === 'torneo-fin'){ if(confirm('¿Abandonar el torneo?')){ cerrarTorneo(); render(); } }
   else if(a === 'reset') restablecer();
+  else if(a === 'sitio-diag') diagnosticoSitio();
+  else if(a === 'sitio-bajar'){ S.diag = ''; aviso('Buscando fotos en el sitio…'); sincronizarFotos(true).then(() => aviso('Listo. Tocá "Revisar fotos del sitio" si falta alguna')); }
   else if(a === 'modos'){ S.screen = 'modos'; render(); }
   else if(a === 'stats'){ S.screen = 'stats'; render(); }
   else if(a === 'fotos'){ S.screen = 'fotos'; render(); }
