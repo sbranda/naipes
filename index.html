@@ -1899,7 +1899,7 @@ function pantallaInicio(){
       <p><b>Desafío del día.</b> Una partida corta de 6 cartas, igual para todos, con un resultado por día. Si jugás días seguidos, sumás racha, y podés compartir el resultado.</p>
       <p><b>Más modos.</b> <b>Dos jugadores</b> en el mismo celu, con pantalla de pase para que no se vea la carta del otro. <b>Adiviná el auto</b>: 10 preguntas con foto o silueta y cuatro opciones. <b>Torneo</b> al mejor de 3 o de 5 partidas.</p>
       <p><b>Álbum, logros y estadísticas.</b> Podés cargar tus fotos de los autos, que se ven en las cartas. Hay logros por ganar con el auto más viejo, por 5 victorias seguidas y por completar el álbum, y una pantalla con la carta y la característica que más te sirven. Al terminar una partida podés compartir una imagen con el marcador. El sonido y la vibración se apagan desde el inicio.</p></details>
-    <div class="foot">Desarrollado por @sebranda</div>`;
+    <div class="foot">Desarrollado por @sebranda<br><small>Versión 72</small></div>`;
 }
 function textoMensaje(g, deck){
   if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
@@ -2477,7 +2477,10 @@ render();
   else if(q === 'diario'){ const d = infoDia(); if(!(S.dia.hecho && S.dia.hecho.clave === d.clave)) nuevaPartida('diario'); }
 })();
 if('serviceWorker' in navigator){
-  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+  // Si hay una versión nueva, se instala sola y la pantalla se recarga una vez para usarla
+  let recargado = false, tenia = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if(!tenia){ tenia = true; return; } if(recargado || (S && S.screen === 'game')) return; recargado = true; location.reload(); });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(r => { try{ r.update(); }catch(e){} }).catch(() => {}); });
 }
 </script>
 </body>

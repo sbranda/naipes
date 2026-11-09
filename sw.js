@@ -1,5 +1,5 @@
 // Subir el número de versión en cada deploy
-const CACHE_NAME = 'naipes80-v71';
+const CACHE_NAME = 'naipes80-v72';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './splash.jpg'];
 
 self.addEventListener('install', e => {
