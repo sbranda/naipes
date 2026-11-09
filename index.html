@@ -1751,7 +1751,7 @@ function bloqueDos(){
   return `<div class="group"><label>Dos jugadores</label>
     <div class="names"><input id="n1" maxlength="10" placeholder="Jugador 1" value="${esc(S.pref.n1 || '')}" autocomplete="off"><input id="n2" maxlength="10" placeholder="Jugador 2" value="${esc(S.pref.n2 || '')}" autocomplete="off"></div>
     <button class="btn" data-act="dos">Jugar de a dos en este celu</button>
-    <div class="sub" style="font-size:14px;opacity:.8">Usa el mazo y el tamaño elegidos arriba. Se pasan el celu en cada turno y la carta del otro queda oculta.</div></div>`;
+    <div class="sub" style="font-size:14px;opacity:.8">Usa el mazo y el tamaño elegidos en el inicio. Se pasan el celu en cada turno y la carta del otro queda oculta.</div></div>`;
 }
 // ---------- Adiviná el auto ----------
 const INFO = {}; HIS.filter(h => h[3] >= AMIN).forEach(h => INFO[h[5]] = {tipo:h[2], ini:h[3], fin:h[4]});
@@ -1813,7 +1813,7 @@ function bloqueTorneo(){
     return `<div class="group"><label>Torneo</label><div class="opts seg two">
       <button class="opt" data-act="torneo" data-v="3"><b>Mejor de 3</b><small>Gana quien sume 2</small></button>
       <button class="opt" data-act="torneo" data-v="5"><b>Mejor de 5</b><small>Gana quien sume 3</small></button></div>
-      <div class="sub" style="font-size:14px;opacity:.8">Usa el mazo, el tamaño y la dificultad que elegiste arriba.${S.tor.g + S.tor.p ? ` Torneos: ${S.tor.g} ${S.tor.g === 1 ? 'ganado' : 'ganados'} · ${S.tor.p} ${S.tor.p === 1 ? 'perdido' : 'perdidos'}.` : ''}</div></div>`;
+      <div class="sub" style="font-size:14px;opacity:.8">Usa el mazo, el tamaño y la dificultad que elegiste en el inicio.${S.tor.g + S.tor.p ? ` Torneos: ${S.tor.g} ${S.tor.g === 1 ? 'ganado' : 'ganados'} · ${S.tor.p} ${S.tor.p === 1 ? 'perdido' : 'perdidos'}.` : ''}</div></div>`;
   }
   const w = victorias(T);
   return `<div class="dia tor"><div class="k">Torneo en curso · mejor de ${T.cfg.n}</div><h2>Vos ${w.you} – ${w.cpu} Compu</h2>
@@ -1841,9 +1841,8 @@ function pantallaInicio(){
     <div class="group"><label>Sonido</label><div class="opts seg sm"><button class="opt ${sonidoOn()?'on':''}" data-act="snd" data-v="1"><b>Sí</b></button><button class="opt ${!sonidoOn()?'on':''}" data-act="snd" data-v="0"><b>No</b></button></div></div>
     </div>
     <button class="btn big" data-act="jugar">Jugar</button>
-    ${bloqueDos()}
-    ${bloqueAdiv()}
-    ${bloqueTorneo()}
+    ${S.torneo ? bloqueTorneo() : ''}
+    <button class="btn" data-act="modos">Más modos: dos jugadores, adiviná, torneo</button>
     <div class="group"><label>Álbum de fotos</label><div class="albums">${portadaAlbum('autos')}</div></div>
     ${logrosHTML()}
     <button class="btn" data-act="stats">Ver mis estadísticas</button>
@@ -2255,6 +2254,12 @@ function restablecer(){
   S.logros = {u:{},racha:0,mejor:0}; S.nuevos = []; S.adiv = null; S.adivRec = {mejor:0,jugadas:0}; S.est = {c:{},s:{}}; S.game = null; S.screen = 'home';
   render(); aviso('Datos restablecidos');
 }
+function pantallaModos(){
+  return `<div class="bar"><button class="btn sm" data-act="home">Volver</button></div><div class="hd"><h1>Más modos</h1><div class="sub">Usan el mazo, el tamaño y la dificultad del inicio</div></div>
+    ${bloqueDos()}
+    ${bloqueAdiv()}
+    ${bloqueTorneo()}`;
+}
 function pantallaStats(){
   const E = S.est, tot = S.rec.g + S.rec.p + S.rec.e;
   const cs = Object.keys(E.c).map(k => ({k, w:E.c[k][0], j:E.c[k][1]})).filter(x => x.w > 0 && cartaPorId(x.k)).sort((a,b) => b.w - a.w || (b.w/b.j) - (a.w/a.j));
@@ -2280,7 +2285,7 @@ function pantallaFotos(){
     <div class="grid">${MODELOS.map(tileFoto).join('')}</div>`;
 }
 function render(){
-  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'lote' ? pantallaLote() : S.screen === 'adiv' ? pantallaAdiv() : S.screen === 'stats' ? pantallaStats() : pantallaInicio();
+  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'lote' ? pantallaLote() : S.screen === 'adiv' ? pantallaAdiv() : S.screen === 'stats' ? pantallaStats() : S.screen === 'modos' ? pantallaModos() : pantallaInicio();
   document.body.dataset.fondo = S.screen === 'fotos' || S.screen === 'lote' ? 'autos' : '';
   if(!document.body.dataset.fondo) delete document.body.dataset.fondo;
   if(S.screen === 'game' || S.screen === 'fin') window.scrollTo(0,0);
@@ -2359,6 +2364,7 @@ APP.addEventListener('click', e => {
   else if(a === 'torneo-sig'){ if(S.torneo && !S.torneo.fin) nuevaPartida('torneo'); }
   else if(a === 'torneo-fin'){ if(confirm('¿Abandonar el torneo?')){ cerrarTorneo(); render(); } }
   else if(a === 'reset') restablecer();
+  else if(a === 'modos'){ S.screen = 'modos'; render(); }
   else if(a === 'stats'){ S.screen = 'stats'; render(); }
   else if(a === 'fotos'){ S.screen = 'fotos'; render(); }
   else if(a === 'foto'){ S.pending = b.dataset.key; FILE.click(); }
