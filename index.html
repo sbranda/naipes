@@ -295,7 +295,7 @@ body{background:transparent;font-weight:500}
 const APP = document.getElementById('app');
 const TOAST = document.getElementById('toast');
 const FILE = document.getElementById('file');
-const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario', LS_TORNEO = 'naipes80.torneo', LS_LOGROS = 'naipes80.logros', LS_ADIV = 'naipes80.adiv';
+const LS_FOTOS = 'naipes80.fotos', LS_STATS = 'naipes80.stats', LS_PREF = 'naipes80.pref', LS_GUARDAR = 'naipes80.guardar', LS_DIARIO = 'naipes80.diario', LS_TORNEO = 'naipes80.torneo', LS_LOGROS = 'naipes80.logros', LS_ADIV = 'naipes80.adiv', LS_EST = 'naipes80.est';
 const MAX_RONDAS = 60;
 const COLOR = {Renault:'#F2B705',Fiat:'#C8352E',Ford:'#2F6DB5',Volkswagen:'#7FB8DE',Dodge:'#4C956C',Peugeot:'#5C677D','Citroën':'#B5651D',IKA:'#8B2E5A',IES:'#A0522D',Mercedes:'#6B7280',"Auto Union":'#8E8E93',Borgward:'#B08968',CIDASA:'#4D908E',Chrysler:'#577590',Simca:'#43AA8B',"Siam Di Tella":'#C1121F',Studebaker:'#9C6644',"De Carlo":'#7B2CBF',Heinkel:'#F9844A',Chevrolet:'#D97B29',IAME:'#6A4C93',Opel:'#E4572E',Seat:'#2A9D8F'};
 const CLARO = {Renault:1,Volkswagen:1};
@@ -1299,12 +1299,13 @@ const TAMANOS = {corta:{n:6,t:'Corta',d:'6 cartas cada uno'},media:{n:10,t:'Medi
 const DIFS = {facil:{t:'Fácil',d:'Elige casi al azar'},normal:{t:'Normal',d:'Elige su mejor dato'},memorioso:{t:'Memorioso',d:'Recuerda tus cartas'}};
 
 // ---------- Estado ----------
-const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal',esp:true}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, logros:{u:{},racha:0,mejor:0}, nuevos:[], adiv:null, adivRec:{mejor:0,jugadas:0}, deferred:null, pending:null};
+const S = {screen:'home', pref:{deck:'tec',size:'media',dif:'normal',esp:true}, game:null, fotos:{}, guardar:true, rec:{g:0,p:0,e:0}, dia:{hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}, torneo:null, tor:{g:0,p:0}, logros:{u:{},racha:0,mejor:0}, est:{c:{},s:{}}, nuevos:[], adiv:null, adivRec:{mejor:0,jugadas:0}, deferred:null, pending:null};
 function cargar(){
   try{ S.guardar = localStorage.getItem(LS_GUARDAR) !== 'no'; }catch(e){}
   try{ S.fotos = JSON.parse(localStorage.getItem(LS_FOTOS)||'{}')||{}; }catch(e){ S.fotos = {}; }
   S.legado = Object.assign({}, S.fotos);
   try{ const r = JSON.parse(localStorage.getItem(LS_STATS)||'null'); if(r) S.rec = Object.assign(S.rec,r); }catch(e){}
+  try{ const e = JSON.parse(localStorage.getItem(LS_EST)||'null'); if(e && e.c && e.s) S.est = e; }catch(e){}
   try{ const t = JSON.parse(localStorage.getItem(LS_TORNEO)||'null'); if(t){ S.tor = {g:t.g|0, p:t.p|0}; if(t.act && !t.act.fin && t.act.cfg && DECKS[t.act.cfg.deck] && TAMANOS[t.act.cfg.size] && DIFS[t.act.cfg.dif] && Array.isArray(t.act.hist)) S.torneo = t.act; } }catch(e){}
   try{ const a = JSON.parse(localStorage.getItem(LS_ADIV)||'null'); if(a && typeof a === 'object') S.adivRec = {mejor:a.mejor|0, jugadas:a.jugadas|0}; }catch(e){}
   try{ const l = JSON.parse(localStorage.getItem(LS_LOGROS)||'null'); if(l && typeof l === 'object') S.logros = {u:(l.u && typeof l.u === 'object') ? l.u : {}, racha:l.racha|0, mejor:l.mejor|0}; }catch(e){}
@@ -1553,6 +1554,7 @@ function resolver(statId, quien){
   else { g.res = 'tie'; g.pot.push(a,b); }
   if(d > 0 && !g.modo2 && esMasViejo(deck, a)) darLogro('viejo');
   g.hist.push(g.res === 'you' ? 'w' : g.res === 'cpu' ? 'l' : 't');
+  if(!g.modo2){ const w = g.res === 'you' ? 1 : 0, kc = g.deckId + ':' + a.id, E = S.est; (E.c[kc] = E.c[kc] || [0,0]); E.c[kc][0] += w; E.c[kc][1]++; (E.s[statId] = E.s[statId] || [0,0]); E.s[statId][0] += w; E.s[statId][1]++; guardar(LS_EST, E); }
   cue(g.modo2 && g.res !== 'tie' ? 'tie' : g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie');
   render();
 }
@@ -1814,6 +1816,7 @@ function pantallaInicio(){
     ${bloqueTorneo()}
     <div class="group"><label>Álbum de fotos</label><div class="albums">${portadaAlbum('autos')}</div></div>
     ${logrosHTML()}
+    <button class="btn" data-act="stats">Ver mis estadísticas</button>
     <div class="group"><label>Tu récord</label><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empatadas</small></div></div></div>
     ${inst}
     <details class="rules"><summary>Cómo se juega</summary><p>Se reparten las cartas. Quien tiene el turno elige una característica de su carta; gana quien tenga el mejor valor y se queda con ambas cartas. En empate las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo.</p><p>Con las cartas especiales activadas, cada uno recibe una: el <b>Auto del Año</b> gana siempre en una característica (la indica la carta) y el <b>Comodín</b> gana la ronda si lo jugás vos, pero empata si elige el rival.</p></details>
@@ -2210,6 +2213,24 @@ function heroAlbum(id, n, tot){
     <div class="cnt"><span>${n} de ${tot}</span><span>${pc}%</span></div>
     ${n === tot ? '<div class="win">&#127942; ¡Álbum completo!</div>' : ''}</div>`;
 }
+function statLabel(id){ for(const d of Object.values(DECKS)){ const st = d.stats.find(x => x.id === id); if(st) return st.label; } return id; }
+function cartaPorId(k){ const [d, id] = k.split(':'); const dk = DECKS[d]; const c = dk && dk.cards.find(x => x.id === id); return c ? {c, d:dk} : null; }
+function pantallaStats(){
+  const E = S.est, tot = S.rec.g + S.rec.p + S.rec.e;
+  const cs = Object.keys(E.c).map(k => ({k, w:E.c[k][0], j:E.c[k][1]})).filter(x => x.w > 0 && cartaPorId(x.k)).sort((a,b) => b.w - a.w || (b.w/b.j) - (a.w/a.j));
+  const ss = Object.keys(E.s).map(id => ({id, w:E.s[id][0], j:E.s[id][1]})).filter(x => x.j > 0).sort((a,b) => (b.w/b.j) - (a.w/a.j) || b.j - a.j);
+  const pct = x => Math.round(100 * x.w / x.j);
+  let body;
+  if(!cs.length && !ss.length) body = '<div class="note">Todavía no hay datos. Jugá unas partidas contra la compu y vuelvé: acá vas a ver con qué carta ganás más y qué característica te conviene elegir.</div>';
+  else {
+    const top = cs[0] && cartaPorId(cs[0].k);
+    body = (top ? `<div class="group"><label>La carta con la que más ganás</label><div class="lg ok"><span class="tx"><b>${esc(top.c.marca)} ${esc(top.c.modelo)}</b><small>Mazo ${esc(top.d.nombre)} · ${cs[0].w} ${cs[0].w === 1 ? 'victoria' : 'victorias'} en ${cs[0].j} ${cs[0].j === 1 ? 'ronda' : 'rondas'} (${pct(cs[0])}%)</small></span></div>
+      ${cs.slice(1,5).map(x => { const t = cartaPorId(x.k); return `<div class="lg"><span class="tx"><b>${esc(t.c.marca)} ${esc(t.c.modelo)}</b><small>${x.w} de ${x.j} (${pct(x)}%) · ${esc(t.d.nombre)}</small></span></div>`; }).join('')}</div>` : '')
+      + (ss.length ? `<div class="group"><label>La característica que más te sirve</label>${ss.map((x,i) => `<div class="lg ${i === 0 ? 'ok' : ''}"><span class="tx"><b>${esc(statLabel(x.id))}</b><small>Ganaste ${x.w} de ${x.j} rondas (${pct(x)}%)${i === 0 && ss.length > 1 ? ' · tu mejor apuesta' : ''}</small></span></div>`).join('')}</div>` : '');
+  }
+  return `<div class="bar"><button class="btn sm" data-act="home">Volver</button></div><div class="hd"><h1>Tus estadísticas</h1><div class="sub">Rondas contra la compu y desafío del día. No cuenta dos jugadores.</div></div>
+    <div class="group"><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empates</small></div></div>${tot ? `<div class="sub" style="text-align:center;margin-top:8px">${Math.round(100*S.rec.g/tot)}% de partidas ganadas</div>` : ''}</div>${body}`;
+}
 function pantallaFotos(){
   const cant = MODELOS.filter(m => S.fotos[m.key]).length;
   return `<div class="bar"><button class="btn sm" data-act="home">Volver</button></div>${heroAlbum('autos', cant, MODELOS.length)}
@@ -2219,7 +2240,7 @@ function pantallaFotos(){
     <div class="grid">${MODELOS.map(tileFoto).join('')}</div>`;
 }
 function render(){
-  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'lote' ? pantallaLote() : S.screen === 'adiv' ? pantallaAdiv() : pantallaInicio();
+  APP.innerHTML = S.screen === 'game' ? pantallaJuego() : S.screen === 'fin' ? pantallaFin() : S.screen === 'fotos' ? pantallaFotos() : S.screen === 'lote' ? pantallaLote() : S.screen === 'adiv' ? pantallaAdiv() : S.screen === 'stats' ? pantallaStats() : pantallaInicio();
   document.body.dataset.fondo = S.screen === 'fotos' || S.screen === 'lote' ? 'autos' : '';
   if(!document.body.dataset.fondo) delete document.body.dataset.fondo;
   if(S.screen === 'game' || S.screen === 'fin') window.scrollTo(0,0);
@@ -2297,6 +2318,7 @@ APP.addEventListener('click', e => {
   else if(a === 'torneo'){ S.torneo = {cfg:{deck:S.pref.deck, size:S.pref.size, dif:S.pref.dif, n:+b.dataset.v}, hist:[], fin:null}; guardarTorneo(); nuevaPartida('torneo'); }
   else if(a === 'torneo-sig'){ if(S.torneo && !S.torneo.fin) nuevaPartida('torneo'); }
   else if(a === 'torneo-fin'){ if(confirm('¿Abandonar el torneo?')){ cerrarTorneo(); render(); } }
+  else if(a === 'stats'){ S.screen = 'stats'; render(); }
   else if(a === 'fotos'){ S.screen = 'fotos'; render(); }
   else if(a === 'foto'){ S.pending = b.dataset.key; FILE.click(); }
   else if(a === 'quitar'){ const k = b.dataset.key; delete S.fotos[k]; idbAutos(st => st.delete(k)).catch(() => {}); render(); }
