@@ -1819,6 +1819,7 @@ function pantallaInicio(){
     <button class="btn" data-act="stats">Ver mis estadísticas</button>
     <div class="group"><label>Tu récord</label><div class="rec"><div class="g"><b>${S.rec.g}</b><small>Ganadas</small></div><div class="p"><b>${S.rec.p}</b><small>Perdidas</small></div><div class="e"><b>${S.rec.e}</b><small>Empatadas</small></div></div></div>
     ${inst}
+    <button class="btn sm" data-act="reset" style="margin-top:14px">Restablecer datos</button>
     <details class="rules"><summary>Cómo se juega</summary><p>Se reparten las cartas. Quien tiene el turno elige una característica de su carta; gana quien tenga el mejor valor y se queda con ambas cartas. En empate las cartas quedan en el pozo para la ronda siguiente. Gana quien se queda con todo el mazo.</p><p>Con las cartas especiales activadas, cada uno recibe una: el <b>Auto del Año</b> gana siempre en una característica (la indica la carta) y el <b>Comodín</b> gana la ronda si lo jugás vos, pero empata si elige el rival.</p></details>
     <div class="foot">Desarrollado por Seba Branda</div>`;
 }
@@ -2215,6 +2216,14 @@ function heroAlbum(id, n, tot){
 }
 function statLabel(id){ for(const d of Object.values(DECKS)){ const st = d.stats.find(x => x.id === id); if(st) return st.label; } return id; }
 function cartaPorId(k){ const [d, id] = k.split(':'); const dk = DECKS[d]; const c = dk && dk.cards.find(x => x.id === id); return c ? {c, d:dk} : null; }
+function restablecer(){
+  if(!confirm('¿Restablecer datos? Se borran récord, logros, estadísticas, desafío del día, torneo y récord de adiviná. Las fotos y las preferencias se conservan.')) return;
+  [LS_STATS, LS_DIARIO, LS_TORNEO, LS_LOGROS, LS_ADIV, LS_EST].forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
+  clearTimeout(agendarCPU.t);
+  S.rec = {g:0,p:0,e:0}; S.dia = {hecho:null,racha:0,mejor:0,jugados:0,ganados:0,ultimo:''}; S.torneo = null; S.tor = {g:0,p:0};
+  S.logros = {u:{},racha:0,mejor:0}; S.nuevos = []; S.adiv = null; S.adivRec = {mejor:0,jugadas:0}; S.est = {c:{},s:{}}; S.game = null; S.screen = 'home';
+  render(); aviso('Datos restablecidos');
+}
 function pantallaStats(){
   const E = S.est, tot = S.rec.g + S.rec.p + S.rec.e;
   const cs = Object.keys(E.c).map(k => ({k, w:E.c[k][0], j:E.c[k][1]})).filter(x => x.w > 0 && cartaPorId(x.k)).sort((a,b) => b.w - a.w || (b.w/b.j) - (a.w/a.j));
@@ -2318,6 +2327,7 @@ APP.addEventListener('click', e => {
   else if(a === 'torneo'){ S.torneo = {cfg:{deck:S.pref.deck, size:S.pref.size, dif:S.pref.dif, n:+b.dataset.v}, hist:[], fin:null}; guardarTorneo(); nuevaPartida('torneo'); }
   else if(a === 'torneo-sig'){ if(S.torneo && !S.torneo.fin) nuevaPartida('torneo'); }
   else if(a === 'torneo-fin'){ if(confirm('¿Abandonar el torneo?')){ cerrarTorneo(); render(); } }
+  else if(a === 'reset') restablecer();
   else if(a === 'stats'){ S.screen = 'stats'; render(); }
   else if(a === 'fotos'){ S.screen = 'fotos'; render(); }
   else if(a === 'foto'){ S.pending = b.dataset.key; FILE.click(); }
