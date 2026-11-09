@@ -281,6 +281,34 @@ body{background:transparent;font-weight:500}
 .adivops .opt.ok{border-color:#58C27D;background:linear-gradient(180deg,#2d7a4d,#1f5a38);box-shadow:0 4px 0 #14402a}
 .adivops .opt.mal{border-color:#E4572E;background:linear-gradient(180deg,#9a3a22,#6e2917);box-shadow:0 4px 0 #4a1c10}
 .adivops .opt:disabled{opacity:1}
+/* ---- Juego sin scroll ---- */
+.juego{display:flex;flex-direction:column;gap:10px}
+.juego .photo{height:92px}.juego .photo svg{width:44%}
+.juego .chead b{font-size:30px}
+.juego .row{min-height:48px;padding:4px 6px 13px}
+.juego .row .v{font-size:32px}
+.juego .cfoot{min-height:0}
+.duel{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+.duel .card{padding:0 8px 8px;border-radius:16px;gap:4px}
+.duel .card::before{margin:0 -8px}
+.duel .chead{flex-wrap:wrap;gap:2px}.duel .chead b{font-size:21px}.duel .chead small{font-size:11px;letter-spacing:.1em}
+.duel .num{font-size:12px;padding:2px 8px}
+.duel .row{flex-direction:column;align-items:flex-start;gap:1px;min-height:46px;padding:3px 2px 11px}
+.duel .row .k,.duel .row .l i{display:none}
+.duel .row .l{font-size:11px;letter-spacing:.02em;flex:none}
+.duel .row .v{font-size:24px}.duel .row .u{font-size:10px;margin-left:2px}
+.duel .row .g{left:2px;right:2px;bottom:4px;height:4px}
+.duel .row.canpick::after{display:none}
+.juego .btn.big[data-act=next]{position:sticky;bottom:10px;z-index:5;box-shadow:0 0 0 6px var(--deep,#0B1428)}
+.logdet>summary{cursor:pointer;font-family:var(--disp);font-size:20px;letter-spacing:.14em;color:var(--gold);list-style:none;padding:10px 12px;border:2px solid #F4EAD233;border-radius:14px;background:#ffffff0c}
+.logdet>summary::-webkit-details-marker{display:none}
+.logdet>summary::after{content:" ▾";float:right}
+.logdet[open]>summary::after{content:" ▴"}
+.logdet[open]>summary{margin-bottom:8px}
+.logdet>.racha,.logdet>.logros{margin-top:8px}
+.cfg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cfg2 .opts{gap:8px}.cfg2 .opt{padding:10px 8px;justify-content:center}.cfg2 .opt b{font-size:24px}
+#app>.btn.big[data-act=jugar]{position:sticky;bottom:10px;z-index:6;box-shadow:0 0 0 8px #0B1428d9,0 6px 0 var(--gold2,#b88700)}
 </style>
 </head>
 <body>
@@ -1456,9 +1484,9 @@ function esMasViejo(deck, c){
 }
 function logrosHTML(){
   const L = S.logros, n = LOGROS.filter(x => L.u[x.id]).length;
-  return `<div class="group"><label>Logros · ${n} de ${LOGROS.length}</label>
+  return `<details class="group logdet"><summary>Logros · ${n} de ${LOGROS.length}${L.racha ? ' · racha ' + L.racha : ''}</summary>
     <div class="racha"><div><b>${L.racha}</b><small>Racha actual</small></div><div><b>${L.mejor}</b><small>Mejor racha</small></div></div>
-    <div class="logros">${LOGROS.map(x => `<div class="lg ${L.u[x.id] ? 'ok' : ''}"><span class="ic">${L.u[x.id] ? x.ico : '🔒'}</span><span class="tx"><b>${x.t}</b><small>${x.d}</small></span></div>`).join('')}</div></div>`;
+    <div class="logros">${LOGROS.map(x => `<div class="lg ${L.u[x.id] ? 'ok' : ''}"><span class="ic">${L.u[x.id] ? x.ico : '🔒'}</span><span class="tx"><b>${x.t}</b><small>${x.d}</small></span></div>`).join('')}</div></details>`;
 }
 function hoyAR(){ try{ return new Date().toLocaleDateString('en-CA',{timeZone:'America/Argentina/Buenos_Aires'}); }catch(e){ return new Date().toISOString().slice(0,10); } }
 function infoDia(){
@@ -1808,8 +1836,10 @@ function pantallaInicio(){
     <div class="group"><label>Mazo</label><div class="opts">${mazos}</div></div>
     <div class="group"><label>Tamaño de la partida</label><div class="opts seg">${tams}</div></div>
     <div class="group"><label>Dificultad de la compu</label><div class="opts seg sm">${difs}</div></div>
-    <div class="group"><label>Cartas especiales</label><div class="opts seg sm"><button class="opt ${S.pref.esp!==false?'on':''}" data-act="esp" data-v="1"><b>Sí</b><small>Comodín y Auto del Año</small></button><button class="opt ${S.pref.esp===false?'on':''}" data-act="esp" data-v="0"><b>No</b><small>Solo autos</small></button></div></div>
-    <div class="group"><label>Sonido y vibración</label><div class="opts seg sm"><button class="opt ${sonidoOn()?'on':''}" data-act="snd" data-v="1"><b>Sí</b><small>Al ganar o perder</small></button><button class="opt ${!sonidoOn()?'on':''}" data-act="snd" data-v="0"><b>No</b><small>Silencio</small></button></div></div>
+    <div class="cfg2">
+    <div class="group"><label>Especiales</label><div class="opts seg sm"><button class="opt ${S.pref.esp!==false?'on':''}" data-act="esp" data-v="1"><b>Sí</b></button><button class="opt ${S.pref.esp===false?'on':''}" data-act="esp" data-v="0"><b>No</b></button></div></div>
+    <div class="group"><label>Sonido</label><div class="opts seg sm"><button class="opt ${sonidoOn()?'on':''}" data-act="snd" data-v="1"><b>Sí</b></button><button class="opt ${!sonidoOn()?'on':''}" data-act="snd" data-v="0"><b>No</b></button></div></div>
+    </div>
     <button class="btn big" data-act="jugar">Jugar</button>
     ${bloqueDos()}
     ${bloqueAdiv()}
@@ -1854,10 +1884,11 @@ function pantallaDos(g, deck){
     msg = `${nm[g.quien]} eligió ${st.label}: ${fmt(st, cy.v[st.id], cy)}${u} contra ${fmt(st, ce.v[st.id], ce)}${u}. ` + (g.res === 'tie' ? 'Empate: las cartas van al pozo.' : `Ganó la ronda ${nm[g.res]}.`) + (g.espMsg ? ' ' + g.espMsg : '');
   } else msg = `${nm[yo]}: tocá una característica de tu carta.`;
   const opp = reveal ? cartaHTML(de(el), deck, {compact:true, sel:g.sel, res:rj[el], n:nm[el], rojo:el === 'cpu'})
-    : `<div class="back"><span>NAIPES 70-90</span><small>Carta de ${esc(nm[el])}</small></div>`;
-  return `${cab}<div class="msg ${reveal && g.res !== 'tie' ? (g.res === yo ? 'win' : 'lose') : ''}">${esc(msg)}</div>${opp}
-    ${cartaHTML(de(yo), deck, {canPick:!reveal, sel:g.sel, res:rj[yo], n:nm[yo], rojo:yo === 'cpu'})}
-    ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}`;
+    : '';
+  return `<div class="juego">${cab}<div class="msg ${reveal && g.res !== 'tie' ? (g.res === yo ? 'win' : 'lose') : ''}">${esc(msg)}</div>
+    ${reveal ? `<div class="duel">${cartaHTML(de(yo), deck, {compact:true, sel:g.sel, res:rj[yo], n:nm[yo], rojo:yo === 'cpu'})}${opp}</div>`
+      : cartaHTML(de(yo), deck, {canPick:true, sel:g.sel, res:rj[yo], n:nm[yo], rojo:yo === 'cpu'})}
+    ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}</div>`;
 }
 function pantallaJuego(){
   const g = S.game, deck = DECKS[g.deckId];
@@ -1869,18 +1900,18 @@ function pantallaJuego(){
   const clsMsg = reveal ? (g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : '') : '';
   const oponente = reveal
     ? cartaHTML(g.shown.b, deck, {compact:true, sel:g.sel, res:resCpu, n:'Compu'})
-    : `<div class="back"><span>NAIPES 70-90</span><small>Carta de la compu</small></div>`;
+    : '';
   const tot = g.you.length + g.cpu.length, pct = tot ? Math.round(100 * g.you.length / tot) : 50;
   const turnoYo = !reveal && g.turn === 'you', turnoCpu = !reveal && g.turn === 'cpu';
-  return `<div class="bar"><button class="btn sm" data-act="salir">Salir</button>
+  return `<div class="juego"><div class="bar"><button class="btn sm" data-act="salir">Salir</button>
       <div class="score"><div class="sc ${turnoYo?'turno':''}"><small>Vos</small><b>${g.you.length}</b></div><span class="vs">VS</span><div class="sc ${turnoCpu?'turno':''}"><small>Compu</small><b>${g.cpu.length}</b></div></div>
       <div class="rd">R${g.ronda}</div></div>
     <div class="meter" title="Cartas en tu poder"><span style="width:${pct}%"></span></div>
     ${lineaEstado(g)}
     <div class="msg ${clsMsg}">${esc(textoMensaje(g,deck))}</div>
-    ${oponente}
-    ${cartaHTML(mia, deck, {canPick:!reveal && g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
-    ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}`;
+    ${reveal ? `<div class="duel">${cartaHTML(mia, deck, {compact:true, sel:g.sel, res:resMia, n:'Tuya'})}${oponente}</div>`
+      : cartaHTML(mia, deck, {canPick:g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
+    ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}</div>`;
 }
 function pantallaFin(){
   const g = S.game, T = g.torneo ? S.torneo : null;
