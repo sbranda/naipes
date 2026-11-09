@@ -2342,6 +2342,13 @@ window.addEventListener('appinstalled', () => { S.deferred = null; if(S.screen =
 cargar();
 cargarFotos();
 render();
+(function atajo(){
+  let q = ''; try{ q = new URLSearchParams(location.search).get('atajo') || ''; }catch(e){}
+  if(!q) return;
+  try{ history.replaceState(null, '', location.pathname); }catch(e){}
+  if(q === 'jugar') nuevaPartida();
+  else if(q === 'diario'){ const d = infoDia(); if(!(S.dia.hecho && S.dia.hecho.clave === d.clave)) nuevaPartida('diario'); }
+})();
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 }
