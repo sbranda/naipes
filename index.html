@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#14213D">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Naipes 70-90">
-<title>Naipes: autos argentinos de los 70 a los 90</title>
+<meta name="apple-mobile-web-app-title" content="Naipes de Fierro">
+<title>Naipes de Fierro</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -206,7 +206,7 @@ body{background:transparent;font-weight:500}
 .card.compact .row{min-height:52px}
 .card.compact .chead b{font-size:26px}
 .back{height:96px;flex-direction:column;gap:2px;border-radius:20px;border:3px solid var(--deep);background:repeating-linear-gradient(45deg,#1B2B4F 0 10px,#26386b 10px 20px);box-shadow:0 6px 0 var(--deep),0 12px 20px #0006;outline:2px solid var(--gold);outline-offset:-10px;animation:deal .38s both}
-.back span{font-size:30px;letter-spacing:.24em;text-indent:.24em}
+.back span{font-size:26px;letter-spacing:.14em;text-indent:.14em}
 .back small{font-family:var(--txt);font-size:12px;letter-spacing:.24em;color:#F4EAD2aa;text-transform:uppercase}
 /* final */
 .fin{padding:12px 0;gap:14px;align-items:stretch}
@@ -1647,7 +1647,7 @@ function resumenDia(h){
 }
 function textoDia(h){
   const r = rachaVigente(), url = location.origin + location.pathname.replace(/index\.html$/, '');
-  return `Naipes 70-90 · Desafío #${h.num} (${fechaCorta(h.clave)})\n${h.fin === 'you' ? '🏆' : h.fin === 'cpu' ? '🏁' : '🤝'} ${resumenDia(h)} · Mazo ${DECKS[h.deck].nombre}\n${h.hist.split('').map(x => EMO[x]).join('')}${r > 1 ? '\n🔥 Racha: ' + r + ' días' : ''}\n${url}`;
+  return `Naipes de Fierro · Desafío #${h.num} (${fechaCorta(h.clave)})\n${h.fin === 'you' ? '🏆' : h.fin === 'cpu' ? '🏁' : '🤝'} ${resumenDia(h)} · Mazo ${DECKS[h.deck].nombre}\n${h.hist.split('').map(x => EMO[x]).join('')}${r > 1 ? '\n🔥 Racha: ' + r + ' días' : ''}\n${url}`;
 }
 async function compartirTexto(){
   const h = S.dia.hecho; if(!h) return;
@@ -1662,7 +1662,7 @@ async function imagenDia(h){
   let g = x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#16254a'); g.addColorStop(1,'#0B1428'); x.fillStyle = g; x.fillRect(0,0,W,H);
   g = x.createLinearGradient(0,0,W,380); g.addColorStop(0,'#E4572E'); g.addColorStop(.55,'#B3261E'); g.addColorStop(1,'#6E0F1A'); x.fillStyle = g; x.fillRect(0,0,W,380);
   for(let i=0;i<W/30;i++) for(let j=0;j<2;j++){ x.fillStyle = (i+j)%2 ? '#111' : '#fff'; x.fillRect(i*30, j*30, 30, 30); }
-  x.textAlign = 'center'; x.fillStyle = '#fff'; x.font = '140px "Bebas Neue", Impact, sans-serif'; x.fillText('NAIPES 70-90', W/2, 215);
+  x.textAlign = 'center'; x.fillStyle = '#fff'; x.font = '140px "Bebas Neue", Impact, sans-serif'; x.fillText('NAIPES DE FIERRO', W/2, 215);
   x.fillStyle = '#FFE27A'; x.font = '700 44px "Barlow Condensed", Arial Narrow, sans-serif'; x.fillText(`DESAFÍO #${h.num} · ${fechaCorta(h.clave)}`, W/2, 300);
   const col = h.fin === 'you' ? '#6fcf97' : h.fin === 'cpu' ? '#ff7b72' : '#F2B705';
   x.fillStyle = col; x.font = '200px "Bebas Neue", Impact, sans-serif'; x.fillText(h.fin === 'you' ? 'GANÉ' : h.fin === 'cpu' ? 'PERDÍ' : 'EMPATÉ', W/2, 600);
@@ -1699,7 +1699,7 @@ async function imagenFin(g){
   let gr = x.createLinearGradient(0,0,0,H); gr.addColorStop(0,'#16254a'); gr.addColorStop(1,'#0B1428'); x.fillStyle = gr; x.fillRect(0,0,W,H);
   gr = x.createLinearGradient(0,0,W,380); gr.addColorStop(0,'#E4572E'); gr.addColorStop(.55,'#B3261E'); gr.addColorStop(1,'#6E0F1A'); x.fillStyle = gr; x.fillRect(0,0,W,380);
   for(let i=0;i<W/30;i++) for(let j=0;j<2;j++){ x.fillStyle = (i+j)%2 ? '#111' : '#fff'; x.fillRect(i*30, j*30, 30, 30); }
-  x.textAlign = 'center'; x.fillStyle = '#fff'; x.font = '140px "Bebas Neue", Impact, sans-serif'; x.fillText('NAIPES 70-90', W/2, 215);
+  x.textAlign = 'center'; x.fillStyle = '#fff'; x.font = '140px "Bebas Neue", Impact, sans-serif'; x.fillText('NAIPES DE FIERRO', W/2, 215);
   x.fillStyle = '#FFE27A'; x.font = '700 44px "Barlow Condensed", Arial Narrow, sans-serif';
   const dn = DECKS[g.deckId].nombre.toUpperCase();
   x.fillText(`${tag} · MAZO ${dn}`, W/2, 300);
@@ -1719,7 +1719,7 @@ async function compartirFin(){
   const g = S.game; if(!g) return;
   const blob = await imagenFin(g); if(!blob){ aviso('No se pudo crear la imagen'); return; }
   const file = new File([blob], 'naipes-resultado.png', {type:'image/png'});
-  const txt = 'Naipes 70-90 · ' + g.you.length + '–' + g.cpu.length;
+  const txt = 'Naipes de Fierro · ' + g.you.length + '–' + g.cpu.length;
   try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], text:txt}); return; } }catch(e){ if(e && e.name === 'AbortError') return; }
   const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(u), 4000); aviso('Imagen descargada');
@@ -1838,7 +1838,7 @@ function pantallaInicio(){
   const tams = Object.keys(TAMANOS).map(k => `<button class="opt ${S.pref.size===k?'on':''}" data-act="size" data-v="${k}"><b>${TAMANOS[k].t}</b><small>${TAMANOS[k].d}</small></button>`).join('');
   const difs = Object.keys(DIFS).map(k => `<button class="opt ${S.pref.dif===k?'on':''}" data-act="dif" data-v="${k}"><b>${DIFS[k].t}</b><small>${DIFS[k].d}</small></button>`).join('');
   const inst = S.deferred ? `<button class="btn" data-act="instalar">Instalar la app</button>` : (iosSinInstalar() ? `<div class="note">Para instalarla en iPhone o iPad: tocá Compartir y después "Agregar a pantalla de inicio".</div>` : '');
-  return `<div class="hd"><div class="yr">NAIPES · 1970—1999</div><h1>Autos argentinos<br><em>de los 70 a los 90</em></h1><div class="sub">Juego de naipes contra la computadora</div></div>
+  return `<div class="hd"><div class="yr">AUTOS ARGENTINOS · 1970—1999</div><h1>Naipes<br><em>de Fierro</em></h1><div class="sub">Autos argentinos de los 70 a los 90, contra la compu</div></div>
     ${bloqueDia()}
     <div class="group"><label>Mazo</label><div class="opts">${mazos}</div></div>
     <div class="group"><label>Tamaño de la partida</label><div class="opts seg">${tams}</div></div>
@@ -1885,7 +1885,7 @@ function pantallaDos(g, deck){
   const cab = `<div class="bar"><button class="btn sm" data-act="salir">Salir</button><div class="score">${marc('you')}<span class="vs">VS</span>${marc('cpu')}</div><div class="rd">R${g.ronda}</div></div>
     <div class="meter"><span style="width:${pct}%"></span></div>
     <div class="pozo">Dos jugadores${g.pot.length ? ' · Pozo: ' + g.pot.length + ' cartas' : ''}</div>`;
-  if(pase) return `${cab}<div class="pase"><div class="back"><span>NAIPES 70-90</span><small>Carta oculta</small></div>
+  if(pase) return `${cab}<div class="pase"><div class="back"><span>NAIPES DE FIERRO</span><small>Carta oculta</small></div>
     <h2>Turno de ${esc(nm[g.turn])}</h2><p>Pasale el celu a ${esc(nm[g.turn])}.<br>${esc(nm[otro(g.turn)])}, no mires.</p>
     <button class="btn big" data-act="pase">Listo, soy ${esc(nm[g.turn])}</button></div>`;
   const yo = reveal ? g.quien : g.turn, el = otro(yo);
