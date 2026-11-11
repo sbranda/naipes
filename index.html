@@ -54,6 +54,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .row{display:flex;align-items:center;gap:10px;border:0;border-top:1.5px solid #14213D33;background:transparent;color:inherit;min-height:50px;padding:4px;text-align:left;width:100%;border-radius:0}
 .row:disabled{cursor:default}
 .btn:disabled{opacity:.55;cursor:default}
+.rival{background:var(--cream);color:var(--navy);border:3px solid var(--deep);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px;box-shadow:0 4px 0 var(--deep);animation:deal .38s cubic-bezier(.2,.8,.3,1.2) both}
+.rival .rh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rival .rh small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.rival .rh b{font-family:var(--disp);font-size:24px;line-height:1.05}
+.rival .photo{height:170px}
+.rival .rn{font-size:14px;font-style:italic;color:#14213DCC}
+.rival dl{margin:0;display:flex;flex-direction:column;gap:4px}
+.rival dt{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#14213D99}
+.rival dd{margin:0;font-size:14px;line-height:1.25}
 .row .k{flex:none;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--cream);font-family:var(--disp);font-size:18px;display:flex;align-items:center;justify-content:center}
 .row .l{flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1.05}
 .row .l i{display:block;font-style:normal;font-size:11px;letter-spacing:.04em;color:#14213D99;font-weight:500;text-transform:none;margin-top:2px}
@@ -2138,7 +2147,7 @@ function pantallaInicio(){
       <p><b>Desafío del día.</b> Una partida corta de 6 cartas, igual para todos, con un resultado por día. Si jugás días seguidos, sumás racha, y podés compartir el resultado.</p>
       <p><b>Más modos.</b> <b>Dos jugadores</b> en el mismo celu, con pantalla de pase para que no se vea la carta del otro. <b>Adiviná el auto</b>: 10 preguntas con foto o silueta y cuatro opciones. <b>Torneo</b> al mejor de 3 o de 5 partidas.</p>
       <p><b>Álbum, logros y estadísticas.</b> Podés cargar tus fotos de los autos, que se ven en las cartas. Hay logros por ganar con el auto más viejo, por 5 victorias seguidas y por completar el álbum, y una pantalla con la carta y la característica que más te sirven. Al terminar una partida podés compartir una imagen con el marcador. El sonido y la vibración se apagan desde el inicio.</p></details>
-    <div class="foot">Desarrollado por @sebranda<br><small>Versión 79</small></div>`;
+    <div class="foot">Desarrollado por @sebranda<br><small>Versión 80</small></div>`;
 }
 function textoMensaje(g, deck){
   if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
@@ -2196,9 +2205,16 @@ function pantallaJuego(){
     <div class="meter" title="Cartas en tu poder"><span style="width:${pct}%"></span></div>
     ${lineaEstado(g)}
     <div class="msg ${clsMsg}">${esc(textoMensaje(g,deck))}</div>
-    ${reveal ? `<div class="duel">${cartaHTML(mia, deck, {compact:true, sel:g.sel, res:resMia, n:'Tuya'})}${oponente}</div>`
+    ${reveal ? `<div class="duel">${cartaHTML(mia, deck, {compact:true, sel:g.sel, res:resMia, n:'Tuya'})}${oponente}</div>${rivalDetalle(g.shown.b, deck)}`
       : cartaHTML(mia, deck, {canPick:g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
     ${reveal ? (segLock(g) > 0 ? `<button class="btn big" id="nxt" data-act="next" disabled>Siguiente (${segLock(g)})</button>` : `<button class="btn big" id="nxt" data-act="next">Siguiente</button>`) : ''}</div>`;
+}
+function rivalDetalle(c, deck){
+  if(c.esp) return '';
+  const f = deck.id === 'his' && FICHAS[c.key] ? FICHAS[c.key].slice(0, 3).concat(CURIOSOS[c.key] ? [['Dato curioso', CURIOSOS[c.key]]] : []) : [];
+  return `<div class="rival" style="--bc:${COLOR[c.marca]||'#888'}"><div class="rh"><div><small>${esc(c.marca)}</small><b>${esc(c.modelo)}</b></div><span class="num cpu">Compu</span></div>
+    ${fotoHTML(c)}${c.nota ? `<div class="rn">${esc(c.nota)}</div>` : ''}
+    ${f.length ? `<dl>${f.map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>` : ''}</div>`;
 }
 function pantallaFin(){
   const g = S.game, T = g.torneo ? S.torneo : null;
