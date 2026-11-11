@@ -53,6 +53,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .stats{display:flex;flex-direction:column}
 .row{display:flex;align-items:center;gap:10px;border:0;border-top:1.5px solid #14213D33;background:transparent;color:inherit;min-height:50px;padding:4px;text-align:left;width:100%;border-radius:0}
 .row:disabled{cursor:default}
+.btn:disabled{opacity:.55;cursor:default}
 .row .k{flex:none;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--cream);font-family:var(--disp);font-size:18px;display:flex;align-items:center;justify-content:center}
 .row .l{flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1.05}
 .row .l i{display:block;font-style:normal;font-size:11px;letter-spacing:.04em;color:#14213D99;font-weight:500;text-transform:none;margin-top:2px}
@@ -1849,10 +1850,24 @@ function resolver(statId, quien){
   g.hist.push(g.res === 'you' ? 'w' : g.res === 'cpu' ? 'l' : 't');
   if(!g.modo2){ const w = g.res === 'you' ? 1 : 0, kc = g.deckId + ':' + a.id, E = S.est; (E.c[kc] = E.c[kc] || [0,0]); E.c[kc][0] += w; E.c[kc][1]++; (E.s[statId] = E.s[statId] || [0,0]); E.s[statId][0] += w; E.s[statId][1]++; guardar(LS_EST, E); }
   cue(g.modo2 && g.res !== 'tie' ? 'tie' : g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie');
+  g.lockUntil = (g.torneo && !g.modo2) ? Date.now() + ESPERA_TORNEO : 0;
   render();
+  lockTick(g);
+}
+// En torneos, la carta del rival queda a la vista un mínimo de 3 segundos antes de poder seguir
+const ESPERA_TORNEO = 3000;
+function segLock(g){ return g && g.lockUntil ? Math.max(0, Math.ceil((g.lockUntil - Date.now()) / 1000)) : 0; }
+function lockTick(g){
+  clearTimeout(lockTick.t);
+  const b = document.getElementById('nxt');
+  if(!b || S.game !== g || g.phase !== 'reveal') return;
+  const r = segLock(g);
+  if(r > 0){ b.disabled = true; b.textContent = 'Siguiente (' + r + ')'; lockTick.t = setTimeout(() => lockTick(g), 250); }
+  else { b.disabled = false; b.textContent = 'Siguiente'; }
 }
 function siguiente(){
   const g = S.game; if(!g || g.phase !== 'reveal') return;
+  if(segLock(g) > 0) return;
   g.ronda++;
   if(!g.you.length || !g.cpu.length || g.ronda > MAX_RONDAS){ terminar(); return; }
   g.phase = (g.modo2 && g.turn !== g.quien) ? 'pase' : 'pick'; g.sel = null; g.res = null; g.shown = null; g.quien = null;
@@ -2123,7 +2138,7 @@ function pantallaInicio(){
       <p><b>Desafío del día.</b> Una partida corta de 6 cartas, igual para todos, con un resultado por día. Si jugás días seguidos, sumás racha, y podés compartir el resultado.</p>
       <p><b>Más modos.</b> <b>Dos jugadores</b> en el mismo celu, con pantalla de pase para que no se vea la carta del otro. <b>Adiviná el auto</b>: 10 preguntas con foto o silueta y cuatro opciones. <b>Torneo</b> al mejor de 3 o de 5 partidas.</p>
       <p><b>Álbum, logros y estadísticas.</b> Podés cargar tus fotos de los autos, que se ven en las cartas. Hay logros por ganar con el auto más viejo, por 5 victorias seguidas y por completar el álbum, y una pantalla con la carta y la característica que más te sirven. Al terminar una partida podés compartir una imagen con el marcador. El sonido y la vibración se apagan desde el inicio.</p></details>
-    <div class="foot">Desarrollado por @sebranda<br><small>Versión 78</small></div>`;
+    <div class="foot">Desarrollado por @sebranda<br><small>Versión 79</small></div>`;
 }
 function textoMensaje(g, deck){
   if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
@@ -2183,7 +2198,7 @@ function pantallaJuego(){
     <div class="msg ${clsMsg}">${esc(textoMensaje(g,deck))}</div>
     ${reveal ? `<div class="duel">${cartaHTML(mia, deck, {compact:true, sel:g.sel, res:resMia, n:'Tuya'})}${oponente}</div>`
       : cartaHTML(mia, deck, {canPick:g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
-    ${reveal ? `<button class="btn big" data-act="next">Siguiente</button>` : ''}</div>`;
+    ${reveal ? (segLock(g) > 0 ? `<button class="btn big" id="nxt" data-act="next" disabled>Siguiente (${segLock(g)})</button>` : `<button class="btn big" id="nxt" data-act="next">Siguiente</button>`) : ''}</div>`;
 }
 function pantallaFin(){
   const g = S.game, T = g.torneo ? S.torneo : null;
