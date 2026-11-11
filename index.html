@@ -1850,6 +1850,7 @@ function resolver(statId, quien){
   const a = g.you[0], b = g.cpu[0];
   const d = duelo(st, a, b, quien);
   g.espMsg = (a.esp || b.esp) ? [a,b].filter(c => c.esp).map(c => c.esp.t === 'ano' ? (c.esp.stat === st.id ? 'El Auto del Año gana siempre en ' + st.label + '.' : 'El Auto del Año no tiene ventaja en ' + st.label + '.') : (( c === a ? 'you' : 'cpu') === quien ? 'El Comodín gana la ronda.' : 'El Comodín empata si elige el rival.')).join(' ') : '';
+  g.antes = {you:g.you.length, cpu:g.cpu.length, pot:g.pot.length};
   g.sel = statId; g.quien = quien; g.phase = 'reveal'; g.shown = {a,b};
   g.you.shift(); g.cpu.shift(); g.mem.shift();
   if(d > 0){ g.res = 'you'; g.you.push(a,b,...g.pot); g.mem.push(a,b,...g.pot); g.pot = []; g.turn = 'you'; }
@@ -1858,13 +1859,24 @@ function resolver(statId, quien){
   if(d > 0 && !g.modo2 && esMasViejo(deck, a)) darLogro('viejo');
   g.hist.push(g.res === 'you' ? 'w' : g.res === 'cpu' ? 'l' : 't');
   if(!g.modo2){ const w = g.res === 'you' ? 1 : 0, kc = g.deckId + ':' + a.id, E = S.est; (E.c[kc] = E.c[kc] || [0,0]); E.c[kc][0] += w; E.c[kc][1]++; (E.s[statId] = E.s[statId] || [0,0]); E.s[statId][0] += w; E.s[statId][1]++; guardar(LS_EST, E); }
-  cue(g.modo2 && g.res !== 'tie' ? 'tie' : g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie');
-  g.lockUntil = (g.torneo && !g.modo2) ? Date.now() + ESPERA_TORNEO : 0;
+  if(g.modo2){ cue(g.res !== 'tie' ? 'tie' : 'tie'); g.lockUntil = 0; g.pausaHasta = 0; render(); return; }
+  // Contra la compu: primero se ven las dos cartas un rato, y recién después el resultado
+  const T = pausaMs(g);
+  g.pausaHasta = g.lockUntil = Date.now() + T;
   render();
   lockTick(g);
+  setTimeout(() => {
+    if(S.game !== g) return;
+    g.pausaHasta = 0; g.lockUntil = 0;
+    if(g.phase !== 'reveal' || S.screen !== 'game') return;
+    cue(g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie');
+    render();
+  }, T + 30);
 }
-// En torneos, la carta del rival queda a la vista un mínimo de 3 segundos antes de poder seguir
-const ESPERA_TORNEO = 3000;
+// En torneos y desafíos, las cartas quedan 3 segundos a la vista antes de mostrar el resultado (2 en partidas comunes)
+const PAUSA_COMPETITIVA = 3000, PAUSA_NORMAL = 2000;
+function pausaMs(g){ return (g.torneo || g.diario) ? PAUSA_COMPETITIVA : PAUSA_NORMAL; }
+function enPausa(g){ return !!(g && g.phase === 'reveal' && g.pausaHasta && Date.now() < g.pausaHasta); }
 function segLock(g){ return g && g.lockUntil ? Math.max(0, Math.ceil((g.lockUntil - Date.now()) / 1000)) : 0; }
 function lockTick(g){
   clearTimeout(lockTick.t);
@@ -2113,7 +2125,7 @@ function bloqueTorneo(){
 function lineaEstado(g){
   const T = g.torneo ? S.torneo : null, w = T ? victorias(T) : null;
   return (T ? `<div class="pozo">Torneo · Partida ${T.hist.length + 1} · Vos ${w.you}–${w.cpu} Compu</div>` : '') +
-    `<div class="pozo">Compu: ${DIFS[g.dif].t}${g.pot.length ? ' · Pozo: ' + g.pot.length + ' cartas' : ''}</div>`;
+    `<div class="pozo">Compu: ${DIFS[g.dif].t}${(enPausa(g) ? g.antes.pot : g.pot.length) ? ' · Pozo: ' + (enPausa(g) ? g.antes.pot : g.pot.length) + ' cartas' : ''}</div>`;
 }
 function pantallaInicio(){
   const mazos = Object.values(DECKS).map(d => `<button class="opt ${S.pref.deck===d.id?'on':''}" data-act="deck" data-v="${d.id}"><span class="tx"><b>${d.nombre}</b><small>${d.desc}</small></span><span class="nb">${d.cards.length}<small>cartas</small></span></button>`).join('');
@@ -2147,7 +2159,11 @@ function pantallaInicio(){
       <p><b>Desafío del día.</b> Una partida corta de 6 cartas, igual para todos, con un resultado por día. Si jugás días seguidos, sumás racha, y podés compartir el resultado.</p>
       <p><b>Más modos.</b> <b>Dos jugadores</b> en el mismo celu, con pantalla de pase para que no se vea la carta del otro. <b>Adiviná el auto</b>: 10 preguntas con foto o silueta y cuatro opciones. <b>Torneo</b> al mejor de 3 o de 5 partidas.</p>
       <p><b>Álbum, logros y estadísticas.</b> Podés cargar tus fotos de los autos, que se ven en las cartas. Hay logros por ganar con el auto más viejo, por 5 victorias seguidas y por completar el álbum, y una pantalla con la carta y la característica que más te sirven. Al terminar una partida podés compartir una imagen con el marcador. El sonido y la vibración se apagan desde el inicio.</p></details>
-    <div class="foot">Desarrollado por @sebranda<br><small>Versión 80</small></div>`;
+    <div class="foot">Desarrollado por @sebranda<br><small>Versión 81</small></div>`;
+}
+function textoPausa(g, deck){
+  const st = deck.stats.find(s => s.id === g.sel);
+  return (g.quien === 'cpu' ? 'La computadora eligió ' : 'Elegiste ') + st.label + '. Mirá bien la carta del rival…';
 }
 function textoMensaje(g, deck){
   if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
@@ -2189,22 +2205,23 @@ function pantallaDos(g, deck){
 function pantallaJuego(){
   const g = S.game, deck = DECKS[g.deckId];
   if(g.modo2) return pantallaDos(g, deck);
-  const reveal = g.phase === 'reveal';
+  const reveal = g.phase === 'reveal', pausa = enPausa(g);
   const mia = reveal ? g.shown.a : g.you[0];
-  const resMia = g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie';
-  const resCpu = g.res === 'cpu' ? 'win' : g.res === 'you' ? 'lose' : 'tie';
-  const clsMsg = reveal ? (g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : '') : '';
+  const resMia = pausa ? 'tie' : g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : 'tie';
+  const resCpu = pausa ? 'tie' : g.res === 'cpu' ? 'win' : g.res === 'you' ? 'lose' : 'tie';
+  const clsMsg = reveal && !pausa ? (g.res === 'you' ? 'win' : g.res === 'cpu' ? 'lose' : '') : '';
   const oponente = reveal
     ? cartaHTML(g.shown.b, deck, {compact:true, sel:g.sel, res:resCpu, n:'Compu'})
     : '';
-  const tot = g.you.length + g.cpu.length, pct = tot ? Math.round(100 * g.you.length / tot) : 50;
+  const nY = pausa ? g.antes.you : g.you.length, nC = pausa ? g.antes.cpu : g.cpu.length;
+  const tot = nY + nC, pct = tot ? Math.round(100 * nY / tot) : 50;
   const turnoYo = !reveal && g.turn === 'you', turnoCpu = !reveal && g.turn === 'cpu';
   return `<div class="juego"><div class="bar"><button class="btn sm" data-act="salir">Salir</button>
-      <div class="score"><div class="sc ${turnoYo?'turno':''}"><small>Vos</small><b>${g.you.length}</b></div><span class="vs">VS</span><div class="sc ${turnoCpu?'turno':''}"><small>Compu</small><b>${g.cpu.length}</b></div></div>
+      <div class="score"><div class="sc ${turnoYo?'turno':''}"><small>Vos</small><b>${nY}</b></div><span class="vs">VS</span><div class="sc ${turnoCpu?'turno':''}"><small>Compu</small><b>${nC}</b></div></div>
       <div class="rd">R${g.ronda}</div></div>
     <div class="meter" title="Cartas en tu poder"><span style="width:${pct}%"></span></div>
     ${lineaEstado(g)}
-    <div class="msg ${clsMsg}">${esc(textoMensaje(g,deck))}</div>
+    <div class="msg ${clsMsg}">${esc(pausa ? textoPausa(g, deck) : textoMensaje(g,deck))}</div>
     ${reveal ? `<div class="duel">${cartaHTML(mia, deck, {compact:true, sel:g.sel, res:resMia, n:'Tuya'})}${oponente}</div>${rivalDetalle(g.shown.b, deck)}`
       : cartaHTML(mia, deck, {canPick:g.turn==='you', sel:g.sel, res:resMia, n:'Tuya'})}
     ${reveal ? (segLock(g) > 0 ? `<button class="btn big" id="nxt" data-act="next" disabled>Siguiente (${segLock(g)})</button>` : `<button class="btn big" id="nxt" data-act="next">Siguiente</button>`) : ''}</div>`;
