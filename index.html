@@ -1812,6 +1812,8 @@ function elegirCPU(g, deck, rr){
   deck.stats.forEach(s => { const p = score(s); if(p > pm){ pm = p; mejor = s; } });
   return mejor;
 }
+// Tu carta (foto y características) queda a la vista este tiempo antes de que la compu elija y se compare con la del rival
+const ESPERA_CPU = 4000;
 function agendarCPU(){
   const g = S.game;
   if(!g || g.modo2 || g.phase !== 'pick' || g.turn !== 'cpu' || g.fin) return;
@@ -1820,7 +1822,7 @@ function agendarCPU(){
     if(S.screen !== 'game' || !S.game || S.game !== g || g.phase !== 'pick') return;
     const rr = g.diario ? rng(semilla('cpu|' + g.diario.clave + '|' + g.ronda)) : Math.random;
     resolver(elegirCPU(g, DECKS[g.deckId], rr).id, 'cpu');
-  }, 800);
+  }, ESPERA_CPU);
 }
 // ---------- Sonido y vibración ----------
 let _ac = null;
@@ -2159,14 +2161,14 @@ function pantallaInicio(){
       <p><b>Desafío del día.</b> Una partida corta de 6 cartas, igual para todos, con un resultado por día. Si jugás días seguidos, sumás racha, y podés compartir el resultado.</p>
       <p><b>Más modos.</b> <b>Dos jugadores</b> en el mismo celu, con pantalla de pase para que no se vea la carta del otro. <b>Adiviná el auto</b>: 10 preguntas con foto o silueta y cuatro opciones. <b>Torneo</b> al mejor de 3 o de 5 partidas.</p>
       <p><b>Álbum, logros y estadísticas.</b> Podés cargar tus fotos de los autos, que se ven en las cartas. Hay logros por ganar con el auto más viejo, por 5 victorias seguidas y por completar el álbum, y una pantalla con la carta y la característica que más te sirven. Al terminar una partida podés compartir una imagen con el marcador. El sonido y la vibración se apagan desde el inicio.</p></details>
-    <div class="foot">Desarrollado por @sebranda<br><small>Versión 82</small></div>`;
+    <div class="foot">Desarrollado por @sebranda<br><small>Versión 83</small></div>`;
 }
 function textoPausa(g, deck){
   const st = deck.stats.find(s => s.id === g.sel);
   return (g.quien === 'cpu' ? 'La computadora eligió ' : 'Elegiste ') + st.label + '. Mirá bien la carta del rival…';
 }
 function textoMensaje(g, deck){
-  if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'La computadora está eligiendo…';
+  if(g.phase === 'pick') return g.turn === 'you' ? 'Tu turno: tocá una característica de tu carta.' : 'Mirá tu carta: la computadora elige en unos segundos…';
   const st = deck.stats.find(s => s.id === g.sel);
   const va = fmt(st,g.shown.a.v[st.id],g.shown.a), vb = fmt(st,g.shown.b.v[st.id],g.shown.b);
   const quien = g.quien === 'cpu' ? 'La computadora eligió' : 'Elegiste';
